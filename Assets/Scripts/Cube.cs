@@ -14,6 +14,8 @@ public class Cube : MonoBehaviour
     public Vector3 angular_velocity;
     public float publishMessageFrequency = 1000f;
     private float timeElapsed;
+    public moveSpeed = 5;
+
     
     
     // Start is called before the first frame update
@@ -27,6 +29,8 @@ public class Cube : MonoBehaviour
     // Update is called once per frame
     void Update()
     { 	
+        float verticalInput = Input.GetAxis("Vertical");
+        transform
         timeElapsed += Time.deltaTime;
 
         if (timeElapsed > publishMessageFrequency) //to publish at desired rate
