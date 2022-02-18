@@ -26,7 +26,7 @@ public class Cube : MonoBehaviour
     void Update()
     { 
         timeElapsed_start += Time.deltaTime;
-        if (timeElapsed_start > 4)
+        if (timeElapsed_start > 3)
         {
             Rigidbody rb = GetComponent<Rigidbody>();
             // float horizontalInput = Input.GetAxis("Horizontal");

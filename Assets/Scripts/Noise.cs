@@ -10,7 +10,7 @@ public class Noise : MonoBehaviour
 
     public string topicName = "imu_noise";
 
-    Vector3 prev_velocity = Vector3.zero;
+    public Vector3 prev_velocity = Vector3.zero;
     Vector3 prev_acceleration = Vector3.zero;
     Vector3 prev_angular_velocity = Vector3.zero;
     // Start is called before the first frame update
@@ -26,8 +26,8 @@ public class Noise : MonoBehaviour
         Rigidbody rb = GetComponent<Rigidbody>();
         //calculate position from IMU acceleration readings
         Vector3 acceleration = new Vector3 (imu_msg.a_x,imu_msg.a_y,imu_msg.a_z);
-        Vector3 velocity = ((acceleration + prev_acceleration)/2) * Time.deltaTime;
-        rb.velocity = velocity;
+        rb.velocity += ((acceleration + prev_acceleration)/2) * Time.deltaTime;
+        //rb.velocity = velocity;
         // Vector3 translation = ((velocity + prev_velocity)/2) * Time.deltaTime; 
         // transform.Translate(translation);
 
