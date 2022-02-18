@@ -7,51 +7,60 @@ using RosMessageTypes.UnityRoboticsDemo;
 public class Cube : MonoBehaviour
 {
     ROSConnection ros; 
-    Rigidbody rb;
 
     public string topicName = "imu_true";
     public Vector3 last_velocity = Vector3.zero;
     public Vector3 angular_velocity;
-    public float publishMessageFrequency = 1000f;
-    private float timeElapsed;
-    public moveSpeed = 5;
-
-    
+    private float timeElapsed = 0;
+    private float timeElapsed_start = 0;
     
     // Start is called before the first frame update
     void Start()
     {	
+
         ros = ROSConnection.GetOrCreateInstance();
         ros.RegisterPublisher<ImuMsg>(topicName);
-        rb = GetComponent<Rigidbody>();
     }
-
+    
     // Update is called once per frame
     void Update()
-    { 	
-        float verticalInput = Input.GetAxis("Vertical");
-        transform
-        timeElapsed += Time.deltaTime;
-
-        if (timeElapsed > publishMessageFrequency) //to publish at desired rate
+    { 
+        timeElapsed_start += Time.deltaTime;
+        if (timeElapsed_start > 4)
         {
-            ImuMsg msg = new ImuMsg();
+            Rigidbody rb = GetComponent<Rigidbody>();
+            // float horizontalInput = Input.GetAxis("Horizontal");
+            // transform.position += new Vector3 (horizontalInput*Time.deltaTime*5,0,0);
 
-            Vector3 velocity = rb.velocity;
-            Vector3 acceleration = (velocity - last_velocity)/Time.deltaTime;
-            msg.a_x = acceleration[0];
-            msg.a_y = acceleration[1];
-            msg.a_z = acceleration[2];
-            Debug.Log(acceleration);
-            last_velocity = velocity;
+            // if (Input.GetKey(KeyCode.A)){
+            //     transform.Rotate(Vector3.up * 5 * Time.deltaTime);
+            // }
+            
+            // if (Input.GetKey(KeyCode.D)){
+            //     transform.Rotate(-Vector3.up * 5 * Time.deltaTime);
+            // }
 
-            angular_velocity = new Vector3 (rb.angularVelocity.x,rb.angularVelocity.y,rb.angularVelocity.z);
-            msg.w_x = angular_velocity[0];
-            msg.w_y = angular_velocity[1];
-            msg.w_z = angular_velocity[2];
-            Debug.Log(angular_velocity);
-            ros.Publish(topicName,msg);
-            timeElapsed = 0;
+            timeElapsed += Time.deltaTime;
+            
+
+            if (timeElapsed > 0) //to publish at desired rate
+            {
+                ImuMsg msg = new ImuMsg();
+
+                Vector3 velocity = rb.velocity;
+                Vector3 acceleration = (velocity - last_velocity)/Time.deltaTime;
+                msg.a_x = acceleration[0];
+                msg.a_y = acceleration[1];
+                msg.a_z = acceleration[2];
+                last_velocity = velocity;
+
+                angular_velocity = new Vector3 (rb.angularVelocity.x,rb.angularVelocity.y,rb.angularVelocity.z);
+                msg.w_x = angular_velocity[0];
+                msg.w_y = angular_velocity[1];
+                msg.w_z = angular_velocity[2];
+                ros.Publish(topicName,msg);
+                timeElapsed = 0;
+            }
         }
     }
 }
