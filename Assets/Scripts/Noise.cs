@@ -9,6 +9,7 @@ public class Noise : MonoBehaviour
     ROSConnection ros; 
 
     public string topicName = "imu_noise";
+    public string topicName2 = "pos_noise";
 
     public Vector3 prev_velocity = Vector3.zero;
     Vector3 prev_acceleration = Vector3.zero;
@@ -18,10 +19,13 @@ public class Noise : MonoBehaviour
     {	
         ros = ROSConnection.GetOrCreateInstance();
         ros.Subscribe<ImuMsg>(topicName,ImuCallback);
+        ros.RegisterPublisher<PointCloudMsg>(topicName2);
     }
 
     void ImuCallback(ImuMsg imu_msg)
     {
+        PointCloudMsg msg = new PointCloudMsg();
+
         Debug.Log(imu_msg);
         Rigidbody rb = GetComponent<Rigidbody>();
         //calculate position from IMU acceleration readings
@@ -42,5 +46,12 @@ public class Noise : MonoBehaviour
         //prev_velocity = velocity;
         prev_acceleration = acceleration;
         // prev_angular_velocity = angular_velocity;
+
+        msg.x = transform.position.x;
+        msg.y = transform.position.y;
+        msg.z = transform.position.z;
+        //Debug.Log("x: "+msg.x);
+
+        ros.Publish(topicName2,msg);
     }
 }
