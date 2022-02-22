@@ -9,6 +9,7 @@ public class Cube : MonoBehaviour
     ROSConnection ros; 
 
     public string topicName = "imu_true";
+    public string topicName2 = "pos_true";
     public Vector3 last_velocity = Vector3.zero;
     public Vector3 angular_velocity;
     private float timeElapsed = 0;
@@ -20,6 +21,7 @@ public class Cube : MonoBehaviour
 
         ros = ROSConnection.GetOrCreateInstance();
         ros.RegisterPublisher<ImuMsg>(topicName);
+        ros.RegisterPublisher<PointCloudMsg>(topicName2);
     }
     
     // Update is called once per frame
@@ -32,9 +34,9 @@ public class Cube : MonoBehaviour
             // float horizontalInput = Input.GetAxis("Horizontal");
             // transform.position += new Vector3 (horizontalInput*Time.deltaTime*5,0,0);
 
-            // if (Input.GetKey(KeyCode.A)){
-            //     transform.Rotate(Vector3.up * 5 * Time.deltaTime);
-            // }
+            if (Input.GetKey(KeyCode.U)){
+                rb.angularVelocity = new Vector3(0,1,0);
+            }
             
             // if (Input.GetKey(KeyCode.D)){
             //     transform.Rotate(-Vector3.up * 5 * Time.deltaTime);
@@ -46,6 +48,7 @@ public class Cube : MonoBehaviour
             if (timeElapsed > 0) //to publish at desired rate
             {
                 ImuMsg msg = new ImuMsg();
+                PointCloudMsg msg2 = new PointCloudMsg();
 
                 Vector3 velocity = rb.velocity;
                 Vector3 acceleration = (velocity - last_velocity)/Time.deltaTime;
@@ -59,6 +62,11 @@ public class Cube : MonoBehaviour
                 msg.w_y = angular_velocity[1];
                 msg.w_z = angular_velocity[2];
                 ros.Publish(topicName,msg);
+                
+                msg2.x = transform.position.x;
+                msg2.y = transform.position.y;
+                msg2.z = transform.position.z;
+                ros.Publish(topicName2,msg2);
                 timeElapsed = 0;
             }
         }
