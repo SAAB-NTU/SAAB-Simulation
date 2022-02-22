@@ -45,7 +45,7 @@ public class Cube : MonoBehaviour
             timeElapsed += Time.deltaTime;
             
 
-            if (timeElapsed > 0.4) //to publish at desired rate
+            if (timeElapsed > 0) //to publish at desired rate
             {
                 ImuMsg msg = new ImuMsg();
                 PointCloudMsg msg2 = new PointCloudMsg();
