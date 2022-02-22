@@ -898,7 +898,7 @@ MonoBehaviour:
   _dragInWaterUp: 85
   _dragInWaterRight: 5
   _dragInWaterForward: 5
-  _playerControlled: 1
+  _playerControlled: 0
   _throttleBias: 0
   _steerBias: 0
   _debugDraw: 0
