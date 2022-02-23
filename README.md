@@ -4,7 +4,8 @@
 ```git clone https://github.com/zejiekong/unity-slam_ws.git```<br> 
 ```cd unity-slam_ws/src``` <br>
 
-### (b.)Built catkin workspace. **May require catkin clean** <br>
+### (b.)Built catkin workspace <br>
+**May require catkin clean** <br>
 ```catkin build``` <br>
 ```source devel/setup.bash``` <br>
 
