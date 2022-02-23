@@ -6,7 +6,7 @@
 * unity version 2021.2.7f1
 * unity-ros integration package (in Unity) <br>
 
-<ins> setup guide </ins> : https://github.com/Unity-Technologies/Unity-Robotics-Hub/blob/main/tutorials/ros_unity_integration/setup.md
+<ins> Setup Guide </ins> : https://github.com/Unity-Technologies/Unity-Robotics-Hub/blob/main/tutorials/ros_unity_integration/setup.md
 <br>
 <br>
 ## Setup: <br>
