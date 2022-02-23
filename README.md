@@ -5,7 +5,7 @@
 ```cd unity-slam_ws/src``` <br>
 
 ### (b.)Built catkin workspace <br>
-**May require catkin clean** <br>
+_May require catkin clean_ <br>
 ```catkin build``` <br>
 ```source devel/setup.bash``` <br>
 
