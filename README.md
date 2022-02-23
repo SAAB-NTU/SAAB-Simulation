@@ -9,5 +9,7 @@
 ```source devel/setup.bash``` <br>
 
 ### (c.)Launch  <br>
-(i.)roslaunch imu_noise imu_noise_demo.launch -> launch tcp endpoint, noise_adding node, imu_reading rqt plot <br>
-(ii.)roslaunch position_analysis.launch -> launch position_acquiring nodes, rviz plot, rqt plot <br>
+(i.) ``` roslaunch imu_noise imu_noise_demo.launch ``` -> launch tcp endpoint, noise_adding node, imu_reading rqt plot <br>
+(ii.)``` roslaunch position_analysis.launch ``` -> launch position_acquiring nodes, rviz plot, rqt plot <br>
+
+### (d.)Press play in Unity simulation
