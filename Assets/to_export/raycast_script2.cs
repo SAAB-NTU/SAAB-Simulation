@@ -46,7 +46,8 @@ public class raycast_script2 : MonoBehaviour
             }
             catch(System.Exception e)
             {
-                print("It's ok");
+                //print("It's ok");
+                //do nothing
             }
             
         }

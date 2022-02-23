@@ -14,6 +14,7 @@ public class Cube : MonoBehaviour
     public Vector3 angular_velocity;
     private float timeElapsed = 0;
     private float timeElapsed_start = 0;
+    float num = 0f;
     
     // Start is called before the first frame update
     void Start()
@@ -34,9 +35,10 @@ public class Cube : MonoBehaviour
             // float horizontalInput = Input.GetAxis("Horizontal");
             // transform.position += new Vector3 (horizontalInput*Time.deltaTime*5,0,0);
 
-            if (Input.GetKey(KeyCode.U)){
-                rb.angularVelocity = new Vector3(0,1,0);
-            }
+            // if (Input.GetKey(KeyCode.U)){
+            //     num -= 0.01f;
+            //     rb.velocity = new Vector3(num*5,0,0);
+            // }
             
             // if (Input.GetKey(KeyCode.D)){
             //     transform.Rotate(-Vector3.up * 5 * Time.deltaTime);
@@ -51,7 +53,8 @@ public class Cube : MonoBehaviour
                 PointCloudMsg msg2 = new PointCloudMsg();
 
                 Vector3 velocity = rb.velocity;
-                Vector3 acceleration = (velocity - last_velocity)/Time.deltaTime;
+                Vector3 acceleration = (velocity - last_velocity)/Time.fixedDeltaTime;
+                Debug.Log(acceleration[0]);
                 msg.a_x = acceleration[0];
                 msg.a_y = acceleration[1];
                 msg.a_z = acceleration[2];
