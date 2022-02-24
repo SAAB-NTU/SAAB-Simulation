@@ -40,7 +40,7 @@ public class Cube : MonoBehaviour
             timeElapsed += Time.deltaTime;
             
 
-            if (timeElapsed > 0.1f) //to publish at desired rate
+            if (timeElapsed > 0.005f) //to publish at desired rate -> 0.005 highest rate without jamming ROS traffic
             {
                 ImuMsg msg = new ImuMsg();
                 PointCloudMsg msg2 = new PointCloudMsg();
