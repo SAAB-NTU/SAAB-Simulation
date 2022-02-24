@@ -9,10 +9,13 @@ public class Cube : MonoBehaviour
     ROSConnection ros; 
     string topicName = "imu_true";
     string topicName2 = "pos_true";
+    Vector3 last_position = Vector3.zero;
     Vector3 last_velocity = Vector3.zero;
     float timeElapsed = 0;
     float timeElapsed_start = 0;
 
+    public Vector3 displacement = Vector3.zero;
+    public Vector3 velocity = Vector3.zero;
     public Vector3 acceleration = Vector3.zero;
     public Vector3 angular_velocity;
     
@@ -37,17 +40,19 @@ public class Cube : MonoBehaviour
             timeElapsed += Time.deltaTime;
             
 
-            if (timeElapsed > 0) //to publish at desired rate
+            if (timeElapsed > 0.1f) //to publish at desired rate
             {
                 ImuMsg msg = new ImuMsg();
                 PointCloudMsg msg2 = new PointCloudMsg();
 
-                Vector3 velocity = rb.velocity;
+                displacement = transform.position - last_position;
+                velocity = displacement / Time.deltaTime;
                 acceleration = (velocity - last_velocity)/Time.deltaTime;
                 msg.a_x = acceleration[0];
                 msg.a_y = acceleration[1];
                 msg.a_z = acceleration[2];
                 last_velocity = velocity;
+                last_position = transform.position;
 
                 angular_velocity = new Vector3 (rb.angularVelocity.x,rb.angularVelocity.y,rb.angularVelocity.z);
                 msg.w_x = angular_velocity[0];
@@ -62,5 +67,15 @@ public class Cube : MonoBehaviour
                 timeElapsed = 0;
             }
         }
+    }
+
+    public Vector3 send_acceleration()
+    {
+        return acceleration;
+    }
+
+    public Vector3 send_velocity()
+    {
+        return velocity;
     }
 }
