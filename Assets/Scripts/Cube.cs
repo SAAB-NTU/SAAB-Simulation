@@ -7,13 +7,15 @@ using RosMessageTypes.UnityRoboticsDemo;
 public class Cube : MonoBehaviour
 {
     ROSConnection ros; 
+    string topicName = "imu_true";
+    string topicName2 = "pos_true";
+    Vector3 last_velocity = Vector3.zero;
+    float timeElapsed = 0;
+    float timeElapsed_start = 0;
 
-    public string topicName = "imu_true";
-    public string topicName2 = "pos_true";
-    public Vector3 last_velocity = Vector3.zero;
+    public Vector3 acceleration = Vector3.zero;
     public Vector3 angular_velocity;
-    private float timeElapsed = 0;
-    private float timeElapsed_start = 0;
+    
     
     // Start is called before the first frame update
     void Start()
@@ -31,16 +33,6 @@ public class Cube : MonoBehaviour
         if (timeElapsed_start > 3)
         {
             Rigidbody rb = GetComponent<Rigidbody>();
-            // float horizontalInput = Input.GetAxis("Horizontal");
-            // transform.position += new Vector3 (horizontalInput*Time.deltaTime*5,0,0);
-
-            if (Input.GetKey(KeyCode.U)){
-                rb.angularVelocity = new Vector3(0,1,0);
-            }
-            
-            // if (Input.GetKey(KeyCode.D)){
-            //     transform.Rotate(-Vector3.up * 5 * Time.deltaTime);
-            // }
 
             timeElapsed += Time.deltaTime;
             
@@ -51,7 +43,7 @@ public class Cube : MonoBehaviour
                 PointCloudMsg msg2 = new PointCloudMsg();
 
                 Vector3 velocity = rb.velocity;
-                Vector3 acceleration = (velocity - last_velocity)/Time.deltaTime;
+                acceleration = (velocity - last_velocity)/Time.deltaTime;
                 msg.a_x = acceleration[0];
                 msg.a_y = acceleration[1];
                 msg.a_z = acceleration[2];

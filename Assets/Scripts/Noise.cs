@@ -7,24 +7,27 @@ using RosMessageTypes.UnityRoboticsDemo;
 public class Noise : MonoBehaviour
 {
     ROSConnection ros; 
+    public  GameObject cube;
+    string topicName = "imu_noise";
+    string topicName2 = "pos_noise";
 
-    public string topicName = "imu_noise";
-    public string topicName2 = "pos_noise";
+    public Vector3 acceleration = Vector3.zero;
+    public Vector3 angular_velocity = Vector3.zero;
     
-    //Vector3 prev_position = Vector3.zero;
-    //Vector3 prev_velocity = Vector3.zero;
+    Vector3 prev_position = Vector3.zero;
+    Vector3 velocity = Vector3.zero;
+    Vector3 prev_velocity = Vector3.zero;
     Vector3 prev_acceleration = Vector3.zero;
-    //Vector3 prev_angular_velocity = Vector3.zero;
+    Vector3 prev_angular_velocity = Vector3.zero;
     // Start is called before the first frame update
     void Start()
-    {	
+    {
         ros = ROSConnection.GetOrCreateInstance();
-        ros.Subscribe<ImuMsg>(topicName,ImuCallback);
+        ros.Subscribe<ImuMsg>(topicName, ImuCallback);
         ros.RegisterPublisher<PointCloudMsg>(topicName2);
-        //transform.Rotate(new Vector3(0,-90,0));
     }
 
-    void ImuCallback(ImuMsg imu_msg)
+void ImuCallback(ImuMsg imu_msg)
     {
         PointCloudMsg msg = new PointCloudMsg();
         Debug.Log(imu_msg);
@@ -32,21 +35,14 @@ public class Noise : MonoBehaviour
         //calculate position from IMU acceleration readings
         Vector3 acceleration = new Vector3 (imu_msg.a_x,imu_msg.a_y,imu_msg.a_z);
         rb.velocity += ((acceleration + prev_acceleration)/2) * Time.deltaTime;
-        // Vector3 position = prev_position + ((velocity + prev_velocity)/2) * Time.deltaTime; 
-        // transform.position = position;
 
         
         // //calculate rotation from IMU angular_velocity readings
         Vector3 angular_velocity = new Vector3 (imu_msg.w_x,imu_msg.w_y,imu_msg.w_z);
         rb.angularVelocity = angular_velocity;
-        //Vector3 rotation = ((angular_velocity-prev_angular_velocity)/2) * Time.deltaTime; //slow update of angle
-        //transform.Rotate(rotation);
 
         // //update prev_readings;
-        //prev_position = position;
-        //prev_velocity = velocity;
         prev_acceleration = acceleration;
-        //prev_angular_velocity = angular_velocity;
 
         msg.x = transform.position.x;
         msg.y = transform.position.y;
@@ -54,3 +50,4 @@ public class Noise : MonoBehaviour
         ros.Publish(topicName2,msg);
     }
 }
+

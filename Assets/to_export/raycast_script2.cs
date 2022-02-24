@@ -22,7 +22,7 @@ public class raycast_script2 : MonoBehaviour
             GameObject ray=Instantiate(prefab);
             ray.transform.parent = gameObject.transform;
             float value = -135f + i * (18f /( multiplier));
-            print(495*i/(5*multiplier));
+           // print(495*i/(5*multiplier));
             ray.transform.rotation=(Quaternion.Euler(0, value,0));
             GameObject coordinate = Instantiate(coord);
             coordinate.transform.SetParent(graph.transform);
@@ -46,7 +46,8 @@ public class raycast_script2 : MonoBehaviour
             }
             catch(System.Exception e)
             {
-                print("It's ok");
+                //print("It's ok");
+                //do nothing
             }
             
         }
