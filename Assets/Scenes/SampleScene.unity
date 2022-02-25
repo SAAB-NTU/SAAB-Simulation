@@ -691,7 +691,7 @@ Rigidbody:
   m_GameObject: {fileID: 846476837}
   serializedVersion: 2
   m_Mass: 5
-  m_Drag: 2
+  m_Drag: 0
   m_AngularDrag: 2
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -769,8 +769,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e53418303914281aa13cbd5893c4e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  current_position: {x: 0, y: 0, z: 0}
   displacement: {x: 0, y: 0, z: 0}
   velocity: {x: 0, y: 0, z: 0}
+  rb_velocity: {x: 0, y: 0, z: 0}
   acceleration: {x: 0, y: 0, z: 0}
   angular_velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &850917147

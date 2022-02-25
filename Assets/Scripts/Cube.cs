@@ -11,11 +11,13 @@ public class Cube : MonoBehaviour
     string topicName2 = "pos_true";
     Vector3 last_position = Vector3.zero;
     Vector3 last_velocity = Vector3.zero;
-    float timeElapsed = 0;
-    float timeElapsed_start = 0;
+    float timeElapsed = 0f;
+    float timeElapsed_start = 0f;
 
+    public Vector3 current_position = Vector3.zero;
     public Vector3 displacement = Vector3.zero;
     public Vector3 velocity = Vector3.zero;
+    public Vector3 rb_velocity = Vector3.zero;
     public Vector3 acceleration = Vector3.zero;
     public Vector3 angular_velocity;
     
@@ -30,43 +32,57 @@ public class Cube : MonoBehaviour
     }
     
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     { 
-        timeElapsed_start += Time.deltaTime;
-        if (timeElapsed_start > 3)
+        //timeElapsed_start += Time.deltaTime;
+        //if (timeElapsed_start > 5)
+        //{
+
+        if (Input.GetKey(KeyCode.U))
         {
-            Rigidbody rb = GetComponent<Rigidbody>();
-
-            timeElapsed += Time.deltaTime;
-            
-
-            if (timeElapsed > 0.005f) //to publish at desired rate -> 0.005 highest rate without jamming ROS traffic
-            {
-                ImuMsg msg = new ImuMsg();
-                PointCloudMsg msg2 = new PointCloudMsg();
-
-                displacement = transform.position - last_position;
-                velocity = displacement / Time.deltaTime;
-                acceleration = (velocity - last_velocity)/Time.deltaTime;
-                msg.a_x = Mathf.Round(acceleration[0]*100f)/100f;
-                msg.a_y = Mathf.Round(acceleration[1]*100f)/100f;
-                msg.a_z = Mathf.Round(acceleration[2]*100f)/100f;
-                last_velocity = velocity;
-                last_position = transform.position;
-
-                angular_velocity = new Vector3 (rb.angularVelocity.x,rb.angularVelocity.y,rb.angularVelocity.z);
-                msg.w_x = angular_velocity[0];
-                msg.w_y = angular_velocity[1];
-                msg.w_z = angular_velocity[2];
-                ros.Publish(topicName,msg);
-                
-                msg2.x = transform.position.x;
-                msg2.y = transform.position.y;
-                msg2.z = transform.position.z;
-                ros.Publish(topicName2,msg2);
-                timeElapsed = 0;
-            }
+            transform.Translate(new Vector3(-1,0,0) * Time.deltaTime);
         }
+
+        Rigidbody rb = GetComponent<Rigidbody>();
+
+        timeElapsed += Time.deltaTime;
+        
+
+        if (timeElapsed > 0f) //to publish at desired rate -> 0.005 highest rate without jamming ROS traffic
+        {
+            ImuMsg msg = new ImuMsg();
+            PointCloudMsg msg2 = new PointCloudMsg();
+
+            current_position = transform.position;
+            displacement = current_position - last_position;
+            rb_velocity = rb.velocity;
+            velocity = displacement / Time.deltaTime;
+            acceleration = (velocity - last_velocity)/Time.deltaTime;
+
+            //truncate acceleration to 2dp -> not much effect
+            // msg.a_x = Mathf.Round(acceleration[0]*100f)/100f;
+            // msg.a_y = Mathf.Round(acceleration[1]*100f)/100f;
+            // msg.a_z = Mathf.Round(acceleration[2]*100f)/100f;
+
+            msg.a_x = acceleration[0];
+            msg.a_y = acceleration[1];
+            msg.a_z = acceleration[2];
+            last_velocity = velocity;
+            last_position = current_position;
+
+            angular_velocity = new Vector3 (rb.angularVelocity.x,rb.angularVelocity.y,rb.angularVelocity.z);
+            msg.w_x = angular_velocity[0];
+            msg.w_y = angular_velocity[1];
+            msg.w_z = angular_velocity[2];
+            ros.Publish(topicName,msg);
+            
+            msg2.x = transform.position.x;
+            msg2.y = transform.position.y;
+            msg2.z = transform.position.z;
+            ros.Publish(topicName2,msg2);
+            timeElapsed = 0;
+        }
+        //}
     }
 
     public Vector3 send_acceleration()

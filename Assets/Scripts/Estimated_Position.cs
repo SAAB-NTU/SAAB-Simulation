@@ -8,7 +8,7 @@ public class Estimated_Position : MonoBehaviour
 {
     ROSConnection ros; 
     public  GameObject cube;
-    string topicName = "imu_true"; //ABU//
+    string topicName = "imu_noise"; //ABU//
     string topicName2 = "pos_noise";
 
     //for debugging
@@ -33,41 +33,45 @@ public class Estimated_Position : MonoBehaviour
     void Estimated(ImuMsg imu_msg) //ABU//
     {
         PointCloudMsg msg = new PointCloudMsg(); //to plot tragectory in rviz
-
+        acceleration = new Vector3 (imu_msg.a_x,imu_msg.a_y,imu_msg.a_z);
         //calculate position from IMU acceleration readings (roslaunch imu_noise position_analysis.launch first)
-        if(cube.GetComponent<Cube>().send_acceleration() != Vector3.zero) //if there is acceleration
+        for(int i = 0;i<3;i++)
         {
-            
-            acceleration = new Vector3 (imu_msg.a_x,imu_msg.a_y,imu_msg.a_z); //ABU// 
-            //fluctuations in readings make this approach highly unstable 
-            //velocity = prev_velocity + (((acceleration + prev_acceleration)/2)  * (Time.deltaTime +0.005f)); 
+            if(Mathf.Round((cube.GetComponent<Cube>().send_acceleration()[i] * 100000f) / 100000f) != 0.00000f) //if there is acceleration
+            {
+                Debug.Log(1);
+                //ABU// 
+                //fluctuations in readings make this approach highly unstable 
+                //velocity = prev_velocity + (((acceleration + prev_acceleration)/2)  * (Time.deltaTime +0.005f)); 
 
-            //more accurate integration also produce insignificant effect
-            //velocity = new Vector3(integration(acceleration.x,prev_acceleration.x),integration(acceleration.y,prev_acceleration.y),integration(acceleration.z,prev_acceleration.z));
+                //more accurate integration also produce insignificant effect
+                //velocity = new Vector3(integration(acceleration.x,prev_acceleration.x),integration(acceleration.y,prev_acceleration.y),integration(acceleration.z,prev_acceleration.z));
+                
+                //this approach is more like catching up with the position of the true cube
+                //assumptions: (i.)  readings are late by one step
+                //             (ii.) acceleration,velocity constant for dt -> step graph rather than fluctuation
+                velocity[i] = prev_velocity[i] + (acceleration[i] * Time.deltaTime);
+                displacement[i] = velocity[i]  * Time.deltaTime; 
+            }
+            else //if no acceleration
+            {
+                acceleration[i] = 0f;
+                if(Mathf.Round((cube.GetComponent<Cube>().send_velocity()[i]* 100000f) / 100000f) != 0.00000f) //if constant velocity
+                {
+                    Debug.Log("Constant Velocity");
+                    velocity[i] = prev_velocity[i];
+                    displacement[i] = velocity[i] * Time.deltaTime; 
+                    //transform.position = prev_position + displacement;
+                }
+                else //if 0 velocity
+                {
+                    Debug.Log("Stationary");
+                    velocity[i] = 0f; 
+                }
+            }
             
-            //this approach is more like catching up with the position of the true cube
-            //assumptions: (i.)  readings are late by one step
-            //             (ii.) acceleration,velocity constant for dt
-            velocity = prev_velocity + (acceleration * (Time.deltaTime));
-            displacement = velocity  * (Time.deltaTime); 
-            transform.position = prev_position + displacement;
         }
-        else //if no acceleration
-        {
-            acceleration = Vector3.zero;
-            if(cube.GetComponent<Cube>().send_velocity() != Vector3.zero) //if constant velocity
-            {
-                velocity = prev_velocity;
-                displacement = velocity * Time.deltaTime; 
-                transform.position = prev_position + displacement;
-            }
-            else //if 0 velocity
-            {
-                velocity = Vector3.zero; 
-            }
-        }
-        
-        
+        transform.position = prev_position + displacement;
 
         //calculate rotation from IMU angular_velocity readings
         angular_velocity = new Vector3 (imu_msg.w_x,imu_msg.w_y,imu_msg.w_z);
@@ -76,7 +80,7 @@ public class Estimated_Position : MonoBehaviour
         transform.Rotate(angular_displacement*(180/Mathf.PI)); //convert to deg from rad
 
         //update prev_readings;
-        //prev_velocity = velocity;
+        prev_velocity = velocity;
         prev_acceleration = acceleration;
         prev_angular_velocity = angular_velocity;
         prev_position = transform.position;
@@ -93,12 +97,47 @@ public class Estimated_Position : MonoBehaviour
     // float integration(float current,float prev)
     // {
     //     if(current/prev > 0)
-    //     {
+    //   
     //         return (current+prev)/2 * Time.deltaTime; 
     //     }
     //     else
     //     {
     //         return ((current-prev)/2 * Time.deltaTime) + (prev * Time.deltaTime);
+    //     }
+    // }
+
+    // float32 position_algo(float32 acceleration)
+    // {
+    //     if(cube.GetComponent<Cube>().send_acceleration() != Vector3.zero) //if there is acceleration
+    //     {
+    //         Debug.Log(1);
+    //         acceleration = new Vector3 (imu_msg.a_x,imu_msg.a_y,imu_msg.a_z); //ABU// 
+    //         //fluctuations in readings make this approach highly unstable 
+    //         //velocity = prev_velocity + (((acceleration + prev_acceleration)/2)  * (Time.deltaTime +0.005f)); 
+
+    //         //more accurate integration also produce insignificant effect
+    //         //velocity = new Vector3(integration(acceleration.x,prev_acceleration.x),integration(acceleration.y,prev_acceleration.y),integration(acceleration.z,prev_acceleration.z));
+            
+    //         //this approach is more like catching up with the position of the true cube
+    //         //assumptions: (i.)  readings are late by one step
+    //         //             (ii.) acceleration,velocity constant for dt -> step graph rather than fluctuation
+    //         velocity = prev_velocity + (acceleration * (Time.deltaTime));
+    //         displacement = velocity  * (Time.deltaTime); 
+    //         transform.position = prev_position + displacement;
+    //     }
+    //     else //if no acceleration
+    //     {
+    //         acceleration = Vector3.zero;
+    //         if(cube.GetComponent<Cube>().send_velocity() != Vector3.zero) //if constant velocity
+    //         {
+    //             velocity = prev_velocity;
+    //             displacement = velocity * Time.deltaTime; 
+    //             transform.position = prev_position + displacement;
+    //         }
+    //         else //if 0 velocity
+    //         {
+    //             velocity = Vector3.zero; 
+    //         }
     //     }
     // }
 }
