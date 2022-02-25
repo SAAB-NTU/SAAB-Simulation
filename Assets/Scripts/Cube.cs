@@ -33,14 +33,19 @@ public class Cube : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     { 
-        if (Input.GetKey(KeyCode.U))
+        if (Input.GetKey(KeyCode.U)) //
         {
-            transform.Translate(new Vector3(1,0,0) * Time.deltaTime);
+            transform.Translate(new Vector3(-1,0,0) * Time.deltaTime);
+        }
+
+        if (Input.GetKey(KeyCode.I))
+        {
+            transform.Rotate(new Vector3(0,10,0) * Time.deltaTime);
         }
 
         timeElapsed += Time.deltaTime;
 
-        if (timeElapsed > 0f) //to publish at desired rate -> 0.005 highest rate without jamming ROS traffic
+        if (timeElapsed > 0f) //to publish at desired rate 
         {
             ImuMsg msg = new ImuMsg();
             PointCloudMsg msg2 = new PointCloudMsg();
@@ -51,11 +56,6 @@ public class Cube : MonoBehaviour
             displacement = current_position - last_position;
             velocity = displacement / Time.deltaTime;
             acceleration = (velocity - last_velocity)/Time.deltaTime;
-
-            //truncate acceleration to 2dp -> not much effect
-            // msg.a_x = Mathf.Round(acceleration[0]*100f)/100f;
-            // msg.a_y = Mathf.Round(acceleration[1]*100f)/100f;
-            // msg.a_z = Mathf.Round(acceleration[2]*100f)/100f;
 
             msg.a_x = acceleration[0];
             msg.a_y = acceleration[1];

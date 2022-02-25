@@ -1,14 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Robotics.ROSTCPConnector; //ABU//
-using RosMessageTypes.UnityRoboticsDemo; //ABU//
+using Unity.Robotics.ROSTCPConnector; 
+using RosMessageTypes.UnityRoboticsDemo; 
 
 public class Estimated_Position : MonoBehaviour
 {
     ROSConnection ros; 
     public  GameObject cube;
-    string topicName = "imu_true"; //ABU//
+    string topicName = "imu_noise"; 
     string topicName2 = "pos_noise";
 
     //for debugging
@@ -25,12 +25,12 @@ public class Estimated_Position : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {	
-        ros = ROSConnection.GetOrCreateInstance(); //ABU//
-        ros.Subscribe<ImuMsg>(topicName,Estimated); //ABU//
+        ros = ROSConnection.GetOrCreateInstance(); 
+        ros.Subscribe<ImuMsg>(topicName,Estimated); 
         ros.RegisterPublisher<PointCloudMsg>(topicName2);
     }
 
-    void Estimated(ImuMsg imu_msg) //ABU//
+    void Estimated(ImuMsg imu_msg) 
     {
         PointCloudMsg msg = new PointCloudMsg(); //to plot tragectory in rviz
         acceleration = new Vector3 (imu_msg.a_x,imu_msg.a_y,imu_msg.a_z);
@@ -40,19 +40,23 @@ public class Estimated_Position : MonoBehaviour
         {
             if(Mathf.Round((cube.GetComponent<Cube>().send_acceleration()[i] * 100000f) / 100000f) != 0.00000f) //if there is acceleration
             {
-                Debug.Log(1);
-                //ABU// 
-                //fluctuations in readings make this approach highly unstable 
-                velocity[i] = last_velocity[i] + (((acceleration[i] + last_acceleration[i])/2)  * Time.fixedDeltaTime); 
+                Debug.Log("Acceleration");
 
-                //more accurate integration also produce insignificant effect
-                //velocity = new Vector3(integration(acceleration.x,prev_acceleration.x),integration(acceleration.y,prev_acceleration.y),integration(acceleration.z,prev_acceleration.z));
-                
-                //this approach is more like catching up with the position of the true cube
+                //(i) Approach 1 -> Using current reading to predict next reading
                 //assumptions: (i.)  readings are late by one step
                 //             (ii.) acceleration,velocity constant for dt -> step graph rather than fluctuation
                 //velocity[i] = last_velocity[i] + (acceleration[i] * Time.deltaTime);
-                displacement[i] = ((velocity[i] + last_velocity[i])/2)  * Time.fixedDeltaTime; 
+                //displacement[i] = velocity[i] * Time.fixedDeltaTime;
+
+                //(ii) Approach 2 -> Taking average of current reading and last reading.
+                //                -> Able to reduce "overshooting" effect when there is sudden spike in reading
+                // velocity[i] = last_velocity[i] + (((acceleration[i] + last_acceleration[i])/2)  * Time.fixedDeltaTime); 
+                // displacement[i] = ((velocity[i] + last_velocity[i])/2)  * Time.fixedDeltaTime; 
+
+                //(iii) Approach 3 -> More accurate integration approximation, area under curve with fluctuation considered.
+                velocity[i] = last_velocity[i] + integration(acceleration[i],last_acceleration[i]);
+                displacement[i] = integration(velocity[i],last_velocity[i]);
+                
             }
             else //if no acceleration
             {
@@ -62,7 +66,6 @@ public class Estimated_Position : MonoBehaviour
                     Debug.Log("Constant Velocity");
                     velocity[i] = last_velocity[i];
                     displacement[i] = velocity[i] * Time.deltaTime; 
-                    //transform.position = prev_position + displacement;
                 }
                 else //if 0 velocity
                 {
@@ -76,9 +79,9 @@ public class Estimated_Position : MonoBehaviour
 
         //calculate rotation from IMU angular_velocity readings
         angular_velocity = new Vector3 (imu_msg.w_x,imu_msg.w_y,imu_msg.w_z);
-        Vector3 angular_displacement =  ((angular_velocity+last_angular_velocity)/2) * Time.fixedDeltaTime; 
-        //Vector3 angular_displacement = new Vector3(integration(angular_velocity.x,prev_angular_velocity.x),integration(angular_velocity.y,prev_angular_velocity.y),integration(angular_velocity.z,prev_angular_velocity.z));
-        //Vector3 angular_displacement =  angular_velocity * Time.deltaTime; 
+        //Vector3 angular_displacement =  angular_velocity * Time.fixedDeltaTime; 
+        //Vector3 angular_displacement =  ((angular_velocity+last_angular_velocity)/2) * Time.fixedDeltaTime; 
+        Vector3 angular_displacement = new Vector3(integration(angular_velocity[0],last_angular_velocity[0]),integration(angular_velocity[1],last_angular_velocity[1]),integration(angular_velocity[2],last_angular_velocity[2]));
         transform.rotation = Quaternion.Euler(last_angle + angular_displacement); 
 
         //update prev_readings;
@@ -95,51 +98,17 @@ public class Estimated_Position : MonoBehaviour
         ros.Publish(topicName2,msg);
     }
 
-    // // more accurate integration -> not much effect on angular_displacement
-    // float integration(float current,float prev)
-    // {
-    //     if(current/prev > 0)
-    //   
-    //         return (current+prev)/2 * Time.deltaTime; 
-    //     }
-    //     else
-    //     {
-    //         return ((current-prev)/2 * Time.deltaTime) + (prev * Time.deltaTime);
-    //     }
-    // }
+    // more accurate integration -> not much effect on angular_displacement
+    float integration(float current,float prev)
+    {
+        if(current/prev > 0)
+        {
+            return (current+prev)/2 * Time.fixedDeltaTime;
+        }
+        else
+        {
+            return ((current-prev)/2 * Time.fixedDeltaTime) + (prev * Time.fixedDeltaTime);;
+        }
+    }
 
-    // float32 position_algo(float32 acceleration)
-    // {
-    //     if(cube.GetComponent<Cube>().send_acceleration() != Vector3.zero) //if there is acceleration
-    //     {
-    //         Debug.Log(1);
-    //         acceleration = new Vector3 (imu_msg.a_x,imu_msg.a_y,imu_msg.a_z); //ABU// 
-    //         //fluctuations in readings make this approach highly unstable 
-    //         //velocity = prev_velocity + (((acceleration + prev_acceleration)/2)  * (Time.deltaTime +0.005f)); 
-
-    //         //more accurate integration also produce insignificant effect
-    //         //velocity = new Vector3(integration(acceleration.x,prev_acceleration.x),integration(acceleration.y,prev_acceleration.y),integration(acceleration.z,prev_acceleration.z));
-            
-    //         //this approach is more like catching up with the position of the true cube
-    //         //assumptions: (i.)  readings are late by one step
-    //         //             (ii.) acceleration,velocity constant for dt -> step graph rather than fluctuation
-    //         velocity = prev_velocity + (acceleration * (Time.deltaTime));
-    //         displacement = velocity  * (Time.deltaTime); 
-    //         transform.position = prev_position + displacement;
-    //     }
-    //     else //if no acceleration
-    //     {
-    //         acceleration = Vector3.zero;
-    //         if(cube.GetComponent<Cube>().send_velocity() != Vector3.zero) //if constant velocity
-    //         {
-    //             velocity = prev_velocity;
-    //             displacement = velocity * Time.deltaTime; 
-    //             transform.position = prev_position + displacement;
-    //         }
-    //         else //if 0 velocity
-    //         {
-    //             velocity = Vector3.zero; 
-    //         }
-    //     }
-    // }
 }
