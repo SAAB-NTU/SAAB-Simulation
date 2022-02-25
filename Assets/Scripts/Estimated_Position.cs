@@ -8,7 +8,7 @@ public class Estimated_Position : MonoBehaviour
 {
     ROSConnection ros; 
     public  GameObject cube;
-    string topicName = "imu_noise"; //ABU//
+    string topicName = "imu_true"; //ABU//
     string topicName2 = "pos_noise";
 
     //for debugging

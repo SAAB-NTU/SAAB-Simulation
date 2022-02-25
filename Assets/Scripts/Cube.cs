@@ -48,9 +48,9 @@ public class Cube : MonoBehaviour
                 displacement = transform.position - last_position;
                 velocity = displacement / Time.deltaTime;
                 acceleration = (velocity - last_velocity)/Time.deltaTime;
-                msg.a_x = acceleration[0];
-                msg.a_y = acceleration[1];
-                msg.a_z = acceleration[2];
+                msg.a_x = Mathf.Round(acceleration[0]*100f)/100f;
+                msg.a_y = Mathf.Round(acceleration[1]*100f)/100f;
+                msg.a_z = Mathf.Round(acceleration[2]*100f)/100f;
                 last_velocity = velocity;
                 last_position = transform.position;
 
