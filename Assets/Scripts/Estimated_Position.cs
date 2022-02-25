@@ -8,19 +8,19 @@ public class Estimated_Position : MonoBehaviour
 {
     ROSConnection ros; 
     public  GameObject cube;
-    string topicName = "imu_noise"; //ABU//
+    string topicName = "imu_true"; //ABU//
     string topicName2 = "pos_noise";
 
     //for debugging
+    public Vector3 velocity = Vector3.zero;
     public Vector3 acceleration = Vector3.zero;
     public Vector3 angular_velocity = Vector3.zero;
-    public Vector3 displacement = Vector3.zero;
-    public Vector3 velocity = Vector3.zero;
 
-    Vector3 prev_position = Vector3.zero;
-    Vector3 prev_velocity = Vector3.zero;
-    Vector3 prev_acceleration = Vector3.zero;
-    Vector3 prev_angular_velocity = Vector3.zero;
+    Vector3 last_position = Vector3.zero;
+    Vector3 last_velocity = Vector3.zero;
+    Vector3 last_acceleration = Vector3.zero;
+    Vector3 last_angle = Vector3.zero;
+    Vector3 last_angular_velocity = Vector3.zero;
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +34,7 @@ public class Estimated_Position : MonoBehaviour
     {
         PointCloudMsg msg = new PointCloudMsg(); //to plot tragectory in rviz
         acceleration = new Vector3 (imu_msg.a_x,imu_msg.a_y,imu_msg.a_z);
+        Vector3 displacement = Vector3.zero;
         //calculate position from IMU acceleration readings (roslaunch imu_noise position_analysis.launch first)
         for(int i = 0;i<3;i++)
         {
@@ -42,7 +43,7 @@ public class Estimated_Position : MonoBehaviour
                 Debug.Log(1);
                 //ABU// 
                 //fluctuations in readings make this approach highly unstable 
-                //velocity = prev_velocity + (((acceleration + prev_acceleration)/2)  * (Time.deltaTime +0.005f)); 
+                velocity[i] = last_velocity[i] + (((acceleration[i] + last_acceleration[i])/2)  * Time.fixedDeltaTime); 
 
                 //more accurate integration also produce insignificant effect
                 //velocity = new Vector3(integration(acceleration.x,prev_acceleration.x),integration(acceleration.y,prev_acceleration.y),integration(acceleration.z,prev_acceleration.z));
@@ -50,8 +51,8 @@ public class Estimated_Position : MonoBehaviour
                 //this approach is more like catching up with the position of the true cube
                 //assumptions: (i.)  readings are late by one step
                 //             (ii.) acceleration,velocity constant for dt -> step graph rather than fluctuation
-                velocity[i] = prev_velocity[i] + (acceleration[i] * Time.deltaTime);
-                displacement[i] = velocity[i]  * Time.deltaTime; 
+                //velocity[i] = last_velocity[i] + (acceleration[i] * Time.deltaTime);
+                displacement[i] = ((velocity[i] + last_velocity[i])/2)  * Time.fixedDeltaTime; 
             }
             else //if no acceleration
             {
@@ -59,7 +60,7 @@ public class Estimated_Position : MonoBehaviour
                 if(Mathf.Round((cube.GetComponent<Cube>().send_velocity()[i]* 100000f) / 100000f) != 0.00000f) //if constant velocity
                 {
                     Debug.Log("Constant Velocity");
-                    velocity[i] = prev_velocity[i];
+                    velocity[i] = last_velocity[i];
                     displacement[i] = velocity[i] * Time.deltaTime; 
                     //transform.position = prev_position + displacement;
                 }
@@ -71,20 +72,21 @@ public class Estimated_Position : MonoBehaviour
             }
             
         }
-        transform.position = prev_position + displacement;
+        transform.position = last_position + displacement;
 
         //calculate rotation from IMU angular_velocity readings
         angular_velocity = new Vector3 (imu_msg.w_x,imu_msg.w_y,imu_msg.w_z);
-        Vector3 angular_displacement =  ((angular_velocity+prev_angular_velocity)/2) * Time.deltaTime; 
+        Vector3 angular_displacement =  ((angular_velocity+last_angular_velocity)/2) * Time.fixedDeltaTime; 
         //Vector3 angular_displacement = new Vector3(integration(angular_velocity.x,prev_angular_velocity.x),integration(angular_velocity.y,prev_angular_velocity.y),integration(angular_velocity.z,prev_angular_velocity.z));
-        transform.Rotate(angular_displacement*(180/Mathf.PI)); //convert to deg from rad
+        //Vector3 angular_displacement =  angular_velocity * Time.deltaTime; 
+        transform.rotation = Quaternion.Euler(last_angle + angular_displacement); 
 
         //update prev_readings;
-        prev_velocity = velocity;
-        prev_acceleration = acceleration;
-        prev_angular_velocity = angular_velocity;
-        prev_position = transform.position;
-        displacement = Vector3.zero;
+        last_velocity = velocity;
+        last_acceleration = acceleration;
+        last_angular_velocity = angular_velocity;
+        last_position = transform.position;
+        last_angle = transform.rotation.eulerAngles;
 
         //publish position to rviz
         msg.x = transform.position.x;

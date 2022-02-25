@@ -200,7 +200,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 33342076}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -5.78, y: 15.42, z: 2.48}
+  m_LocalPosition: {x: -0.79, y: 3.27, z: -0.43}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -691,7 +691,7 @@ Rigidbody:
   m_GameObject: {fileID: 846476837}
   serializedVersion: 2
   m_Mass: 5
-  m_Drag: 0
+  m_Drag: 2
   m_AngularDrag: 2
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -722,8 +722,8 @@ MonoBehaviour:
   _useBoatLength: 1
   _boatLength: 1
   _dragInWaterUp: 85
-  _dragInWaterRight: 0
-  _dragInWaterForward: 0
+  _dragInWaterRight: 5
+  _dragInWaterForward: 5
   _playerControlled: 1
   _throttleBias: 0
   _steerBias: 0
@@ -769,10 +769,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e53418303914281aa13cbd5893c4e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  current_position: {x: 0, y: 0, z: 0}
   displacement: {x: 0, y: 0, z: 0}
   velocity: {x: 0, y: 0, z: 0}
-  rb_velocity: {x: 0, y: 0, z: 0}
   acceleration: {x: 0, y: 0, z: 0}
   angular_velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &850917147
@@ -808,10 +806,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cube: {fileID: 846476837}
+  velocity: {x: 0, y: 0, z: 0}
   acceleration: {x: 0, y: 0, z: 0}
   angular_velocity: {x: 0, y: 0, z: 0}
-  displacement: {x: 0, y: 0, z: 0}
-  velocity: {x: 0, y: 0, z: 0}
 --- !u!65 &850917151
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1463,7 +1460,7 @@ Rigidbody:
   m_Drag: 2
   m_AngularDrag: 2
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0

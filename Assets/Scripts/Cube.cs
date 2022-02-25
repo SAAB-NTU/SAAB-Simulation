@@ -9,17 +9,16 @@ public class Cube : MonoBehaviour
     ROSConnection ros; 
     string topicName = "imu_true";
     string topicName2 = "pos_true";
-    Vector3 last_position = Vector3.zero;
-    Vector3 last_velocity = Vector3.zero;
     float timeElapsed = 0f;
-    float timeElapsed_start = 0f;
 
-    public Vector3 current_position = Vector3.zero;
     public Vector3 displacement = Vector3.zero;
     public Vector3 velocity = Vector3.zero;
-    public Vector3 rb_velocity = Vector3.zero;
     public Vector3 acceleration = Vector3.zero;
     public Vector3 angular_velocity;
+
+    Vector3 last_position = Vector3.zero;
+    Vector3 last_velocity = Vector3.zero;
+    Vector3 last_angle = Vector3.zero;
     
     
     // Start is called before the first frame update
@@ -34,28 +33,22 @@ public class Cube : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     { 
-        //timeElapsed_start += Time.deltaTime;
-        //if (timeElapsed_start > 5)
-        //{
-
         if (Input.GetKey(KeyCode.U))
         {
-            transform.Translate(new Vector3(-1,0,0) * Time.deltaTime);
+            transform.Translate(new Vector3(1,0,0) * Time.deltaTime);
         }
 
-        Rigidbody rb = GetComponent<Rigidbody>();
-
         timeElapsed += Time.deltaTime;
-        
 
         if (timeElapsed > 0f) //to publish at desired rate -> 0.005 highest rate without jamming ROS traffic
         {
             ImuMsg msg = new ImuMsg();
             PointCloudMsg msg2 = new PointCloudMsg();
 
-            current_position = transform.position;
+            Vector3 current_position = transform.position;
+            Vector3 current_angle = transform.rotation.eulerAngles;
+
             displacement = current_position - last_position;
-            rb_velocity = rb.velocity;
             velocity = displacement / Time.deltaTime;
             acceleration = (velocity - last_velocity)/Time.deltaTime;
 
@@ -70,10 +63,12 @@ public class Cube : MonoBehaviour
             last_velocity = velocity;
             last_position = current_position;
 
-            angular_velocity = new Vector3 (rb.angularVelocity.x,rb.angularVelocity.y,rb.angularVelocity.z);
+            angular_velocity = (current_angle - last_angle) / Time.deltaTime;
             msg.w_x = angular_velocity[0];
             msg.w_y = angular_velocity[1];
             msg.w_z = angular_velocity[2];
+            last_angle = current_angle;
+
             ros.Publish(topicName,msg);
             
             msg2.x = transform.position.x;
@@ -82,7 +77,6 @@ public class Cube : MonoBehaviour
             ros.Publish(topicName2,msg2);
             timeElapsed = 0;
         }
-        //}
     }
 
     public Vector3 send_acceleration()
