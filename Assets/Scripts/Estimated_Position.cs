@@ -49,17 +49,13 @@ public class Estimated_Position : MonoBehaviour
                 //(i) Approach 1 -> Using current reading to predict next reading
                 //assumptions: (i.)  readings are late by one step
                 //             (ii.) acceleration,velocity constant for dt -> step graph rather than fluctuation
-                velocity[i] = last_velocity[i] + (acceleration[i] * time);
-                displacement[i] = velocity[i] * time;
+                // velocity[i] = last_velocity[i] + (acceleration[i] * time);
+                // displacement[i] = velocity[i] * time;
 
                 //(ii) Approach 2 -> Taking average of current reading and last reading.
                 //                -> Able to reduce "overshooting" effect when there is sudden spike in reading
-                // velocity[i] = last_velocity[i] + (((acceleration[i] + last_acceleration[i])/2)  * time); 
-                // displacement[i] = ((velocity[i] + last_velocity[i])/2)  * time; 
-
-                //(iii) Approach 3 -> More accurate integration approximation, area under curve with fluctuation considered.
-                // velocity[i] = last_velocity[i] + integration(acceleration[i],last_acceleration[i],time); //imu predicted velocity
-                // displacement[i] = integration(velocity[i],last_velocity[i],time); 
+                velocity[i] = last_velocity[i] + (((acceleration[i] + last_acceleration[i])/2)  * time); 
+                displacement[i] = ((velocity[i] + last_velocity[i])/2)  * time; 
 
             }
             else //if no acceleration
@@ -105,19 +101,6 @@ public class Estimated_Position : MonoBehaviour
         msg.y = transform.position.y;
         msg.z = transform.position.z;
         ros.Publish(topicName2,msg);
-    }
-
-    // more accurate integration -> not much effect on angular_displacement
-    float integration(float current,float prev,float time)
-    {
-        if(current/prev > 0)
-        {
-            return (current+prev)/2 * time;
-        }
-        else
-        {
-            return ((current-prev)/2 * time) + (prev * time);;
-        }
     }
 
 }
