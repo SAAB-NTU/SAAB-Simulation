@@ -10,6 +10,7 @@ public class Cube : MonoBehaviour
     string topicName = "imu_true";
     string topicName2 = "pos_true";
     float timeElapsed = 0f;
+    float time_Update = 0f;
 
     public Vector3 displacement = Vector3.zero;
     public Vector3 velocity = Vector3.zero;
@@ -77,6 +78,9 @@ public class Cube : MonoBehaviour
             ros.Publish(topicName2,msg2);
             timeElapsed = 0;
         }
+
+        time_Update += Time.deltaTime;
+        
     }
 
     public Vector3 send_acceleration()
@@ -87,5 +91,10 @@ public class Cube : MonoBehaviour
     public Vector3 send_velocity()
     {
         return velocity;
+    }
+
+    public float send_time()
+    {
+        return time_Update;
     }
 }
