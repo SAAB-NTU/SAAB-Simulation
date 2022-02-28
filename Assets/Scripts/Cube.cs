@@ -16,6 +16,7 @@ public class Cube : MonoBehaviour
     public Vector3 velocity = Vector3.zero;
     public Vector3 acceleration = Vector3.zero;
     public Vector3 angular_velocity;
+    public Vector3 rb_ang;
 
     Vector3 last_position = Vector3.zero;
     Vector3 last_velocity = Vector3.zero;
@@ -25,7 +26,6 @@ public class Cube : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {	
-
         ros = ROSConnection.GetOrCreateInstance();
         ros.RegisterPublisher<ImuMsg>(topicName);
         ros.RegisterPublisher<PointCloudMsg>(topicName2);
@@ -34,14 +34,18 @@ public class Cube : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     { 
+        Rigidbody rb = GetComponent<Rigidbody>();
         if (Input.GetKey(KeyCode.U)) //
         {
-            transform.Translate(new Vector3(-1,0,0) * Time.deltaTime);
+            rb.AddForce(new Vector3(10,0,0));
+            //transform.Translate(new Vector3(-1,0,0) * Time.deltaTime);
         }
 
         if (Input.GetKey(KeyCode.I))
         {
-            transform.Rotate(new Vector3(0,10,0) * Time.deltaTime);
+
+            rb.AddTorque(new Vector3(0,1,0));
+            //transform.Rotate(new Vector3(0,10,0) * Time.deltaTime);
         }
 
         timeElapsed += Time.deltaTime;
@@ -54,8 +58,7 @@ public class Cube : MonoBehaviour
             Vector3 current_position = transform.position;
             Vector3 current_angle = transform.rotation.eulerAngles;
 
-            displacement = current_position - last_position;
-            velocity = displacement / Time.deltaTime;
+            velocity = rb.velocity;
             acceleration = (velocity - last_velocity)/Time.deltaTime;
 
             msg.a_x = acceleration[0];
@@ -63,8 +66,8 @@ public class Cube : MonoBehaviour
             msg.a_z = acceleration[2];
             last_velocity = velocity;
             last_position = current_position;
-
-            angular_velocity = (current_angle - last_angle) / Time.deltaTime;
+            
+            angular_velocity = rb.angularVelocity * (180/Mathf.PI);
             msg.w_x = angular_velocity[0];
             msg.w_y = angular_velocity[1];
             msg.w_z = angular_velocity[2];

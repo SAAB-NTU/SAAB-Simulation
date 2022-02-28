@@ -82,7 +82,6 @@ public class Estimated_Position : MonoBehaviour
             
         }
 
-       
         transform.position = last_position + displacement;
 
         //calculate rotation from IMU angular_velocity readings
