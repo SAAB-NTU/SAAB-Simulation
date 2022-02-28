@@ -18,7 +18,7 @@ public class Estimated_Position : MonoBehaviour
     public Vector3 angular_velocity = Vector3.zero;
 
     Vector3 last_position = Vector3.zero;
-    Vector3 last_velocity = Vector3.zero;
+    public Vector3 last_velocity = Vector3.zero;
     Vector3 last_acceleration = Vector3.zero;
     Vector3 last_angle = Vector3.zero;
     Vector3 last_angular_velocity = Vector3.zero;
@@ -33,26 +33,24 @@ public class Estimated_Position : MonoBehaviour
 
     void Estimated(ImuMsg imu_msg) 
     {
-        Debug.Log("hi");
+        //float time = cube.GetComponent<Cube>().send_time();
         float current_time = cube.GetComponent<Cube>().send_time();
         float time = current_time - last_time_elapsed;
         PointCloudMsg msg = new PointCloudMsg(); //to plot tragectory in rviz
         acceleration = new Vector3 (imu_msg.a_x,imu_msg.a_y,imu_msg.a_z);
         Vector3 displacement = Vector3.zero;
 
-        //with motion condidtions
-        //calculate position from IMU acceleration readings
         for(int i = 0;i<3;i++)
         {
-            if(Mathf.Round((acceleration[i] * 100000f) / 100000f) != 0.00000f) //if there is acceleration
+            if(Mathf.Abs(acceleration[i]) > 0.001) //if there is acceleration
             {
                 Debug.Log("Acceleration");
 
                 //(i) Approach 1 -> Using current reading to predict next reading
                 //assumptions: (i.)  readings are late by one step
                 //             (ii.) acceleration,velocity constant for dt -> step graph rather than fluctuation
-                // velocity[i] = last_velocity[i] + (acceleration[i] * time);
-                // displacement[i] = velocity[i] * time;
+                velocity[i] = last_velocity[i] + (acceleration[i] * time);
+                displacement[i] = velocity[i] * time;
 
                 //(ii) Approach 2 -> Taking average of current reading and last reading.
                 //                -> Able to reduce "overshooting" effect when there is sudden spike in reading
@@ -60,33 +58,36 @@ public class Estimated_Position : MonoBehaviour
                 // displacement[i] = ((velocity[i] + last_velocity[i])/2)  * time; 
 
                 //(iii) Approach 3 -> More accurate integration approximation, area under curve with fluctuation considered.
-                velocity[i] = last_velocity[i] + integration(acceleration[i],last_acceleration[i],time); //imu predicted velocity
-                displacement[i] = integration(velocity[i],last_velocity[i],time); 
-                
+                // velocity[i] = last_velocity[i] + integration(acceleration[i],last_acceleration[i],time); //imu predicted velocity
+                // displacement[i] = integration(velocity[i],last_velocity[i],time); 
+
             }
             else //if no acceleration
             {
                 acceleration[i] = 0f;
-                if(Mathf.Round((cube.GetComponent<Cube>().send_velocity()[i]* 100000f) / 100000f) != 0.00000f) //if constant velocity //get from sonar
+                velocity[i] = last_velocity[i]; //update from sonar
+                if(Mathf.Abs(velocity[i]) > 0.1) //if constant velocity //get from sonar
                 {
                     Debug.Log("Constant Velocity");
-                    velocity[i] = last_velocity[i]; //update from sonar
                     displacement[i] = velocity[i] * time; 
                 }
+                
                 else //if 0 velocity
                 {
-                    Debug.Log("Stationary");
-                    velocity[i] = 0f; 
+                    Debug.Log("stationary");
+                    velocity[i] = 0f;
                 }
+
             }
-            
+
         }
 
         transform.position = last_position + displacement;
 
         //calculate rotation from IMU angular_velocity readings
+        Vector3 angular_displacement =  Vector3.zero;
         angular_velocity = new Vector3 (imu_msg.w_x,imu_msg.w_y,imu_msg.w_z);
-        Vector3 angular_displacement =  angular_velocity * time; 
+        angular_displacement =  angular_velocity * time; 
         //Vector3 angular_displacement =  ((angular_velocity+last_angular_velocity)/2) * time; 
         //Vector3 angular_displacement = new Vector3(integration(angular_velocity[0],last_angular_velocity[0],time),integration(angular_velocity[1],last_angular_velocity[1],time),integration(angular_velocity[2],last_angular_velocity[2],time));
         transform.rotation = Quaternion.Euler(last_angle + angular_displacement); 

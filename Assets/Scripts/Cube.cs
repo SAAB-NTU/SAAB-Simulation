@@ -16,7 +16,7 @@ public class Cube : MonoBehaviour
     public Vector3 velocity = Vector3.zero;
     public Vector3 acceleration = Vector3.zero;
     public Vector3 angular_velocity;
-    public Vector3 rb_ang;
+
 
     Vector3 last_position = Vector3.zero;
     Vector3 last_velocity = Vector3.zero;
@@ -59,7 +59,9 @@ public class Cube : MonoBehaviour
             Vector3 current_angle = transform.rotation.eulerAngles;
 
             velocity = rb.velocity;
-            acceleration = (velocity - last_velocity)/Time.deltaTime;
+            // displacement = transform.position - last_position;
+            // velocity = displacement / Time.deltaTime;
+            acceleration = (velocity - last_velocity)/Time.fixedDeltaTime;
 
             msg.a_x = acceleration[0];
             msg.a_y = acceleration[1];
@@ -82,7 +84,8 @@ public class Cube : MonoBehaviour
             timeElapsed = 0;
         }
 
-        time_Update += Time.deltaTime;
+        time_Update += Time.fixedDeltaTime;
+        Debug.Log(time_Update);
         
     }
 
