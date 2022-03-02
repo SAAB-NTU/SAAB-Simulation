@@ -9,6 +9,11 @@
 <ins> Setup Guide </ins> : https://github.com/Unity-Technologies/Unity-Robotics-Hub/blob/main/tutorials/ros_unity_integration/setup.md
 <br>
 <br>
+
+## Important Note: <br>
+* fixedupdate rate : 0.001
+* Ocean renderer fps : 60
+
 ## Setup: <br>
 
 #### (a.)Download SAAB-Simulation <br>

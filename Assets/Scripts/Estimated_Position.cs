@@ -8,7 +8,7 @@ public class Estimated_Position : MonoBehaviour
 {
     ROSConnection ros; 
     public  GameObject cube;
-    string topicName = "imu_true"; 
+    string topicName = "imu_noise"; 
     string topicName2 = "pos_noise";
     float last_time_elapsed = 0f;
 
