@@ -42,7 +42,7 @@ public class Estimated_Position : MonoBehaviour
 
         for(int i = 0;i<3;i++)
         {
-            if(Mathf.Abs(acceleration[i]) > 0.001) //if there is acceleration
+            if(Mathf.Abs(acceleration[i]) > 0.01) //if there is acceleration
             {
                 Debug.Log("Acceleration");
 
@@ -54,9 +54,11 @@ public class Estimated_Position : MonoBehaviour
 
                 //(ii) Approach 2 -> Taking average of current reading and last reading.
                 //                -> Able to reduce "overshooting" effect when there is sudden spike in reading
+
                 velocity[i] = last_velocity[i] + (((acceleration[i] + last_acceleration[i])/2)  * time); 
                 displacement[i] = ((velocity[i] + last_velocity[i])/2)  * time; 
 
+                
             }
             else //if no acceleration
             {

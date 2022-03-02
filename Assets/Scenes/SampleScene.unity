@@ -696,7 +696,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 4
+  m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!114 &846476844
 MonoBehaviour:
@@ -1926,7 +1926,7 @@ MonoBehaviour:
   _createAlbedoData: 0
   _settingsAlbedo: {fileID: 0}
   _showOceanProxyPlane: 0
-  _editModeFPS: 30
+  _editModeFPS: 60
   _followSceneCamera: 1
   _forceBatchMode: 0
   _forceNoGPU: 0
