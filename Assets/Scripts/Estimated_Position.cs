@@ -42,7 +42,7 @@ public class Estimated_Position : MonoBehaviour
 
         for(int i = 0;i<3;i++)
         {
-            if(Mathf.Abs(acceleration[i]) > 0.01) //if there is acceleration
+            if(Mathf.Abs(acceleration[i]) > 0.001) //if there is acceleration
             {
                 Debug.Log("Acceleration");
 
@@ -64,7 +64,7 @@ public class Estimated_Position : MonoBehaviour
             {
                 acceleration[i] = 0f;
                 velocity[i] = last_velocity[i]; //update from sonar
-                if(Mathf.Abs(velocity[i]) > 0.1) //if constant velocity //get from sonar
+                if(Mathf.Abs(velocity[i]) > 0.001) //if constant velocity //get from sonar
                 {
                     Debug.Log("Constant Velocity");
                     displacement[i] = velocity[i] * time; 
