@@ -46,17 +46,22 @@ public class Estimated_Position : MonoBehaviour
             {
                 Debug.Log("Acceleration");
 
-                //(i) Approach 1 -> Using current reading to predict next reading
+                //(i) Approach 1 -> Using current reading to predict next reading (right sum)
                 //assumptions: (i.)  readings are late by one step
                 //             (ii.) acceleration,velocity constant for dt -> step graph rather than fluctuation
                 // velocity[i] = last_velocity[i] + (acceleration[i] * time);
                 // displacement[i] = velocity[i] * time;
 
-                //(ii) Approach 2 -> Taking average of current reading and last reading.
+                //(ii) Approach 2 -> Trapezoidal
                 //                -> Able to reduce "overshooting" effect when there is sudden spike in reading
-
                 velocity[i] = last_velocity[i] + (((acceleration[i] + last_acceleration[i])/2)  * time); 
                 displacement[i] = ((velocity[i] + last_velocity[i])/2)  * time; 
+
+                //(iii) Approach 3 -> Simpson's Rule
+                //                 -> Good for smooth function, bad for digitized due to noise and high frequency content
+
+
+                //(iii) Approach 4 -> Romberg integration algorithm
 
                 
             }
