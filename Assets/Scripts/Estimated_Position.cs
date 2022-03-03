@@ -16,9 +16,11 @@ public class Estimated_Position : MonoBehaviour
     public Vector3 velocity = Vector3.zero;
     public Vector3 acceleration = Vector3.zero;
     public Vector3 angular_velocity = Vector3.zero;
-
+    public Vector3 true_acceleration = Vector3.zero;
+    public Vector3 imu_noise = Vector3.zero;
+    
     Vector3 last_position = Vector3.zero;
-    public Vector3 last_velocity = Vector3.zero;
+    Vector3 last_velocity = Vector3.zero;
     Vector3 last_acceleration = Vector3.zero;
     Vector3 last_angle = Vector3.zero;
     Vector3 last_angular_velocity = Vector3.zero;
@@ -34,10 +36,12 @@ public class Estimated_Position : MonoBehaviour
     void Estimated(ImuMsg imu_msg) 
     {
         //float time = cube.GetComponent<Cube>().send_time();
+        true_acceleration = cube.GetComponent<Cube>().send_acceleration(); //get true acceleration
         float current_time = cube.GetComponent<Cube>().send_time();
         float time = current_time - last_time_elapsed;
         PointCloudMsg msg = new PointCloudMsg(); //to plot tragectory in rviz
         acceleration = new Vector3 (imu_msg.a_x,imu_msg.a_y,imu_msg.a_z);
+        imu_noise = acceleration - true_acceleration; //show noise in inspector
         Vector3 displacement = Vector3.zero;
 
         for(int i = 0;i<3;i++)
@@ -108,6 +112,8 @@ public class Estimated_Position : MonoBehaviour
         msg.y = transform.position.y;
         msg.z = transform.position.z;
         ros.Publish(topicName2,msg);
+    
+
     }
 
 }
