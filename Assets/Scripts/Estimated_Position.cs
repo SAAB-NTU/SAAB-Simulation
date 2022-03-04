@@ -72,11 +72,12 @@ public class Estimated_Position : MonoBehaviour
                 // displacement[i] = velocity[i] * time;
 
                 //(ii) Approach 2 -> Trapezoidal
-                //                -> Able to reduce "overshooting" effect when there is sudden spike in reading
+                //                -> fast and exact for piecewise linear curve, 
                 velocity[i] = last_velocity[i] + (((acceleration[i] + last_acceleration[i])/2)  * time); 
                 displacement[i] = ((velocity[i] + last_velocity[i])/2)  * time; 
 
                 //(iii) Approach 3 -> Simpson's Rule
+                //                 -> Uses quadratic approximation instead of linear approximation
                 //                 -> Good for smooth function, bad for digitized due to noise and high frequency content
 
 
