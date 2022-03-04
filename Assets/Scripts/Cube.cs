@@ -85,7 +85,6 @@ public class Cube : MonoBehaviour
         }
 
         time_Update += Time.fixedDeltaTime;
-        Debug.Log(time_Update);
         
     }
 

@@ -18,6 +18,7 @@ public class Estimated_Position : MonoBehaviour
     public Vector3 angular_velocity = Vector3.zero;
     public Vector3 true_acceleration = Vector3.zero;
     public Vector3 imu_noise = Vector3.zero;
+    public Vector3 filtered_error = Vector3.zero;
     
     Vector3 last_position = Vector3.zero;
     Vector3 last_velocity = Vector3.zero;
@@ -35,7 +36,6 @@ public class Estimated_Position : MonoBehaviour
 
     void Estimated(ImuMsg imu_msg) 
     {
-        //float time = cube.GetComponent<Cube>().send_time();
         true_acceleration = cube.GetComponent<Cube>().send_acceleration(); //get true acceleration
         float current_time = cube.GetComponent<Cube>().send_time();
         float time = current_time - last_time_elapsed;
@@ -44,6 +44,21 @@ public class Estimated_Position : MonoBehaviour
         imu_noise = acceleration - true_acceleration; //show noise in inspector
         Vector3 displacement = Vector3.zero;
 
+        //filter out noise from IMU
+        
+        //(i)   Approach 1 -> averaging several samples 
+
+        //(ii)  Approach 2 -> LPF (based on https://github.com/KalebKE/AccelerationExplorer/wiki/Advanced-Low-Pass-Filter
+        //                 -> y[i] = y[i] + alpha * (x[i] - y[i])
+        // Vector3 filtered_acceleration = Vector3.zero;
+        // float alpha = time / (time + time);
+        // filtered_acceleration[0] = filtered_acceleration[0] + alpha * (acceleration[0] - filtered_acceleration[0]);
+        // filtered_acceleration[1] = filtered_acceleration[1] + alpha * (acceleration[1] - filtered_acceleration[1]);
+        // filtered_acceleration[2] = filtered_acceleration[2] + alpha * (acceleration[2] - filtered_acceleration[2]);
+        // filtered_error = filtered_acceleration - true_acceleration;
+        // acceleration = filtered_acceleration;
+        // Debug.Log(filtered_acceleration.x);
+        
         for(int i = 0;i<3;i++)
         {
             if(Mathf.Abs(acceleration[i]) > 0.001) //if there is acceleration
