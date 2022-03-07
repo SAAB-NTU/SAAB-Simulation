@@ -7,13 +7,13 @@ using RosMessageTypes.UnityRoboticsDemo;
 public class Estimated_Position : MonoBehaviour
 {
     ROSConnection ros; 
-    public  GameObject cube;
+    public  GameObject cube;    
     string topicName = "imu_noise"; 
     string topicName2 = "pos_noise";
     float last_time_elapsed = 0f;
-    float RC_x = 0.2f;
-    float RC_y = 0.2f;
-    float RC_z = 0.2f;
+    // float RC_x = 1f/2f;
+    // float RC_y = 1f/4f;
+    // float RC_z = 1f/2f;
 
     //for debugging
     public Vector3 velocity = Vector3.zero;
@@ -55,16 +55,16 @@ public class Estimated_Position : MonoBehaviour
         //                 -> y[i] = y[i] + alpha * (x[i] - y[i-1])
         //                 -> If alpha < 0.5, then the RC time constant is equal to the sampling period. 
         //                    If alpha << 0.5, then RC is significantly larger than the sampling interval, and delta t is approximately equal to alpha * RC.
-        Vector3 filtered_acceleration = Vector3.zero;
-        float alpha_x = time / ( RC_x + time);
-        float alpha_y = time / ( RC_y + time);
-        float alpha_z = time / ( RC_z + time);
-        filtered_acceleration[0] = filtered_acceleration[0] + alpha_x * (acceleration[0] - filtered_acceleration[0]);
-        filtered_acceleration[1] = filtered_acceleration[1] + alpha_y * (acceleration[1] - filtered_acceleration[1]);
-        filtered_acceleration[2] = filtered_acceleration[2] + alpha_z * (acceleration[2] - filtered_acceleration[2]);
-        filtered_error = filtered_acceleration - true_acceleration;
-        acceleration = filtered_acceleration;
-        Debug.Log(filtered_acceleration.x);
+        // Vector3 filtered_acceleration = Vector3.zero;
+        // float alpha_x = time / ( RC_x + time);
+        // float alpha_y = time / ( RC_y + time);
+        // float alpha_z = time / ( RC_z + time);
+        // filtered_acceleration[0] = filtered_acceleration[0] + alpha_x * (acceleration[0] - filtered_acceleration[0]);
+        // filtered_acceleration[1] = filtered_acceleration[1] + alpha_y * (acceleration[1] - filtered_acceleration[1]);
+        // filtered_acceleration[2] = filtered_acceleration[2] + alpha_z * (acceleration[2] - filtered_acceleration[2]);
+        // filtered_error = filtered_acceleration - true_acceleration;
+        // acceleration = filtered_acceleration;
+        // Debug.Log(filtered_acceleration.x);
 
         //baseline-calibration
         //subtract bias from imu readings (true_value + bias + bias_drift + noise)
