@@ -8,7 +8,7 @@ public class Estimated_Position : MonoBehaviour
 {
     ROSConnection ros; 
     public  GameObject cube;
-    string topicName = "imu_noise"; 
+    string topicName = "imu_true"; 
     string topicName2 = "pos_noise";
     float last_time_elapsed = 0f;
 
@@ -32,6 +32,7 @@ public class Estimated_Position : MonoBehaviour
         ros = ROSConnection.GetOrCreateInstance(); 
         ros.Subscribe<ImuMsg>(topicName,Estimated); 
         ros.RegisterPublisher<PointCloudMsg>(topicName2);
+        
     }
 
     void Estimated(ImuMsg imu_msg) 
@@ -58,7 +59,13 @@ public class Estimated_Position : MonoBehaviour
         // filtered_error = filtered_acceleration - true_acceleration;
         // acceleration = filtered_acceleration;
         // Debug.Log(filtered_acceleration.x);
-        
+
+        //baseline-calibration
+        //subtract bias from imu readings (true_value + bias + bias_drift + noise)
+        //other components are random
+        //***** current imu model data assumes no calibration error *****
+
+
         for(int i = 0;i<3;i++)
         {
             if(Mathf.Abs(acceleration[i]) > 0.001) //if there is acceleration
