@@ -8,9 +8,11 @@ public class Estimated_Position : MonoBehaviour
 {
     ROSConnection ros; 
     public  GameObject cube;    
-    string topicName = "imu_true"; 
+    string topicName = "imu_noise"; 
     string topicName2 = "pos_noise";
     float last_time_elapsed = 0f;
+    int sample_size = 100;
+    List<Vector3> window = new List<Vector3>{};
     // float RC_x = 1f/2f;
     // float RC_y = 1f/4f;
     // float RC_z = 1f/2f;
@@ -44,12 +46,29 @@ public class Estimated_Position : MonoBehaviour
         float current_time = cube.GetComponent<Cube>().send_time();
         float time = current_time - last_time_elapsed;
         PointCloudMsg msg = new PointCloudMsg(); //to plot tragectory in rviz
-        acceleration = new Vector3 (imu_msg.a_x,imu_msg.a_y,imu_msg.a_z);
+        Vector3 imu_acceleration = new Vector3 (imu_msg.a_x,imu_msg.a_y,imu_msg.a_z);
         imu_noise = acceleration - true_acceleration; //show noise in inspector
         Vector3 displacement = Vector3.zero;
 
-        //filter out noise from IMU
-        //(i)   Approach 1 -> averaging several samples 
+        //Digital filters -> filter out noise from IMU
+        //(i)   Approach 1 -> mean filter, averaging several samples
+
+        Vector3 filtered_acceleration = Vector3.zero;
+        if(window.Count != sample_size)
+        {
+            window.Add(imu_acceleration);
+            return;
+        }
+        else
+        {
+            Vector3 sum = Vector3.zero;
+            foreach(Vector3 sample in window)
+            {
+                sum += sample;
+            }
+            filtered_acceleration = sum / window.Count;
+            window = new List<Vector3>{};
+        }
 
         //(ii)  Approach 2 -> LPF (based on https://github.com/KalebKE/AccelerationExplorer/wiki/Advanced-Low-Pass-Filter
         //                 -> y[i] = y[i] + alpha * (x[i] - y[i-1])
@@ -63,8 +82,9 @@ public class Estimated_Position : MonoBehaviour
         // filtered_acceleration[1] = filtered_acceleration[1] + alpha_y * (acceleration[1] - filtered_acceleration[1]);
         // filtered_acceleration[2] = filtered_acceleration[2] + alpha_z * (acceleration[2] - filtered_acceleration[2]);
         // filtered_error = filtered_acceleration - true_acceleration;
-        // acceleration = filtered_acceleration;
-        // Debug.Log(filtered_acceleration.x);
+
+        acceleration = filtered_acceleration;
+        Debug.Log(filtered_acceleration.x);
 
         //baseline-calibration
         //subtract bias from imu readings (true_value + bias + bias_drift + noise)
