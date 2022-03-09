@@ -70,7 +70,7 @@ public class Cube : MonoBehaviour
             last_velocity = velocity;
             last_position = current_position;
             
-            angular_velocity = rb.angularVelocity * (180/Mathf.PI);
+            angular_velocity = rb.angularVelocity;
             msg.w_x = angular_velocity[0];
             msg.w_y = angular_velocity[1];
             msg.w_z = angular_velocity[2];

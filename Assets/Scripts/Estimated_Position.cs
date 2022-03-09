@@ -8,7 +8,7 @@ public class Estimated_Position : MonoBehaviour
 {
     ROSConnection ros; 
     public  GameObject cube;    
-    string topicName = "imu_true"; 
+    string topicName = "imu_noise"; 
     string topicName2 = "pos_noise";
     float last_time_elapsed = 0f;
     int sample_size = 100; //mean filter
@@ -77,16 +77,16 @@ public class Estimated_Position : MonoBehaviour
         //(ii)  Approach 2 -> LPF (based on https://github.com/KalebKE/AccelerationExplorer/wiki/Advanced-Low-Pass-Filter
         //                 -> y[i] = y[i] + alpha * (x[i] - y[i-1])
         //                 -> Gives general trend of trajectory
-        // Vector3 filtered_acceleration = Vector3.zero;
-        // float alpha_x = time / ( RC_x + time);
-        // float alpha_y = time / ( RC_y + time);
-        // float alpha_z = time / ( RC_z + time);
-        // filtered_acceleration[0] = filtered_acceleration[0] + alpha_x * (imu_acceleration[0] - filtered_acceleration[0]);
-        // filtered_acceleration[1] = filtered_acceleration[1] + alpha_y * (imu_acceleration[1] - filtered_acceleration[1]);
-        // filtered_acceleration[2] = filtered_acceleration[2] + alpha_z * (imu_acceleration[2] - filtered_acceleration[2]);
-        // filtered_error = filtered_acceleration - true_acceleration;
+        Vector3 filtered_acceleration = Vector3.zero;
+        float alpha_x = time / ( RC_x + time);
+        float alpha_y = time / ( RC_y + time);
+        float alpha_z = time / ( RC_z + time);
+        filtered_acceleration[0] = filtered_acceleration[0] + alpha_x * (imu_acceleration[0] - filtered_acceleration[0]);
+        filtered_acceleration[1] = filtered_acceleration[1] + alpha_y * (imu_acceleration[1] - filtered_acceleration[1]);
+        filtered_acceleration[2] = filtered_acceleration[2] + alpha_z * (imu_acceleration[2] - filtered_acceleration[2]);
+        filtered_error = filtered_acceleration - true_acceleration;
 
-        //acceleration = filtered_acceleration;
+        acceleration = filtered_acceleration;
         // Debug.Log(filtered_acceleration.x);
 
         //baseline-calibration
@@ -97,7 +97,7 @@ public class Estimated_Position : MonoBehaviour
 
 
         //Position prediction / Dead-reckoning     
-        acceleration = imu_acceleration;
+        //acceleration = imu_acceleration;
         //(i) Approach 1 -> Using current reading to predict next reading (right sum)
         //assumptions: (i.)  readings are late by one step
         //             (ii.) acceleration,velocity constant for dt -> step graph rather than fluctuation
@@ -106,37 +106,37 @@ public class Estimated_Position : MonoBehaviour
 
         ///(ii) Approach 2 -> Trapezoidal
         //                 -> fast and exact for piecewise linear curve,
-        velocity = last_velocity + (((acceleration + last_acceleration)/2)  * time); 
-        displacement = ((velocity + last_velocity)/2)  * time; 
+        // velocity = last_velocity + (((acceleration + last_acceleration)/2)  * time); 
+        // displacement = ((velocity + last_velocity)/2)  * time; 
 
         //(iii) Approach 3 -> Simpson's Rule
         //                 -> https://www.freecodecamp.org/news/simpsons-rule/ 
         //                 -> Good for smooth function, bad for digitized due to noise and high frequency content
         //                 -> trajectory "signal" sligtly attenuated
-        // acceleration_points.Add(acceleration);
-        // if (acceleration_points.Count == interval_size + 1)
-        // {
-        //     Vector3 sum = Vector3.zero;
-        //     int element_index = 1;
-        //     foreach(Vector3 point in acceleration_points)
-        //     {
-        //         if(element_index == 1 || element_index == acceleration_points.Count)
-        //         {
-        //             sum += point;
-        //         }
-        //         else if(element_index % 2 == 0)
-        //         {
-        //             sum += point * 4;
-        //         }
-        //         else 
-        //         {
-        //             sum += point *2;
-        //         }
-        //     }
-        //     velocity = last_velocity + (sum * time/3);
-        //     acceleration_points = new List<Vector3>{};
-        // }
-        // displacement = ((velocity+last_velocity)/2) * (time);
+        acceleration_points.Add(acceleration);
+        if (acceleration_points.Count == interval_size + 1)
+        {
+            Vector3 sum = Vector3.zero;
+            int element_index = 1;
+            foreach(Vector3 point in acceleration_points)
+            {
+                if(element_index == 1 || element_index == acceleration_points.Count)
+                {
+                    sum += point;
+                }
+                else if(element_index % 2 == 0)
+                {
+                    sum += point * 4;
+                }
+                else 
+                {
+                    sum += point *2;
+                }
+            }
+            velocity = last_velocity + (sum * time/3);
+            acceleration_points = new List<Vector3>{};
+        }
+        displacement = ((velocity+last_velocity)/2) * (time);
         
         //(iii) Approach 3 -> Romberg integration algorithm
 
@@ -146,7 +146,7 @@ public class Estimated_Position : MonoBehaviour
 
         //calculate rotation from IMU angular_velocity readings
         Vector3 angular_displacement =  Vector3.zero;
-        angular_velocity = new Vector3 (imu_msg.w_x,imu_msg.w_y,imu_msg.w_z);
+        angular_velocity = new Vector3 (imu_msg.w_x,imu_msg.w_y,imu_msg.w_z) * (180/Mathf.PI);
         angular_displacement =  angular_velocity * time; 
         //Vector3 angular_displacement =  ((angular_velocity+last_angular_velocity)/2) * time; 
         //Vector3 angular_displacement = new Vector3(integration(angular_velocity[0],last_angular_velocity[0],time),integration(angular_velocity[1],last_angular_velocity[1],time),integration(angular_velocity[2],last_angular_velocity[2],time));
