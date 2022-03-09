@@ -11,14 +11,14 @@ public class Estimated_Position : MonoBehaviour
     string topicName = "imu_true"; 
     string topicName2 = "pos_noise";
     float last_time_elapsed = 0f;
-    // int sample_size = 100; //mean filter
-    // List<Vector3> window = new List<Vector3>{}; // LPF
-    // float RC_x = 1f/0.25f;
-    // float RC_y = 1f/8f;
-    // float RC_z = 1f/1f;
+    int sample_size = 100; //mean filter
+    List<Vector3> window = new List<Vector3>{};
+    float RC_x = 1f/0.25f;  // LPF
+    float RC_y = 1f/8f;
+    float RC_z = 1f/1f;
 
-    // int interval_size = 2;//Simpson's Rule
-    // List<Vector3> acceleration_points = new List<Vector3>{}; 
+    int interval_size = 2;//Simpson's Rule
+    List<Vector3> acceleration_points = new List<Vector3>{}; 
 
     //for debugging
     public Vector3 velocity = Vector3.zero;
@@ -86,7 +86,7 @@ public class Estimated_Position : MonoBehaviour
         // filtered_acceleration[2] = filtered_acceleration[2] + alpha_z * (imu_acceleration[2] - filtered_acceleration[2]);
         // filtered_error = filtered_acceleration - true_acceleration;
 
-        // acceleration = filtered_acceleration;
+        //acceleration = filtered_acceleration;
         // Debug.Log(filtered_acceleration.x);
 
         //baseline-calibration
@@ -166,7 +166,6 @@ public class Estimated_Position : MonoBehaviour
         msg.z = transform.position.z;
         ros.Publish(topicName2,msg);
     
-
     }
 
 }
