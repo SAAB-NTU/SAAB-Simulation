@@ -106,12 +106,13 @@ public class Estimated_Position : MonoBehaviour
 
         ///(ii) Approach 2 -> Trapezoidal
         //                 -> fast and exact for piecewise linear curve,
-        // velocity = last_velocity + (((acceleration + last_acceleration)/2)  * time); 
-        // displacement = ((velocity + last_velocity)/2)  * time; 
+        velocity = last_velocity + (((acceleration + last_acceleration)/2)  * time); 
+        displacement = ((velocity + last_velocity)/2)  * time; 
 
         //(iii) Approach 3 -> Simpson's Rule
+        //                 -> https://www.freecodecamp.org/news/simpsons-rule/ 
         //                 -> Good for smooth function, bad for digitized due to noise and high frequency content
-        //                 -> significant delay, even though interval size is minimum (2), trajectory "signal" attenuated, < trapezoidal....
+        //                 -> trajectory "signal" sligtly attenuated
         // acceleration_points.Add(acceleration);
         // if (acceleration_points.Count == interval_size + 1)
         // {
@@ -133,9 +134,9 @@ public class Estimated_Position : MonoBehaviour
         //         }
         //     }
         //     velocity = last_velocity + (sum * time/3);
-        //     displacement = ((velocity+last_velocity)/2) * (time * 2);
         //     acceleration_points = new List<Vector3>{};
         // }
+        // displacement = ((velocity+last_velocity)/2) * (time);
         
         //(iii) Approach 3 -> Romberg integration algorithm
 

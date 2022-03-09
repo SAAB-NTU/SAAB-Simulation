@@ -49,6 +49,7 @@ public class Cube : MonoBehaviour
         }
 
         timeElapsed += Time.deltaTime;
+        Debug.Log("cube"+Time.deltaTime);
 
         if (timeElapsed > 0f) //to publish at desired rate 
         {
@@ -85,7 +86,6 @@ public class Cube : MonoBehaviour
         }
 
         time_Update += Time.fixedDeltaTime;
-        Debug.Log(Time.fixedDeltaTime);
         
     }
 
