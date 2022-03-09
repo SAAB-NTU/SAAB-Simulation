@@ -96,7 +96,7 @@ public class Estimated_Position : MonoBehaviour
 
 
 
-        //Position prediction     
+        //Position prediction / Dead-reckoning     
         acceleration = imu_acceleration;
         //(i) Approach 1 -> Using current reading to predict next reading (right sum)
         //assumptions: (i.)  readings are late by one step
