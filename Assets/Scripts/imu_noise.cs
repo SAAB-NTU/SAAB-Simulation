@@ -29,6 +29,13 @@ public class imu_noise : MonoBehaviour
     public Vector3 real_accel = Vector3.zero;
     public Vector3 real_gyro = Vector3.zero;
 
+    float accel_noise_x;
+    float accel_noise_y;
+    float accel_noise_z;
+    float gyro_noise_x;
+    float gyro_noise_y;
+    float gyro_noise_z;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -84,8 +91,19 @@ public class imu_noise : MonoBehaviour
         accel_noise[0] = accel_err["vrw"][0] /Mathf.Sqrt(dt) * accel_noise[0];
         accel_noise[1] = accel_err["vrw"][1] /Mathf.Sqrt(dt) * accel_noise[1];
         accel_noise[2] = accel_err["vrw"][2] /Mathf.Sqrt(dt) * accel_noise[2];
-       // true + constant_bias + bias_drift + noise
-        Vector3 a_mea = ref_a + scale*accel_bias + scale*accel_bias_drift + scale*accel_noise;  //+ acc_vib
+       
+        Vector3 total_accel_noise = scale*accel_bias + scale*accel_bias_drift + scale*accel_noise;
+
+        // Debug.Log("accel_bias: " + accel_bias[0]); //to see contribution of each noise component for x 
+        // Debug.Log("accel_bias_drift: "+ accel_bias_drift[0]);
+        // Debug.Log("accel_noise: " + accel_noise[0]);
+
+        accel_noise_x = total_accel_noise[0]; //show noise component in debug inspector
+        accel_noise_y = total_accel_noise[1];
+        accel_noise_z = total_accel_noise[2];
+
+        // true + constant_bias + bias_drift + noise
+        Vector3 a_mea = ref_a + accel_noise;  //+ acc_vib
         old_accel_bias_drift = accel_bias_drift; //store current bias drift for next reading
         return a_mea;
     }
@@ -108,8 +126,19 @@ public class imu_noise : MonoBehaviour
         gyro_noise[0] = gyro_err["arw"][0] /Mathf.Sqrt(dt) * gyro_noise[0];
         gyro_noise[1] = gyro_err["arw"][1] /Mathf.Sqrt(dt) * gyro_noise[1];
         gyro_noise[2] = gyro_err["arw"][2] /Mathf.Sqrt(dt) * gyro_noise[2];
+        
+        Vector3 total_gyro_noise = scale*gyro_bias + scale*gyro_bias_drift + scale*gyro_noise;
+
+        // Debug.Log("gyro_bias: " + gyro_bias[0]); //to see contribution of each noise component for x
+        // Debug.Log("gyro_bias_drift: "+ gyro_bias_drift[0]);
+        // Debug.Log("gyro_noise: " + gyro_noise[0]);
+
+        gyro_noise_x = total_gyro_noise[0]; //show noise component in debug inspector
+        gyro_noise_y = total_gyro_noise[1];
+        gyro_noise_z = total_gyro_noise[2];
+
         // true + constant_bias + bias_drift + noise
-        Vector3 w_mea = ref_w + scale*gyro_bias + scale*gyro_bias_drift + scale*gyro_noise;  // + gyro_vib
+        Vector3 w_mea = ref_w + gyro_noise;  // + gyro_vib
         old_gyro_bias_drift = gyro_bias_drift;
         return w_mea;
     }
