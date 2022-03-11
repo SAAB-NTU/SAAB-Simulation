@@ -23,6 +23,7 @@ public class Estimated_Position : MonoBehaviour
     public Vector3 velocity = Vector3.zero;
     public Vector3 acceleration = Vector3.zero;
     public Vector3 angular_velocity = Vector3.zero;
+    Vector3 last_position = Vector3.zero;
     Vector3 last_velocity = Vector3.zero;
     Vector3 last_acceleration = Vector3.zero;
     Vector3 last_angular_velocity = Vector3.zero;
@@ -136,7 +137,7 @@ public class Estimated_Position : MonoBehaviour
         Vector3 displacement = Vector3.zero;
         velocity = last_velocity + (((acceleration + last_acceleration)/2)  * time); 
         displacement = ((velocity + last_velocity)/2)  * time;
-        transform.Translate(displacement);
+        transform.position = last_position + displacement;
 
         //calculate rotation from IMU angular_velocity readings
         Vector3 angular_displacement =  Vector3.zero;
@@ -144,6 +145,7 @@ public class Estimated_Position : MonoBehaviour
         angular_displacement =  ((angular_velocity + last_angular_velocity)/2) * time;  
         transform.Rotate(angular_displacement * (180/Mathf.PI)); 
 
+        last_position = transform.position;
         last_velocity = velocity;
         last_acceleration = acceleration;
         last_angular_velocity = angular_velocity;
