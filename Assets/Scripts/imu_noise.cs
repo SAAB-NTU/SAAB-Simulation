@@ -25,7 +25,7 @@ public class imu_noise : MonoBehaviour
     Vector3 b_gyro = Vector3.zero;
 
     public  GameObject cube; 
-    public string imu_model = "high";
+    public string imu_model;
     public Vector3 real_accel = Vector3.zero;
     public Vector3 real_gyro = Vector3.zero;
 
