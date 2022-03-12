@@ -29,7 +29,9 @@ _May require catkin clean_ <br>
 ```source devel/setup.bash``` <br>
 
 #### (d.)Launch  <br>
-(i.) ``` roslaunch imu_noise imu_noise_demo.launch ``` -> launch tcp endpoint, noise_adding node, imu_reading rqt plot <br>
-(ii.)``` roslaunch position_analysis.launch ``` -> launch position_acquiring nodes, rviz plot, rqt plot <br>
+(i.) ``` roslaunch unity-slam unity-slam.launch ``` -> launch tcp endpoint, rqt plot for imu and position analysis, rviz for CG position visualisation <br>
+
+##### Update
+Other ros packages can be ignored after C# migration from previous imu_noise python script.
 
 #### (e.)Press play in Unity simulation
