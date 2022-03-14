@@ -8,7 +8,7 @@ public class Estimated_Position : MonoBehaviour
 {
     ROSConnection ros; 
     public  GameObject cube;    
-    string topicName = "pos_noise";
+    public string topicName = "pos_noise";
 
     // int sample_size = 50; //mean filter
     // List<Vector3> window = new List<Vector3>{};

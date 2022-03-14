@@ -10,13 +10,12 @@ public class read_val : MonoBehaviour
     // Start is called before the first frame update
     public float predicted_velocity, real_velocity, measured_velocity,predicted_error,measured_error;
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        //predicted_velocity=Mathf.Abs(IMU.velocity.x);
         predicted_velocity = (IMU.GetComponent<Estimated_Position>().estimated_velocity()).x;
         real_velocity= Mathf.Abs(Real.velocity.x);
         measured_velocity = Mathf.Abs(SONAR.tot);
-        predicted_error = 100*Mathf.Abs((predicted_velocity - real_velocity) / real_velocity);
-        measured_error = 100 * Mathf.Abs((measured_velocity - real_velocity)/ real_velocity);
+        predicted_error = 100*Mathf.Abs((real_velocity - predicted_velocity ) / real_velocity);
+        measured_error = 100 * Mathf.Abs((real_velocity - measured_velocity )/ real_velocity);
     }
 }

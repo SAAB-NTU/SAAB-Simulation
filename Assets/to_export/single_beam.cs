@@ -42,7 +42,7 @@ public class single_beam : MonoBehaviour
         }
        
     }
-    private void Update()
+    private void FixedUpdate()
     {
         aft = new List<float>();
         for (int i=0;i<transform.childCount;++i)
