@@ -7,8 +7,8 @@ using RosMessageTypes.UnityRoboticsDemo;
 public class Cube : MonoBehaviour
 {
     ROSConnection ros; 
-    string topicName = "imu_true";
-    string topicName2 = "pos_true";
+    public string topicName = "imu_true";
+    public string topicName2 = "pos_true";
 
     public Vector3 displacement = Vector3.zero;
     public Vector3 velocity = Vector3.zero;

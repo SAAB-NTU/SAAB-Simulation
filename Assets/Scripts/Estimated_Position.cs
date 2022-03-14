@@ -157,4 +157,9 @@ public class Estimated_Position : MonoBehaviour
         ros.Publish(topicName,msg);
     }
 
+    public Vector3 estimated_velocity()
+    {
+        return velocity;
+    }
+
 }

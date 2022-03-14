@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class read_val : MonoBehaviour
 {
-    public Cube IMU;
+    public GameObject IMU;
     public Rigidbody Real;
     public single_beam SONAR;
     // Start is called before the first frame update
@@ -12,7 +12,8 @@ public class read_val : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        predicted_velocity=Mathf.Abs(IMU.velocity.x);
+        //predicted_velocity=Mathf.Abs(IMU.velocity.x);
+        predicted_velocity = (IMU.GetComponent<Estimated_Position>().estimated_velocity()).x;
         real_velocity= Mathf.Abs(Real.velocity.x);
         measured_velocity = Mathf.Abs(SONAR.tot);
         predicted_error = 100*Mathf.Abs((predicted_velocity - real_velocity) / real_velocity);

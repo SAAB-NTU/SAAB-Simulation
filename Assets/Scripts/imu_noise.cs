@@ -8,7 +8,7 @@ public class imu_noise : MonoBehaviour
 {
 
     ROSConnection ros; 
-    string topicName = "imu_noise";
+    public string topicName = "imu_noise";
 
     int fs = 1000;
     int scale = 1;
@@ -53,6 +53,9 @@ public class imu_noise : MonoBehaviour
         List<Vector3> gyroscope_param = set_sensor_bias_param(gyro_err["b_corr"],gyro_err["b_drift"]);
         a_gyro = acceleration_param[0];
         b_gyro = acceleration_param[1];
+
+        Debug.Log(a_accel);
+
     }
 
     // Update is called once per frame
