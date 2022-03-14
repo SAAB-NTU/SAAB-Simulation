@@ -54,8 +54,6 @@ public class imu_noise : MonoBehaviour
         a_gyro = acceleration_param[0];
         b_gyro = acceleration_param[1];
 
-        Debug.Log(a_accel);
-
     }
 
     // Update is called once per frame

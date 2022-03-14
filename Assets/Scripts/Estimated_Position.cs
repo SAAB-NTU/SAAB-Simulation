@@ -28,11 +28,18 @@ public class Estimated_Position : MonoBehaviour
     Vector3 last_acceleration = Vector3.zero;
     Vector3 last_angular_velocity = Vector3.zero;
 
+    void Awake()
+    {
+        transform.position = cube.transform.position;
+    }
+
     // Start is called before the first frame update
     void Start()
     {	
         ros = ROSConnection.GetOrCreateInstance(); 
         ros.RegisterPublisher<PointCloudMsg>(topicName);
+        transform.position = cube.transform.position;
+        last_position = cube.transform.position;
     }
 
     // Vector3 calibrate()
