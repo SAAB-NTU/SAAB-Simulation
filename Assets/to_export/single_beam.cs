@@ -81,7 +81,7 @@ public class single_beam : MonoBehaviour
             if(k!=0)
             tot /= k;
       
-            tot /= Time.fixedUnscaledDeltaTime;
+            tot /= Time.fixedDeltaTime;
 
         }
         bef = aft;

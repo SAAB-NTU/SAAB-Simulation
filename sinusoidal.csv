@@ -1,5 +1,4 @@
 predicted_velocity,real_velocity,measured_velocity,predicted_error,measured_error
-0,0,0,NaN,NaN
 5.625837E-09,4.970238,2.814527,100,43.37239
 2.034939E-08,4.945386,0,100,100
 2.485119,4.92066,4.945221,49.49622,0.4991584
