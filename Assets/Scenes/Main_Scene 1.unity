@@ -990,6 +990,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e53418303914281aa13cbd5893c4e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  topicName: imu_true
+  topicName2: pos_true
   displacement: {x: 0, y: 0, z: 0}
   velocity: {x: 0, y: 0, z: 0}
   acceleration: {x: 0, y: 0, z: 0}
@@ -1018,6 +1020,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ab769a8a7b2feb8db6ab87642dd5eb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  topicName: imu_noise
   cube: {fileID: 846476837}
   imu_model: high
   real_accel: {x: 0, y: 0, z: 0}
@@ -1064,7 +1067,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab7a7cc1f21e41e47bed31a92aec4f07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IMU: {fileID: 1033720074}
+  IMU: {fileID: 850917147}
   Real: {fileID: 1033720079}
   SONAR: {fileID: 846476851}
   predicted_velocity: 0
@@ -1106,6 +1109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cube: {fileID: 846476837}
+  topicName: pos_noise
   velocity: {x: 0, y: 0, z: 0}
   acceleration: {x: 0, y: 0, z: 0}
   angular_velocity: {x: 0, y: 0, z: 0}
@@ -1444,17 +1448,6 @@ MonoBehaviour:
     _viewStencil: 0
     _disableHeightAboveWaterOptimization: 0
     _disableArtifactCorrection: 0
---- !u!114 &1033720074 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7152562845622241273, guid: 0c993d770ec75d74d882545adaed679d, type: 3}
-  m_PrefabInstance: {fileID: 2109484571}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1247480933}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9e53418303914281aa13cbd5893c4e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &1033720079 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 7152562845622241271, guid: 0c993d770ec75d74d882545adaed679d, type: 3}
@@ -1768,6 +1761,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ab769a8a7b2feb8db6ab87642dd5eb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  topicName: imu_noise
   cube: {fileID: 1247480933}
   imu_model: high
   real_accel: {x: 0, y: 0, z: 0}
@@ -1809,7 +1803,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab7a7cc1f21e41e47bed31a92aec4f07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IMU: {fileID: 1033720074}
+  IMU: {fileID: 0}
   Real: {fileID: 1033720079}
   SONAR: {fileID: 846476851}
   predicted_velocity: 0
@@ -1901,7 +1895,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab7a7cc1f21e41e47bed31a92aec4f07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IMU: {fileID: 1824930780}
+  IMU: {fileID: 0}
   Real: {fileID: 1824930785}
   SONAR: {fileID: 846476851}
   predicted_velocity: 0
@@ -1933,21 +1927,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ab769a8a7b2feb8db6ab87642dd5eb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  topicName: imu_noise
   cube: {fileID: 1824930776}
   imu_model: high
   real_accel: {x: 0, y: 0, z: 0}
   real_gyro: {x: 0, y: 0, z: 0}
---- !u!114 &1824930780 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7152562845622241273, guid: 0c993d770ec75d74d882545adaed679d, type: 3}
-  m_PrefabInstance: {fileID: 664741464}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1824930776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9e53418303914281aa13cbd5893c4e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &1824930785 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 7152562845622241271, guid: 0c993d770ec75d74d882545adaed679d, type: 3}

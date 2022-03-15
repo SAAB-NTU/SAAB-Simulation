@@ -12,7 +12,7 @@ public class read_val : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        predicted_velocity = (IMU.GetComponent<Estimated_Position>().estimated_velocity()).x;
+        predicted_velocity = Mathf.Abs((IMU.GetComponent<Estimated_Position>().estimated_velocity()).x); //for x direction only
         real_velocity= Mathf.Abs(Real.velocity.x);
         measured_velocity = Mathf.Abs(SONAR.tot);
         predicted_error = 100*Mathf.Abs((real_velocity - predicted_velocity ) / real_velocity);
