@@ -21,7 +21,6 @@ public class single_beam : MonoBehaviour
         coords = new List<GameObject>();
         for (int i = 0; i < multiplier; ++i)
         {
-            print("in");
             GameObject ray=Instantiate(prefab);
             
             float value = -FOV/2 + i * (FOV /( multiplier-1));

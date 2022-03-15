@@ -88,14 +88,14 @@ public class imu_model : MonoBehaviour
         // uncalibrated ?? 
         gyro_mti_100= new Dictionary<string,Vector3>()
         {
-            {"b", new Vector3(0.0f, 0.0f, 0.0f)* D2R} ,
+            {"b", new Vector3(0.2f, 0.2f, 0.2f)* D2R} ,
             {"b_drift", new Vector3(10.0f, 10.0f, 10.0f)* D2R/3600.0f} , 
             {"b_corr",new Vector3(100.0f, 100.0f, 100.0f)},
             {"arw", new Vector3(0.01f, 0.01f, 0.01f)* D2R}
         };
         accel_mti_100 = new Dictionary<string,Vector3>()
         {
-            {"b", new Vector3(0.0e-3f, 0.0e-3f, 0.0e-3f)}, 
+            {"b", new Vector3(0.05f, 0.05f, 0.05f)}, 
             {"b_drift", new Vector3(1.5e-4f, 1.5e-4f, 1.5e-4f)},
             {"b_corr", new Vector3(100.0f, 100.0f, 100.0f)},
             {"vrw", new Vector3(6.0e-4f, 6.0e-4f, 6.0e-4f)} 
