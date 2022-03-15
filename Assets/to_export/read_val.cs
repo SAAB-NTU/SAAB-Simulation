@@ -10,7 +10,7 @@ public class read_val : MonoBehaviour
     // Start is called before the first frame update
     public float predicted_velocity, real_velocity, measured_velocity,predicted_error,measured_error;
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         predicted_velocity=Mathf.Abs(IMU.velocity.x);
         real_velocity= Mathf.Abs(Real.velocity.x);

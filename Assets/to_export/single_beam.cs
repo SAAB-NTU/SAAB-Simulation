@@ -42,7 +42,7 @@ public class single_beam : MonoBehaviour
         }
        
     }
-    private void Update()
+    private void FixedUpdate()
     {
         aft = new List<float>();
         for (int i=0;i<transform.childCount;++i)
@@ -55,7 +55,8 @@ public class single_beam : MonoBehaviour
                 float r = scale * transform.GetChild(i).GetComponent<raycast_script>().hit_val;
                 float cos_theta = Mathf.Cos(Mathf.PI*(vals[i]/180));
                 float sin_theta = Mathf.Sin(Mathf.PI * (vals[i] / 180));
-                aft.Add(r);
+                    aft.Add(r*cos_theta/scale);
+                //aft.Add(r  / scale);
                 coords[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(offset+(r *cos_theta),Mathf.Abs(r * sin_theta));
             }
             catch(System.Exception e)
@@ -78,10 +79,10 @@ public class single_beam : MonoBehaviour
                     tot += (Mathf.Abs(diff));
                 }
             }
-            
-            tot /= bef.Count;
-            tot /= scale;
-            tot /= Time.deltaTime;
+            if(k!=0)
+            tot /= k;
+      
+            tot /= Time.fixedUnscaledDeltaTime;
 
         }
         bef = aft;

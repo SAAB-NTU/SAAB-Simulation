@@ -32,7 +32,7 @@ public class imu_model : MonoBehaviour
     Dictionary<string,Vector3> accel_mti_100;
 
     Dictionary<string,Dictionary<string,Dictionary<string,Vector3>>> IMU_dict;
-    void Start()
+    void Awake()
     {
         gyro_low_accuracy = new Dictionary<string,Vector3>()
         {
@@ -113,6 +113,7 @@ public class imu_model : MonoBehaviour
 
     public Dictionary<string,Dictionary<string,Dictionary<string,Vector3>>> getDictionary()
     {
+        print(gyro_high_accuracy);
         return IMU_dict;
     }
     

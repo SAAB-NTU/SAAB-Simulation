@@ -41,7 +41,7 @@ public class imu_noise : MonoBehaviour
     {
         ros = ROSConnection.GetOrCreateInstance();
         ros.RegisterPublisher<ImuMsg>(topicName);
-
+        
         Dictionary<string,Dictionary<string,Dictionary<string,Vector3>>> imu_models = cube.GetComponent<imu_model>().getDictionary();
         accel_err = imu_models[imu_model]["accel"];
         gyro_err = imu_models[imu_model]["gyro"];
@@ -62,6 +62,8 @@ public class imu_noise : MonoBehaviour
 
         Vector3 true_acceleration = cube.GetComponent<Cube>().imu_true_accel(); //get true acceleration
         Vector3 true_angular_velocity = cube.GetComponent<Cube>().imu_true_gyro(); //get true angular velocity
+        print(accel_err);
+        //print(true_acceleration);
         real_accel = accel_gen(true_acceleration,accel_err);
         real_gyro = gyro_gen(true_angular_velocity,gyro_err);
 
@@ -121,7 +123,7 @@ public class imu_noise : MonoBehaviour
         old_gyro_drift_noise = gyroscope_return[1];
 
         // gyroscope white noise
-        Vector3 gyro_noise = new Vector3(random_gaussian(),random_gaussian(),random_gaussian());;
+        Vector3 gyro_noise = new Vector3(random_gaussian(),random_gaussian(),random_gaussian());
 
         gyro_noise[0] = gyro_err["arw"][0] /Mathf.Sqrt(dt) * gyro_noise[0];
         gyro_noise[1] = gyro_err["arw"][1] /Mathf.Sqrt(dt) * gyro_noise[1];
