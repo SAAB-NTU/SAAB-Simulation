@@ -11,7 +11,7 @@
 <br>
 
 ## Important Note: <br>
-* fixedupdate rate : 0.001
+* fixedupdate rate : 0.0005
 * Ocean renderer fps : 60
 * IMU model : mti-100 
 

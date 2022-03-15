@@ -807,7 +807,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   topicName: imu_noise
   cube: {fileID: 846476837}
-  imu_model: high
+  imu_model: mti-100
   real_accel: {x: 0, y: 0, z: 0}
   real_gyro: {x: 0, y: 0, z: 0}
 --- !u!114 &846476851
@@ -1537,7 +1537,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   topicName: imu_noise
   cube: {fileID: 7152562846768081385}
-  imu_model: high
+  imu_model: mti-100
   real_accel: {x: 0, y: 0, z: 0}
   real_gyro: {x: 0, y: 0, z: 0}
 --- !u!114 &1247480942
