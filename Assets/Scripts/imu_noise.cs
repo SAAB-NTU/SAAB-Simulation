@@ -62,8 +62,6 @@ public class imu_noise : MonoBehaviour
 
         Vector3 true_acceleration = cube.GetComponent<Cube>().imu_true_accel(); //get true acceleration
         Vector3 true_angular_velocity = cube.GetComponent<Cube>().imu_true_gyro(); //get true angular velocity
-        print(accel_err);
-        //print(true_acceleration);
         real_accel = accel_gen(true_acceleration,accel_err);
         real_gyro = gyro_gen(true_angular_velocity,gyro_err);
 

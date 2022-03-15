@@ -113,7 +113,6 @@ public class imu_model : MonoBehaviour
 
     public Dictionary<string,Dictionary<string,Dictionary<string,Vector3>>> getDictionary()
     {
-        print(gyro_high_accuracy);
         return IMU_dict;
     }
     
