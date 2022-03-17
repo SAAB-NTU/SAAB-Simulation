@@ -7,6 +7,10 @@ public class sonar : MonoBehaviour
     public GameObject preFab;
 
     public float sound_speed = 5f;
+
+    [SerializeField]
+    float distance;
+
     // Start is called before the first frame update
     GameObject beam;
     void Start()
@@ -24,6 +28,8 @@ public class sonar : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         float time_travelled = other.gameObject.GetComponent<single_beam_test>().time_travelled;
+        distance = time_travelled/2 * sound_speed;
+        Debug.Log(distance);
         Destroy(other.gameObject);
     }
 }
