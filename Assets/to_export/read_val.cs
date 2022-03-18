@@ -15,10 +15,10 @@ public class read_val : MonoBehaviour
 
     void Start() //save to csv
     {
-        var w = new StreamWriter("no_water(7).csv",true); //csv file saved to Asset folder
-        var line = "predicted_velocity,real_velocity,measured_velocity,predicted_error,measured_error,accepted_rays";
-        w.WriteLine(line);
-        w.Close();
+        // var w = new StreamWriter("no_water(7).csv",true); //csv file saved to Asset folder
+        // var line = "predicted_velocity,real_velocity,measured_velocity,predicted_error,measured_error,accepted_rays";
+        // w.WriteLine(line);
+        // w.Close();
     }
 
     // Update is called once per frame
@@ -31,9 +31,9 @@ public class read_val : MonoBehaviour
         measured_error = 100 * Mathf.Abs((real_velocity - measured_velocity )/ real_velocity);
         Accepted_rays=SONAR.k;
         //save to csv
-        var w = new StreamWriter("no_water(7).csv",true);
-        var line = string.Format("{0},{1},{2},{3},{4},{5}",predicted_velocity,real_velocity,measured_velocity,predicted_error,measured_error,Accepted_rays);
-        w.WriteLine(line);
-        w.Close();
+        // var w = new StreamWriter("no_water(7).csv",true);
+        // var line = string.Format("{0},{1},{2},{3},{4},{5}",predicted_velocity,real_velocity,measured_velocity,predicted_error,measured_error,Accepted_rays);
+        // w.WriteLine(line);
+        // w.Close();
     }
 }
