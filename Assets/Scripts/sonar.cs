@@ -15,7 +15,7 @@ public class sonar : MonoBehaviour
     GameObject beam;
     void Start()
     {
-        beam = Instantiate(preFab,new Vector3(-0.35f,0,0),Quaternion.identity);
+        beam = Instantiate(preFab,new Vector3(-0.3251f,0,0),Quaternion.identity);
         beam.GetComponent<single_beam_test>().velocity = sound_speed;
     }
 
