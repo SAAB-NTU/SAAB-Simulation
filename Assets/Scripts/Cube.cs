@@ -6,9 +6,9 @@ using RosMessageTypes.UnityRoboticsDemo;
 
 public class Cube : MonoBehaviour
 {
-    ROSConnection ros; 
-    public string topicName = "imu_true";
-    public string topicName2 = "pos_true";
+    // ROSConnection ros; 
+    // public string topicName = "imu_true";
+    // public string topicName2 = "pos_true";
 
     public Vector3 displacement = Vector3.zero;
     public Vector3 velocity = Vector3.zero;
@@ -23,9 +23,9 @@ public class Cube : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {	
-        ros = ROSConnection.GetOrCreateInstance();
-        ros.RegisterPublisher<ImuMsg>(topicName);
-        ros.RegisterPublisher<PointCloudMsg>(topicName2);
+        // ros = ROSConnection.GetOrCreateInstance();
+        // ros.RegisterPublisher<ImuMsg>(topicName);
+        // ros.RegisterPublisher<PointCloudMsg>(topicName2);
     }
     
     // Update is called once per frame
@@ -33,8 +33,8 @@ public class Cube : MonoBehaviour
     { 
         Rigidbody rb = GetComponent<Rigidbody>();
 
-        ImuMsg msg = new ImuMsg();
-        PointCloudMsg msg2 = new PointCloudMsg();
+        // ImuMsg msg = new ImuMsg();
+        // PointCloudMsg msg2 = new PointCloudMsg();
 
         Vector3 current_position = transform.position;
         Vector3 current_angle = transform.rotation.eulerAngles;
@@ -42,24 +42,24 @@ public class Cube : MonoBehaviour
         velocity = rb.velocity;
         acceleration = (velocity - last_velocity)/Time.fixedDeltaTime;
 
-        msg.a_x = acceleration[0];
-        msg.a_y = acceleration[1];
-        msg.a_z = acceleration[2];
+        // msg.a_x = acceleration[0];
+        // msg.a_y = acceleration[1];
+        // msg.a_z = acceleration[2];
         last_velocity = velocity;
         last_position = current_position;
         
         angular_velocity = rb.angularVelocity;
-        msg.w_x = angular_velocity[0];
-        msg.w_y = angular_velocity[1];
-        msg.w_z = angular_velocity[2];
+        // msg.w_x = angular_velocity[0];
+        // msg.w_y = angular_velocity[1];
+        // msg.w_z = angular_velocity[2];
         last_angle = current_angle;
 
-        ros.Publish(topicName,msg);
+        //ros.Publish(topicName,msg);
         
-        msg2.x = transform.position.x;
-        msg2.y = transform.position.y;
-        msg2.z = transform.position.z;
-        ros.Publish(topicName2,msg2);
+        // msg2.x = transform.position.x;
+        // msg2.y = transform.position.y;
+        // msg2.z = transform.position.z;
+        // ros.Publish(topicName2,msg2);
         
     }
 

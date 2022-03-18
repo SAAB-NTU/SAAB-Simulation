@@ -7,8 +7,8 @@ using RosMessageTypes.UnityRoboticsDemo;
 public class imu_noise : MonoBehaviour
 {
 
-    ROSConnection ros; 
-    public string topicName = "imu_noise";
+    // ROSConnection ros; 
+    // public string topicName = "imu_noise";
 
     int fs = 1000;
     int scale = 1;
@@ -39,8 +39,8 @@ public class imu_noise : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ros = ROSConnection.GetOrCreateInstance();
-        ros.RegisterPublisher<ImuMsg>(topicName);
+        // ros = ROSConnection.GetOrCreateInstance();
+        // ros.RegisterPublisher<ImuMsg>(topicName);
         
         Dictionary<string,Dictionary<string,Dictionary<string,Vector3>>> imu_models = cube.GetComponent<imu_model>().getDictionary();
         accel_err = imu_models[imu_model]["accel"];
@@ -59,21 +59,21 @@ public class imu_noise : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        ImuMsg msg = new ImuMsg();
+        //ImuMsg msg = new ImuMsg();
 
         Vector3 true_acceleration = cube.GetComponent<Cube>().imu_true_accel(); //get true acceleration
         Vector3 true_angular_velocity = cube.GetComponent<Cube>().imu_true_gyro(); //get true angular velocity
         real_accel = accel_gen(true_acceleration,accel_err);
         real_gyro = gyro_gen(true_angular_velocity,gyro_err);
 
-        msg.a_x = real_accel[0];
-        msg.a_y = real_accel[1];
-        msg.a_z = real_accel[2];
-        msg.w_x = real_gyro[0];
-        msg.w_y = real_gyro[1];
-        msg.w_z = real_gyro[2];
+        // msg.a_x = real_accel[0];
+        // msg.a_y = real_accel[1];
+        // msg.a_z = real_accel[2];
+        // msg.w_x = real_gyro[0];
+        // msg.w_y = real_gyro[1];
+        // msg.w_z = real_gyro[2];
 
-        ros.Publish(topicName,msg);
+        // ros.Publish(topicName,msg);
     }
 
     Vector3 accel_gen(Vector3 ref_a, Dictionary<string,Vector3>accel_err)

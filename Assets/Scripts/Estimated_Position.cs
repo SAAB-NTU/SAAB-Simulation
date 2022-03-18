@@ -6,9 +6,9 @@ using RosMessageTypes.UnityRoboticsDemo;
 
 public class Estimated_Position : MonoBehaviour
 {
-    ROSConnection ros; 
+    //ROSConnection ros; 
     public  GameObject cube;    
-    public string topicName = "pos_noise";
+    //public string topicName = "pos_noise";
 
     // int sample_size = 50; //mean filter
     // List<Vector3> window = new List<Vector3>{};
@@ -36,8 +36,8 @@ public class Estimated_Position : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {	
-        ros = ROSConnection.GetOrCreateInstance(); 
-        ros.RegisterPublisher<PointCloudMsg>(topicName);
+        // ros = ROSConnection.GetOrCreateInstance(); 
+        // ros.RegisterPublisher<PointCloudMsg>(topicName);
         transform.position = cube.transform.position;
         last_position = cube.transform.position;
     }
@@ -157,11 +157,11 @@ public class Estimated_Position : MonoBehaviour
         last_acceleration = acceleration;
         last_angular_velocity = angular_velocity;
 
-        PointCloudMsg msg = new PointCloudMsg(); //to plot tragectory in rviz
-        msg.x = transform.position.x;
-        msg.y = transform.position.y;
-        msg.z = transform.position.z;
-        ros.Publish(topicName,msg);
+        // PointCloudMsg msg = new PointCloudMsg(); //to plot tragectory in rviz
+        // msg.x = transform.position.x;
+        // msg.y = transform.position.y;
+        // msg.z = transform.position.z;
+        // ros.Publish(topicName,msg);
     }
 
     public Vector3 estimated_velocity()
