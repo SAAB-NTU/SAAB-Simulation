@@ -142,7 +142,8 @@ public class Estimated_Position : MonoBehaviour
 
         acceleration = imu_noise_accel;
         Vector3 displacement = Vector3.zero;
-        velocity = last_velocity + (((acceleration + last_acceleration)/2)  * time); 
+        velocity = last_velocity + (((acceleration + last_acceleration)/2)  * time);
+        //velocity = cube.GetComponent<kalman_filter>().estimated_velocity;
         displacement = ((velocity + last_velocity)/2)  * time;
         transform.position = last_position + displacement;
 

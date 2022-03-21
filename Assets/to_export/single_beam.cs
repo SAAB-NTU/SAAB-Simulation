@@ -22,7 +22,7 @@ public class single_beam : MonoBehaviour
         for (int i = 0; i < multiplier; ++i)
         {
             GameObject ray=Instantiate(prefab);
-            
+            //Instantiate probe 
             float value = -FOV/2 + i * (FOV /( multiplier-1));
             ray.transform.SetParent(gameObject.transform);
             // print(495*i/(5*multiplier));
