@@ -14,17 +14,13 @@ public class single_beam_test : MonoBehaviour
     {
         Rigidbody rb = GetComponent<Rigidbody>();
         //transform.Rotate(0,45,0);
-        rb.velocity = new Vector3(-Mathf.Cos(Mathf.PI/4),0,Mathf.Cos(Mathf.PI/4)) * velocity;
+        //rb.velocity = new Vector3(-Mathf.Cos(Mathf.PI/4),0,Mathf.Cos(Mathf.PI/4)) * velocity;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         time_travelled += Time.deltaTime;
-        
-    
-       
-    
     }
 
     void OnCollisionEnter(Collision collision)
@@ -37,17 +33,17 @@ public class single_beam_test : MonoBehaviour
         
 
  
-        // Print how many points are colliding with this transform
-        Debug.Log("Points colliding: " + collision.contacts.Length);
+        // // Print how many points are colliding with this transform
+        // Debug.Log("Points colliding: " + collision.contacts.Length);
 
-        // Print the normal of the first point in the collision.
-        Debug.Log("Normal of the first point: " + collision.contacts[0].normal);
+        // // Print the normal of the first point in the collision.
+        // Debug.Log("Normal of the first point: " + collision.contacts[0].normal);
 
-        // Draw a different colored ray for every normal in the collision
-        foreach (var item in collision.contacts)
-        {
-            Debug.DrawRay(item.point, item.normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 100f);
-        }
+        // // Draw a different colored ray for every normal in the collision
+        // foreach (var item in collision.contacts)
+        // {
+        //     Debug.DrawRay(item.point, item.normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 100f);
+        // }
     
 
 
