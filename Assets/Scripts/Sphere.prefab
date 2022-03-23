@@ -130,3 +130,4 @@ MonoBehaviour:
   velocity: 5
   normal_sph: {x: 0, y: 0, z: 0}
   time_travelled: 0
+  SNR: {x: 0, y: 0, z: 0}

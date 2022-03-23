@@ -11,26 +11,30 @@ public class single_beam_test : MonoBehaviour
     public Vector3 normal_sph;
     public float time_travelled = 0;
     public Vector3 SNR;
+    public float alpha = 0.0005f;
+    float scale;
     
     // Start is called before the first frame update
     void Start()
     {
         //Source Level (SL)
         transform.localScale = SNR;
+        scale = SNR.x/235f; //max 235dB from https://www.askqotd.com/sonar/
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         time_travelled += Time.deltaTime;
-        float r = time_travelled * velocity;
+        float r = Time.deltaTime * velocity;
 
         //Cylindrical Transmission Loss
-        SNR -=  0.000001f * Vector3.one *10*Mathf.Log(r,10);
+        //SNR -= Vector3.one * scale * Mathf.Abs(10*Mathf.Log(r,10));
 
         //Sound Absorption
         //Attenuation (dB) = alpha * R
-        //SNR -= 
+        //take alpha as 0.0005dB/m from website
+        SNR -= Vector3.one * alpha * r * scale; //e^-10
 
         //Noise Level (NL)
         //SNR -= 
@@ -47,8 +51,6 @@ public class single_beam_test : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-
-        Debug.Log("collided");
         Rigidbody rb = GetComponent<Rigidbody>();
         normal_sph = collision.contacts[0].normal;
         Vector3 _velocity = Vector3.Reflect(rb.velocity,normal_sph);
