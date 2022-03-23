@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.3537019, g: 0.35421434, b: 0.32106748, a: 1}
+  m_IndirectSpecularColor: {r: 0.44986403, g: 0.49992746, b: 0.57557636, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -323,7 +323,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!136 &494048697
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -489,14 +489,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
-  m_LocalRotation: {x: -0.011908901, y: -0, z: -0, w: 0.99992913}
+  m_LocalRotation: {x: 0.42871454, y: -0.8157753, z: 0.22128488, w: 0.31897905}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: -1.365, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 39.386, y: -154.668, z: -46.249}
 --- !u!1 &781354252
 GameObject:
   m_ObjectHideFlags: 0
@@ -594,7 +594,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6025042510540960104, guid: fccd0d41ba300a13faf34d552c48145d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6025042510540960104, guid: fccd0d41ba300a13faf34d552c48145d, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 6025042510540960105, guid: fccd0d41ba300a13faf34d552c48145d, type: 3}
       propertyPath: m_Constraints
@@ -744,7 +748,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 846476837}
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.824, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1246,7 +1250,7 @@ Rigidbody:
   m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 2
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 3
 --- !u!114 &1611554932
@@ -1264,6 +1268,10 @@ MonoBehaviour:
   preFab: {fileID: 6025042510540960104, guid: fccd0d41ba300a13faf34d552c48145d, type: 3}
   normal_ray: {x: 0, y: 0, z: 0}
   sound_speed: 2
+  frequency: 10
+  FOV: 30
+  multiplier: 30
+  SNR: 0.05
   distance: 0
 --- !u!1 &2000283282
 GameObject:
@@ -1601,7 +1609,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7152562846768081385}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.71, y: 0.14, z: 0.48}
+  m_LocalPosition: {x: -4.5, y: 0.14, z: 0.48}
   m_LocalScale: {x: 2, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
