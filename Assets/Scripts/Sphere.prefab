@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 6025042510540960119}
   - component: {fileID: 6025042510540960105}
   - component: {fileID: -6022109280044965711}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Sphere
-  m_TagString: Untagged
+  m_TagString: single_beam
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -128,4 +128,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocity: 5
+  normal_sph: {x: 0, y: 0, z: 0}
   time_travelled: 0
