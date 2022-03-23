@@ -1,3 +1,5 @@
+//Reference: https://dosits.org/science/advanced-topics/sonar-equation/
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,17 +10,39 @@ public class single_beam_test : MonoBehaviour
     public float velocity;
     public Vector3 normal_sph;
     public float time_travelled = 0;
+    public Vector3 SNR;
     
     // Start is called before the first frame update
     void Start()
     {
-
+        //Source Level (SL)
+        transform.localScale = SNR;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         time_travelled += Time.deltaTime;
+        float r = time_travelled * velocity;
+
+        //Cylindrical Transmission Loss
+        SNR -=  0.000001f * Vector3.one *10*Mathf.Log(r,10);
+
+        //Sound Absorption
+        //Attenuation (dB) = alpha * R
+        //SNR -= 
+
+        //Noise Level (NL)
+        //SNR -= 
+
+        if(SNR.x > 0)
+        {
+            transform.localScale = SNR;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void OnCollisionEnter(Collision collision)

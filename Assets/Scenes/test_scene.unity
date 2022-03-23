@@ -598,7 +598,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6025042510540960104, guid: fccd0d41ba300a13faf34d552c48145d, type: 3}
       propertyPath: m_TagString
-      value: single_beam
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 6025042510540960105, guid: fccd0d41ba300a13faf34d552c48145d, type: 3}
       propertyPath: m_Constraints
@@ -1268,6 +1268,7 @@ MonoBehaviour:
   preFab: {fileID: 6025042510540960104, guid: fccd0d41ba300a13faf34d552c48145d, type: 3}
   normal_ray: {x: 0, y: 0, z: 0}
   sound_speed: 2
+  frequency: 10
   FOV: 30
   multiplier: 3
   distance: 0
@@ -1607,7 +1608,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7152562846768081385}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -12.44, y: 0.14, z: 0.48}
+  m_LocalPosition: {x: -4.5, y: 0.14, z: 0.48}
   m_LocalScale: {x: 2, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
