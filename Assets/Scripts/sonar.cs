@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class sonar : MonoBehaviour
 {
     public GameObject preFab;
@@ -32,6 +31,7 @@ public class sonar : MonoBehaviour
             beam.GetComponent<Rigidbody>().velocity = new Vector3(x,y,z);
             angle -= FOV/(multiplier-1);
         }
+
     }
 
     // Update is called once per frame

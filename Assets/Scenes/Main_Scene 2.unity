@@ -601,6 +601,7 @@ GameObject:
   - component: {fileID: 846476849}
   - component: {fileID: 846476851}
   - component: {fileID: 846476852}
+  - component: {fileID: 846476853}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -775,8 +776,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e53418303914281aa13cbd5893c4e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicName: imu_true
-  topicName2: pos_true
   displacement: {x: 0, y: 0, z: 0}
   velocity: {x: 0, y: 0, z: 0}
   acceleration: {x: 0, y: 0, z: 0}
@@ -805,7 +804,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ab769a8a7b2feb8db6ab87642dd5eb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicName: imu_noise
   cube: {fileID: 846476837}
   imu_model: mti-100
   real_accel: {x: 0, y: 0, z: 0}
@@ -840,6 +838,20 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 846476837}
   m_Enabled: 1
+--- !u!114 &846476853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 846476837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 399c978f45a11c298b83da14dd81051a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cube: {fileID: 7152562846768081385}
+  sonar: {fileID: 846476837}
 --- !u!1 &850917147
 GameObject:
   m_ObjectHideFlags: 0
@@ -875,7 +887,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cube: {fileID: 7152562846768081385}
-  topicName: pos_noise
   velocity: {x: 0, y: 0, z: 0}
   acceleration: {x: 0, y: 0, z: 0}
   angular_velocity: {x: 0, y: 0, z: 0}
@@ -1536,7 +1547,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ab769a8a7b2feb8db6ab87642dd5eb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicName: imu_noise_2
   cube: {fileID: 7152562846768081385}
   imu_model: mti-100
   real_accel: {x: 0, y: 0, z: 0}
@@ -1932,7 +1942,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   frequency: 2
-  amplitude: 3
+  amplitude: 2
 --- !u!114 &7152562846768081378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1945,8 +1955,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e53418303914281aa13cbd5893c4e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicName: imu_true_2
-  topicName2: pos_true_2
   displacement: {x: 0, y: 0, z: 0}
   velocity: {x: 0, y: 0, z: 0}
   acceleration: {x: 0, y: 0, z: 0}
@@ -1984,7 +1992,7 @@ ConstantForce:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7152562846768081385}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Force: {x: -5, y: 0, z: 0}
   m_RelativeForce: {x: 0, y: 0, z: 0}
   m_Torque: {x: 0, y: 0, z: 0}

@@ -1267,10 +1267,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preFab: {fileID: 6025042510540960104, guid: fccd0d41ba300a13faf34d552c48145d, type: 3}
   normal_ray: {x: 0, y: 0, z: 0}
-  sound_speed: 2
+  sound_speed: 3
   frequency: 10
   FOV: 30
-  multiplier: 30
+  multiplier: 40
   SNR: 0.05
   distance: 0
 --- !u!1 &2000283282

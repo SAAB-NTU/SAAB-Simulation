@@ -29,7 +29,7 @@ public class single_beam_test : MonoBehaviour
         float r = Time.deltaTime * velocity;
 
         //Cylindrical Transmission Loss
-        //SNR -= Vector3.one * scale * Mathf.Abs(10*Mathf.Log(r,10));
+        SNR -= 0.001f * Vector3.one * scale * Mathf.Abs(10*Mathf.Log(r,10));
 
         //Sound Absorption
         //Attenuation (dB) = alpha * R
