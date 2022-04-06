@@ -852,6 +852,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cube: {fileID: 7152562846768081385}
   sonar: {fileID: 846476837}
+  Real: {fileID: 7152562846768081388}
+  predicted_velocity: 0
+  measured_velocity: 0
+  estimatedVel: 0
+  real_velocity: 0
 --- !u!1 &850917147
 GameObject:
   m_ObjectHideFlags: 0
@@ -866,7 +871,6 @@ GameObject:
   - component: {fileID: 850917151}
   - component: {fileID: 850917148}
   - component: {fileID: 850917155}
-  - component: {fileID: 850917156}
   m_Layer: 0
   m_Name: Estimated_Position
   m_TagString: Untagged
@@ -984,27 +988,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &850917156
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 850917147}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab7a7cc1f21e41e47bed31a92aec4f07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IMU: {fileID: 850917147}
-  Real: {fileID: 7152562846768081388}
-  SONAR: {fileID: 846476851}
-  predicted_velocity: 0
-  real_velocity: 0
-  measured_velocity: 0
-  predicted_error: 0
-  measured_error: 0
-  Accepted_rays: 0
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
