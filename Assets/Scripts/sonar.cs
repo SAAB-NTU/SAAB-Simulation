@@ -41,38 +41,23 @@ public class sonar : MonoBehaviour
         if (time >= (1/frequency))
         {
             float angle = FOV/(2);
-            for(int i = 0;i < multiplier;i++)
+            for(int a = 0;a < multiplier;a++)
             {
-                float x = -sound_speed * Mathf.Cos(Mathf.Deg2Rad*angle);
-                float y = 0;
-                float z = -sound_speed * Mathf.Sin(Mathf.Deg2Rad *angle);
-                GameObject beam = Instantiate(preFab);
-                beam.GetComponent<single_beam_test>().SNR = Vector3.one * SNR;
-                beam.GetComponent<Rigidbody>().velocity = new Vector3(x,y,z);
+                float angle2 = FOV/(2);
+                for(int i = 0;i < multiplier;i++)
+                {
+                    float x = -sound_speed * Mathf.Cos(Mathf.Deg2Rad*angle2);
+                    float y = sound_speed * Mathf.Sin(Mathf.Deg2Rad*angle);
+                    float z = -sound_speed * Mathf.Sin(Mathf.Deg2Rad *angle2);
+                    GameObject beam = Instantiate(preFab);
+                    beam.GetComponent<single_beam_test>().SNR = Vector3.one * SNR;
+                    beam.GetComponent<Rigidbody>().velocity = new Vector3(x,y,z);
+                    angle2 -= FOV/(multiplier-1);
+                }
                 angle -= FOV/(multiplier-1);
             }
             time = 0f;
         }
-        
-
-        //  //GetComponent<LineRenderer>().SetPosition(0, transform.position);
-        // RaycastHit hit;
-        // //Does the ray intersect any objects excluding the player layer
-        // if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.left), out hit, 30))
-        // {
-        //     Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.left) * hit.distance, Color.green);
-        //     // print(hit.point.z);
-        //     //GetComponent<LineRenderer>().SetPosition(1, transform.TransformDirection(Vector3.forward) * hit.distance- transform.position);
-        //     //hit_val = hit.distance;
-        //     // Debug.Log("Did Hit");
-        // }
-        // else
-        // {
-        //     Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.left) * 30, Color.white);
-        //     // Debug.Log("Did not Hit");
-        //     //hit_val = -1;
-        // }
-        // normal_ray=hit.normal;
     }
 
     void OnTriggerEnter(Collider other)
