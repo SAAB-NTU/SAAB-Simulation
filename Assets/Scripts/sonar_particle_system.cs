@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class sonar : MonoBehaviour
+
+public class sonar_particle_system : MonoBehaviour
 {
     public GameObject preFab;
     public Vector3 normal_ray;
@@ -31,7 +32,6 @@ public class sonar : MonoBehaviour
             beam.GetComponent<Rigidbody>().velocity = new Vector3(x,y,z);
             angle -= FOV/(multiplier-1);
         }
-
     }
 
     // Update is called once per frame
@@ -41,23 +41,19 @@ public class sonar : MonoBehaviour
         if (time >= (1/frequency))
         {
             float angle = FOV/(2);
-            for(int a = 0;a < multiplier;a++)
+            for(int i = 0;i < multiplier;i++)
             {
-                float angle2 = FOV/(2);
-                for(int i = 0;i < multiplier;i++)
-                {
-                    float x = -sound_speed * Mathf.Cos(Mathf.Deg2Rad*angle2);
-                    float y = sound_speed * Mathf.Sin(Mathf.Deg2Rad*angle);
-                    float z = -sound_speed * Mathf.Sin(Mathf.Deg2Rad *angle2);
-                    GameObject beam = Instantiate(preFab);
-                    beam.GetComponent<single_beam_test>().SNR = Vector3.one * SNR;
-                    beam.GetComponent<Rigidbody>().velocity = new Vector3(x,y,z);
-                    angle2 -= FOV/(multiplier-1);
-                }
+                float x = -sound_speed * Mathf.Cos(Mathf.Deg2Rad*angle);
+                float y = 0;
+                float z = -sound_speed * Mathf.Sin(Mathf.Deg2Rad *angle);
+                GameObject beam = Instantiate(preFab);
+                beam.GetComponent<single_beam_test>().SNR = Vector3.one * SNR;
+                beam.GetComponent<Rigidbody>().velocity = new Vector3(x,y,z);
                 angle -= FOV/(multiplier-1);
             }
             time = 0f;
         }
+        
     }
 
     void OnTriggerEnter(Collider other)
