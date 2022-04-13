@@ -5,21 +5,35 @@ using UnityEngine.EventSystems;
 
 public class raycast_script : MonoBehaviour
 {
-    public float hit_val;
-    private float sound_velocity,transmission_loss,SNR;
-    private float pH,max_depth,A1,P1,f1,f,A2,P2,f2,A3,P3; //for transmission loss
-    
+    public float hit_val,SNR;
+    private float sound_velocity,transmission_loss,beam_pattern,reverb_strength,target_strength,RL_V,IR;
+    private float A1,P1,f1,A2,P2,f2,A3,P3; //for transmission loss
+    private float sp; //volume reverberation coefficient
+    public float frequency = 115; //kHz
+    public float source_level = 220; //source level dB
+    public float pH = 0;// water acidity (moles per litre)
+
     [Range(0f,35f)] 
-    public float temp; //celcius
+    public float temp; //degree celcius
 
     [Range(0f,45f)]
     public float salinity; //ppt
 
     [Range(0f,1000f)]
-    public float depth; //meters
+    public float max_depth; //meters
 
+    [Range(0f,1000f)]
+    public float depth; //meters
+    public float theta = 30f; //horizontal beam angle for beam pattern
+    public float phi = 2f; //vertical beam angle for beam pattern
+    public float horizontal_len = 0.048f; //meters , ping sonar diameter
+    public float vertical_len = 0.035f; // meters , ping sonar height
+    public float wavelength;
+    public enum Sp{Low,Moderate,High} // represents particle density
+    public Sp Volume_Reverb;
     private void Start()
     {
+        
         //initialize parameters for SNR calculation
         sound_velocity = 1449.2f + 4.6f*temp- 0.055f*temp*temp + 0.00029f*Mathf.Pow(temp,3f) + (1.34f-0.010f*temp)*(salinity - 35f) + 0.016f*depth;
         A1 = (8.696f/sound_velocity)*Mathf.Pow(10f,0.78f*pH -5f);
@@ -36,11 +50,25 @@ public class raycast_script : MonoBehaviour
             A3 = 3.964f*Mathf.Pow(10f,-4f)-1.146f*Mathf.Pow(10f,-5f)*temp + 1.45f*Mathf.Pow(10f,-7f)*temp*temp -6.5f*Mathf.Pow(10f,-10f)*Mathf.Pow(temp,3f);
         }
         P3 = 1f - 3.83f*Mathf.Pow(10f,-5f)*max_depth + 4.9f*Mathf.Pow(10f,-10f)*max_depth*max_depth;
+
+        if(Volume_Reverb == Sp.Low)
+        {
+            sp = -50f;
+        }
+        else if(Volume_Reverb == Sp.Moderate)
+        {
+            sp = -70f;
+        }
+        else if(Volume_Reverb == Sp.High)
+        {
+            sp = -90f;
+        }
+        wavelength = sound_velocity/frequency;
     }
     private void FixedUpdate()
     {
         RaycastHit hit;
-        //Does the ray intersect any objects excluding the player layer
+        // Does the ray intersect any objects excluding the player layer
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 30))
         {
             Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.green);
@@ -49,13 +77,28 @@ public class raycast_script : MonoBehaviour
             // Debug.Log("Did Hit");
 
             //SNR calculation
-            float alphaW = (A1*P1*f1*f*f)/(f1*f1 + f*f) + (A2*P2*f2*f*f)/(f2*f2 + f*f) + A3*P3*f*f;
+            float alphaW = (A1*P1*f1*frequency*frequency)/(f1*f1 + frequency*frequency) + (A2*P2*f2*frequency*frequency)/(f2*f2 + frequency*frequency) + A3*P3*frequency*frequency;
 
             float alphaT = ((2f*hit_val - 1f) * alphaW)/1000f;
             
-            float SL = 40f*Mathf.Log(hit_val,10f);
+            float S_L = 40f*Mathf.Log(hit_val,10f);
 
-            transmission_loss = SL + alphaT;
+            transmission_loss = S_L + alphaT;
+
+
+            //** sinc(x) = sin(x)/x **
+
+            float alpha = Mathf.Sin(Mathf.Sin(Mathf.Deg2Rad*theta)*Mathf.Cos(Mathf.Deg2Rad*phi)*horizontal_len/wavelength)/(Mathf.Sin(Mathf.Deg2Rad*theta)*Mathf.Cos(Mathf.Deg2Rad*phi)*horizontal_len/wavelength);
+
+            float beta = Mathf.Sin(Mathf.Sin(Mathf.Deg2Rad*phi)*vertical_len/wavelength)/(Mathf.Sin(Mathf.Deg2Rad*phi)*vertical_len/wavelength);
+
+            beam_pattern = 20*Mathf.Log(alpha*beta,10f);
+
+            // volume backscatter
+            // float V //ensonified volume
+            // float SV = sp + 7*Mathf.Log(frequency,10f);
+            // reverb_strength = SV + 10*Mathf.Log(V,10f);
+            // RL_V = source_level - transmission_loss + beam_pattern*2 + reverb_strength; //main equation
             
         }
         else

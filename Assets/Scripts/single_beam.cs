@@ -11,8 +11,6 @@ public class single_beam : MonoBehaviour
     public int k;
     List<float> vals,bef,aft;
     List<GameObject> coords;
-
-    float prev_distance = 0f;
     void Start()
     {
         tot = 0;
