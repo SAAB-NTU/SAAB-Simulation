@@ -28,8 +28,7 @@ public class kalman_filter : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        float real_velocity = Mathf.Abs(Real.velocity.x);
-
+        real_velocity = Mathf.Abs(Real.velocity.x);
         //predict step
         float time = Time.fixedDeltaTime;
         float imu_std = 0.05f;
@@ -44,11 +43,11 @@ public class kalman_filter : MonoBehaviour
 
         //update step
         float sonar_std = 0.05f;
-        measured_velocity = sonar.GetComponent<single_beam>().tot;
+        measured_velocity = Mathf.Abs(sonar.GetComponent<single_beam>().tot);
         (float mean,float var) likelihood = (measured_velocity,sonar_std * sonar_std);
         float residual = likelihood.mean - prior.mean;
         float kalmanGain = (prior.var / prior.var + likelihood.var);
-        estimatedVel = prior.mean + kalmanGain * residual;
+        estimatedVel = Mathf.Abs(prior.mean + kalmanGain * residual);
         float estimatedError = (1-kalmanGain) * prior.var;
         posterior = (estimatedVel,estimatedError);
 

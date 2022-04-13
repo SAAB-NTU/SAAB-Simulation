@@ -58,6 +58,7 @@ public class raycast_script2 : MonoBehaviour
             {
                 //print("It's ok");
                 //do nothing
+                Debug.Log(e);
             }
             
         }

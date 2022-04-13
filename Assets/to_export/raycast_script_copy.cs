@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class raycast_script : MonoBehaviour
+public class raycast_script_copy : MonoBehaviour
 {
     public float hit_val;
 
