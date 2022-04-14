@@ -99,6 +99,12 @@ public class raycast_script : MonoBehaviour
             // float SV = sp + 7*Mathf.Log(frequency,10f);
             // reverb_strength = SV + 10*Mathf.Log(V,10f);
             // RL_V = source_level - transmission_loss + beam_pattern*2 + reverb_strength; //main equation
+
+            // reflected intensity 
+            //target_strength = 
+            //IR = source_level - transmission_loss + beam_pattern*2 + target_strength;
+
+            SNR = source_level - transmission_loss;
             
         }
         else

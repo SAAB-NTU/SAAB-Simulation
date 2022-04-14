@@ -46,6 +46,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hit_val: 0
+  SNR: 0
+  frequency: 115
+  source_level: 220
+  pH: 0
+  temp: 22.5
+  salinity: 22.1
+  max_depth: 310
+  depth: 316
+  theta: 30
+  phi: 2
+  horizontal_len: 0.048
+  vertical_len: 0.035
+  wavelength: 0
+  Volume_Reverb: 0
 --- !u!120 &2789090962797059895
 LineRenderer:
   m_ObjectHideFlags: 0

@@ -27,7 +27,8 @@ public class single_beam : MonoBehaviour
             ray.transform.localRotation=(Quaternion.Euler(0,value,0));
             GameObject coordinate = Instantiate(coord);
             coordinate.transform.SetParent(graph.transform);
-            vals.Add(value);         
+            vals.Add(value);
+            Debug.Log(value);         
             coords.Add(coordinate);
         }
        
@@ -41,11 +42,11 @@ public class single_beam : MonoBehaviour
             {
                 Vector2 ini=coords[i].GetComponent<RectTransform>().anchoredPosition;
                
-                float r = scale * transform.GetChild(i).GetComponent<raycast_script>().hit_val;
-                float cos_theta = Mathf.Cos(Mathf.PI*(vals[i]/180));
-                float sin_theta = Mathf.Sin(Mathf.PI * (vals[i] / 180));
-                aft.Add(r*cos_theta/scale);
-                coords[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(offset+(r *cos_theta),Mathf.Abs(r * sin_theta));
+                float r = scale*transform.GetChild(i).GetComponent<raycast_script>().hit_val;
+                float cos_theta = Mathf.Cos(Mathf.Deg2Rad*vals[i]);
+                float sin_theta = Mathf.Sin(Mathf.Deg2Rad*vals[i]);
+                aft.Add(r*cos_theta);
+                coords[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(r*sin_theta,r*cos_theta);
             }
 
             catch(System.Exception e)
