@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
+using Unity.Robotics.ROSTCPConnector; 
+using RosMessageTypes.UnityRoboticsDemo; 
 
 public class single_beam : MonoBehaviour
 {
@@ -10,13 +12,18 @@ public class single_beam : MonoBehaviour
     public float FOV,multiplier,scale,offset,tot,tolerance;
     public int k;
     List<float> vals,bef,aft;
+    //float[] aft2;
     List<GameObject> coords;
+    //ROSConnection ros; 
+    //private string topicName = "sonar_measurements";
     void Start()
     {
+        // ros = ROSConnection.GetOrCreateInstance(); 
+        // ros.RegisterPublisher<SonarMsg>(topicName);
+
         tot = 0;
         vals = new List<float>();
         bef = new List<float>();
-        aft = new List<float>();
         coords = new List<GameObject>();
         for (int i = 0; i < multiplier; ++i)
         {
@@ -42,11 +49,11 @@ public class single_beam : MonoBehaviour
             {
                 Vector2 ini=coords[i].GetComponent<RectTransform>().anchoredPosition;
                
-                float r = scale*transform.GetChild(i).GetComponent<raycast_script>().hit_val;
+                float r = transform.GetChild(i).GetComponent<raycast_script>().hit_val;
                 float cos_theta = Mathf.Cos(Mathf.Deg2Rad*vals[i]);
                 float sin_theta = Mathf.Sin(Mathf.Deg2Rad*vals[i]);
                 aft.Add(r*cos_theta);
-                coords[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(r*sin_theta,r*cos_theta);
+                coords[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(scale*r*sin_theta,scale*r*cos_theta);
             }
 
             catch(System.Exception e)
@@ -56,6 +63,7 @@ public class single_beam : MonoBehaviour
             
         }
 
+        //aft2 = new float[aft.Count];
         if (bef.Count>0)
         {
             tot = 0;
@@ -68,6 +76,7 @@ public class single_beam : MonoBehaviour
                     k += 1;
                     tot += (Mathf.Abs(diff));
                 }
+                //aft2[i] = aft[i];
             }
             if(k!=0)
             tot /= k;
@@ -76,6 +85,10 @@ public class single_beam : MonoBehaviour
 
         }
         bef = aft;
+
+        // SonarMsg sonar_msg = new SonarMsg();
+        // sonar_msg.ranges = aft2;
+        // ros.Publish(topicName,sonar_msg);
     }
 
 }
