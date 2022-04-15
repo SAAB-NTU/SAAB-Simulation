@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 
 public class raycast_script : MonoBehaviour
 {
-    public float hit_val,SNR;
-    private float wavelength,sound_velocity,transmission_loss,beam_pattern,reverb_strength,target_strength,RL_V,IR;
+    public float hit_val,SNR,beam_pattern,transmission_loss;
+    private float wavelength,sound_velocity,reverb_strength,target_strength,RL_V,IR;
     private float pH_moles,A1,P1,f1,A2,P2,f2,A3,P3; //for transmission loss
     private float sp; //volume reverberation coefficient
     public float frequency = 115; //kHz
@@ -37,7 +37,7 @@ public class raycast_script : MonoBehaviour
         
         //initialize parameters for SNR calculation
         sound_velocity = 1449.2f + 4.6f*temp- 0.055f*temp*temp + 0.00029f*Mathf.Pow(temp,3f) + (1.34f-0.010f*temp)*(salinity - 35f) + 0.016f*depth;
-        wavelength = sound_velocity/(frequency*1000f);
+        wavelength = sound_velocity/(frequency*1000);
         pH_moles = Mathf.Pow(10f,-pH_level);
         A1 = (8.696f/sound_velocity)*Mathf.Pow(10f,0.78f*pH_moles -5f);
         f1 = 2.8f*Mathf.Sqrt(salinity/35f)*Mathf.Pow(10f,4f-(1245f/(temp+273f)));

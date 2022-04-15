@@ -49,8 +49,7 @@ MonoBehaviour:
   SNR: 0
   frequency: 115
   source_level: 220
-  pH_no_units: 7.8
-  pH_moles: 0
+  pH_level: 0
   temp: 35
   salinity: 45
   max_depth: 1000
@@ -59,7 +58,6 @@ MonoBehaviour:
   phi: 2
   horizontal_len: 0.048
   vertical_len: 0.035
-  wavelength: 0
   Volume_Reverb: 0
 --- !u!120 &2789090962797059895
 LineRenderer:
