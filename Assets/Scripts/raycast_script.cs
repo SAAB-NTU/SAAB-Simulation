@@ -6,12 +6,14 @@ using UnityEngine.EventSystems;
 public class raycast_script : MonoBehaviour
 {
     public float hit_val,SNR;
-    private float sound_velocity,transmission_loss,beam_pattern,reverb_strength,target_strength,RL_V,IR;
-    private float A1,P1,f1,A2,P2,f2,A3,P3; //for transmission loss
+    private float wavelength,sound_velocity,transmission_loss,beam_pattern,reverb_strength,target_strength,RL_V,IR;
+    private float pH_moles,A1,P1,f1,A2,P2,f2,A3,P3; //for transmission loss
     private float sp; //volume reverberation coefficient
     public float frequency = 115; //kHz
     public float source_level = 220; //source level dB
-    public float pH = 0;// water acidity (moles per litre)
+
+    [Range(7.2f,7.8f)] 
+    public float pH_level;// water acidity (moles per litre) source: https://sso.agc.gov.sg/SL-Rev/95-RG10/Published/20000131?DocDate=19930401
 
     [Range(0f,35f)] 
     public float temp; //degree celcius
@@ -28,7 +30,6 @@ public class raycast_script : MonoBehaviour
     public float phi = 2f; //vertical beam angle for beam pattern
     public float horizontal_len = 0.048f; //meters , ping sonar diameter
     public float vertical_len = 0.035f; // meters , ping sonar height
-    public float wavelength;
     public enum Sp{Low,Moderate,High} // represents particle density
     public Sp Volume_Reverb;
     private void Start()
@@ -36,8 +37,11 @@ public class raycast_script : MonoBehaviour
         
         //initialize parameters for SNR calculation
         sound_velocity = 1449.2f + 4.6f*temp- 0.055f*temp*temp + 0.00029f*Mathf.Pow(temp,3f) + (1.34f-0.010f*temp)*(salinity - 35f) + 0.016f*depth;
-        A1 = (8.696f/sound_velocity)*Mathf.Pow(10f,0.78f*pH -5f);
+        wavelength = sound_velocity/(frequency*1000f);
+        pH_moles = Mathf.Pow(10f,-pH_level);
+        A1 = (8.696f/sound_velocity)*Mathf.Pow(10f,0.78f*pH_moles -5f);
         f1 = 2.8f*Mathf.Sqrt(salinity/35f)*Mathf.Pow(10f,4f-(1245f/(temp+273f)));
+        P1 = 1f;
         A2 = 21.44f*(salinity/sound_velocity)*(1f+0.025f*temp);
         f2 = (8.17f*Mathf.Pow(10f,8f-(1990f/(temp+273f))))/(1f+0.0018f*(salinity-35f));
         P2 = 1f-1.37f*Mathf.Pow(10f,-4f)*max_depth + 6.2f*Mathf.Pow(10f,-9f)*max_depth*max_depth;
@@ -63,7 +67,6 @@ public class raycast_script : MonoBehaviour
         {
             sp = -90f;
         }
-        wavelength = sound_velocity/frequency;
     }
     private void FixedUpdate()
     {
@@ -88,9 +91,9 @@ public class raycast_script : MonoBehaviour
 
             //** sinc(x) = sin(x)/x **
 
-            float alpha = Mathf.Sin(Mathf.Sin(Mathf.Deg2Rad*theta)*Mathf.Cos(Mathf.Deg2Rad*phi)*horizontal_len/wavelength)/(Mathf.Sin(Mathf.Deg2Rad*theta)*Mathf.Cos(Mathf.Deg2Rad*phi)*horizontal_len/wavelength);
+            float alpha = Mathf.Sin((Mathf.Sin(Mathf.Deg2Rad*theta))*(Mathf.Cos(Mathf.Deg2Rad*phi))*(horizontal_len/wavelength))/((Mathf.Sin(Mathf.Deg2Rad*theta))*(Mathf.Cos(Mathf.Deg2Rad*phi))*(horizontal_len/wavelength));
 
-            float beta = Mathf.Sin(Mathf.Sin(Mathf.Deg2Rad*phi)*vertical_len/wavelength)/(Mathf.Sin(Mathf.Deg2Rad*phi)*vertical_len/wavelength);
+            float beta = Mathf.Sin((Mathf.Sin(Mathf.Deg2Rad*phi))*(vertical_len/wavelength))/((Mathf.Sin(Mathf.Deg2Rad*phi))*(vertical_len/wavelength));
 
             beam_pattern = 20*Mathf.Log(alpha*beta,10f);
 
@@ -104,7 +107,7 @@ public class raycast_script : MonoBehaviour
             //target_strength = 
             //IR = source_level - transmission_loss + beam_pattern*2 + target_strength;
 
-            SNR = source_level - transmission_loss;
+            SNR = source_level - transmission_loss + beam_pattern*2;
             
         }
         else

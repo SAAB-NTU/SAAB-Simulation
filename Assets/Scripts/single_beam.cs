@@ -43,6 +43,7 @@ public class single_beam : MonoBehaviour
     private void FixedUpdate()
     {
         aft = new List<float>();
+        SNR_array = new List<float>();
         for (int i=0;i<transform.childCount;++i)
         {
             try
@@ -50,6 +51,7 @@ public class single_beam : MonoBehaviour
                 Vector2 ini=coords[i].GetComponent<RectTransform>().anchoredPosition;
                
                 float r = transform.GetChild(i).GetComponent<raycast_script>().hit_val;
+                float SNR = transform.GetChild(i).GetComponent<raycast_script>().SNR;
                 float cos_theta = Mathf.Cos(Mathf.Deg2Rad*vals[i]);
                 float sin_theta = Mathf.Sin(Mathf.Deg2Rad*vals[i]);
                 aft.Add(r*cos_theta);

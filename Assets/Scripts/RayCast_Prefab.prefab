@@ -49,11 +49,12 @@ MonoBehaviour:
   SNR: 0
   frequency: 115
   source_level: 220
-  pH: 0
-  temp: 22.5
-  salinity: 22.1
-  max_depth: 310
-  depth: 316
+  pH_no_units: 7.8
+  pH_moles: 0
+  temp: 35
+  salinity: 45
+  max_depth: 1000
+  depth: 1000
   theta: 30
   phi: 2
   horizontal_len: 0.048
