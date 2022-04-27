@@ -47,13 +47,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hit_val: 0
   SNR: 0
+  beam_pattern: 0
+  transmission_loss: 0
   frequency: 115
   source_level: 220
-  pH_level: 0
+  pH_level: 7.503
   temp: 35
   salinity: 45
-  max_depth: 1000
-  depth: 1000
+  max_depth: 8
+  depth: 2
   theta: 30
   phi: 2
   horizontal_len: 0.048

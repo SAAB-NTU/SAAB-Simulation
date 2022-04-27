@@ -87,6 +87,8 @@ public class raycast_script : MonoBehaviour
             float S_L = 40f*Mathf.Log(hit_val,10f);
 
             transmission_loss = S_L + alphaT;
+            Debug.Log("sl"+S_L);
+            Debug.Log("alpha"+alphaT);
 
 
             //** sinc(x) = sin(x)/x **

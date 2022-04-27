@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
 using RosMessageTypes.UnityRoboticsDemo;
@@ -26,6 +27,7 @@ public class imu_noise : MonoBehaviour
 
     public  GameObject cube; 
     public string imu_model = "mti-100";
+    public float timestamp = 0f;
     public Vector3 real_accel = Vector3.zero;
     public Vector3 real_gyro = Vector3.zero;
 
@@ -54,17 +56,33 @@ public class imu_noise : MonoBehaviour
         a_gyro = acceleration_param[0];
         b_gyro = acceleration_param[1];
 
+        //writing into csv files
+        var w = new StreamWriter("imu.csv",true); //csv file saved to Asset folder
+        var line = "timestamp,accX,accY,accZ,gyrX,gyrY,gyrZ";
+        w.WriteLine(line);
+        w.Close();
+
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         //ImuMsg msg = new ImuMsg();
-
+        timestamp += Time.fixedDeltaTime;
         Vector3 true_acceleration = cube.GetComponent<Cube>().imu_true_accel(); //get true acceleration
         Vector3 true_angular_velocity = cube.GetComponent<Cube>().imu_true_gyro(); //get true angular velocity
         real_accel = accel_gen(true_acceleration,accel_err);
         real_gyro = gyro_gen(true_angular_velocity,gyro_err);
+
+        Debug.Log(timestamp);
+        Debug.Log(real_accel);
+        Debug.Log(real_gyro);
+
+        // Write to CSV
+        var w = new StreamWriter("imu.csv",true);
+        var line = string.Format("{0},{1},{2},{3},{4},{5},{6}",timestamp,real_accel[0],real_accel[1],real_accel[2],real_gyro[0],real_gyro[1],real_gyro[2]);
+        w.WriteLine(line);
+        w.Close();
 
         // msg.a_x = real_accel[0];
         // msg.a_y = real_accel[1];

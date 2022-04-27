@@ -102,7 +102,7 @@ public class single_beam : MonoBehaviour
         // w.WriteLine(line);
         // w.Close();
 
-        aft2 = new float[aft.Count];
+        //aft2 = new float[aft.Count];
         if (bef.Count>0)
         {
             tot = 0;
