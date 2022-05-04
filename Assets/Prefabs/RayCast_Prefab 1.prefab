@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -5917110857253366686}
   - component: {fileID: 2789090962797059895}
   m_Layer: 0
-  m_Name: RayCast_Prefab
+  m_Name: RayCast_Prefab 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

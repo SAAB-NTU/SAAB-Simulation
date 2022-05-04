@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3889525099549690310}
-  - component: {fileID: -5917110857253366686}
   - component: {fileID: 2789090962797059895}
+  - component: {fileID: 5349374487313323473}
   m_Layer: 0
   m_Name: RayCast_Prefab
   m_TagString: Untagged
@@ -33,19 +33,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-5917110857253366686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1679950953551588644}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c774119669640e2478640776a2bb4528, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hit_val: 0
 --- !u!120 &2789090962797059895
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -145,3 +132,31 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &5349374487313323473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1679950953551588644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 683d59d3734e6b637acf9ed8b7644c96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hit_val: 0
+  SNR: 0
+  beam_pattern: 0
+  transmission_loss: 0
+  frequency: 115
+  source_level: 220
+  pH_level: 0
+  temp: 0
+  salinity: 0
+  max_depth: 0
+  depth: 0
+  theta: 30
+  phi: 2
+  horizontal_len: 0.048
+  vertical_len: 0.035
+  Volume_Reverb: 0
