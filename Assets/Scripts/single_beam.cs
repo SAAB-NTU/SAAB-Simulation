@@ -9,8 +9,8 @@ using RosMessageTypes.UnityRoboticsDemo;
 
 public class single_beam : MonoBehaviour
 {
-    List<float> bp_vals, tl_vals, rev_vals;
-    protected float SNR, beam_pattern, transmission_loss;
+    List<float>  rev_vals;
+    protected float  beam_pattern, transmission_loss;
     protected float wavelength, sound_velocity, reverb_strength, target_strength, RL_V, IR;
     protected float pH_moles, A1, P1, f1, A2, P2, f2, A3, P3; //for transmission loss
     private float sp; //volume reverberation coefficient
@@ -118,13 +118,14 @@ public class single_beam : MonoBehaviour
             GameObject coordinate = Instantiate(coord);
             coordinate.transform.SetParent(graph.transform);
             vals.Add(value);
-            Debug.Log(value);         
+           // Debug.Log(value);         
             coords.Add(coordinate);
         }
        
     }
     private void FixedUpdate()
     {
+        rev_vals = new List<float>();
         aft = new List<float>();
         SNR_array = new List<float>();
         beam_array = new List<float>();
@@ -136,47 +137,49 @@ public class single_beam : MonoBehaviour
                 Vector2 ini=coords[i].GetComponent<RectTransform>().anchoredPosition;
                
                 float r = transform.GetChild(i).GetComponent<raycast_script>().hit_val;
+                if (r != 0)
+                {
+                    float cos_theta = Mathf.Cos(Mathf.Deg2Rad * vals[i]);
+                    float sin_theta = Mathf.Sin(Mathf.Deg2Rad * vals[i]);
 
-                float cos_theta = Mathf.Cos(Mathf.Deg2Rad*vals[i]);
-                float sin_theta = Mathf.Sin(Mathf.Deg2Rad*vals[i]);
-
-                // adding ray properties to respective lists -> distance, SNR, beam pattern, transmission loss 
-                aft.Add(r*cos_theta);
-                
-                transmission_array.Add(transmission_loss);
-                coords[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(scale*r*sin_theta,scale*r*cos_theta);
+                    // adding ray properties to respective lists -> distance, SNR, beam pattern, transmission loss 
+                    aft.Add(r * cos_theta);
 
 
-                float alphaW = (A1 * P1 * f1 * frequency * frequency) / (f1 * f1 + frequency * frequency) + (A2 * P2 * f2 * frequency * frequency) / (f2 * f2 + frequency * frequency) + A3 * P3 * frequency * frequency;
-
-                float alphaT = ((2f * r / scale - 1f) * alphaW) / 1000f;
-
-                float S_L = 40f * Mathf.Log(r / scale, 10f);
-
-                transmission_loss = S_L + alphaT;
-                Debug.Log("sl" + S_L);
-                Debug.Log("alpha" + alphaT);
+                    coords[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(scale * r * sin_theta, scale * r * cos_theta);
 
 
-                //** sinc(x) = sin(x)/x **
+                    float alphaW = (A1 * P1 * f1 * frequency * frequency) / (f1 * f1 + frequency * frequency) + (A2 * P2 * f2 * frequency * frequency) / (f2 * f2 + frequency * frequency) + A3 * P3 * frequency * frequency;
 
-                float alpha = Mathf.Sin((Mathf.Sin(Mathf.Deg2Rad * theta)) * (Mathf.Cos(Mathf.Deg2Rad * phi)) * (horizontal_len / wavelength)) / ((Mathf.Sin(Mathf.Deg2Rad * theta)) * (Mathf.Cos(Mathf.Deg2Rad * phi)) * (horizontal_len / wavelength));
+                    float alphaT = ((2f * r / scale - 1f) * alphaW) / 1000f;
 
-                float beta = Mathf.Sin((Mathf.Sin(Mathf.Deg2Rad * phi)) * (vertical_len / wavelength)) / ((Mathf.Sin(Mathf.Deg2Rad * phi)) * (vertical_len / wavelength));
+                    float S_L = 40f * Mathf.Log(r / scale, 10f);
+                    print(r / scale);
+                    transmission_loss = S_L + alphaT;
+                    transmission_array.Add(transmission_loss);
+                    // Debug.Log("sl" + S_L);
+                    //Debug.Log("alpha" + alphaT);
 
-                beam_pattern = 20 * Mathf.Log(alpha * beta, 10f);
 
-                //SNR calculation
+                    //** sinc(x) = sin(x)/x **
 
-                SNR_array.Add(SNR);
-                beam_array.Add(beam_pattern);
-              //  tl_vals.Add(transmission_loss);
+                    float alpha = Mathf.Sin((Mathf.Sin(Mathf.Deg2Rad * theta)) * (Mathf.Cos(Mathf.Deg2Rad * phi)) * (horizontal_len / wavelength)) / ((Mathf.Sin(Mathf.Deg2Rad * theta)) * (Mathf.Cos(Mathf.Deg2Rad * phi)) * (horizontal_len / wavelength));
+
+                    float beta = Mathf.Sin((Mathf.Sin(Mathf.Deg2Rad * phi)) * (vertical_len / wavelength)) / ((Mathf.Sin(Mathf.Deg2Rad * phi)) * (vertical_len / wavelength));
+
+                    beam_pattern = 20 * Mathf.Log(alpha * beta, 10f);
+
+                    //SNR calculation
+
+                    //SNR_array.Add(SNR);
+                    //beam_array.Add(beam_pattern);
+                }
 
             }
 
             catch(System.Exception e)
             {
-                Debug.Log(e);
+                //Debug.Log(e);
             }
             
         }
@@ -208,6 +211,7 @@ public class single_beam : MonoBehaviour
             tot = 0;
             k = 0;
             RL_V_val_i = 0;
+            rev_vals = new List<float>();
             float V=0;
             for (int i = 0; i < aft.Count; ++i)
             {
@@ -219,12 +223,15 @@ public class single_beam : MonoBehaviour
                 { 
                     V = (4 * Mathf.PI / 3) * (Mathf.Pow(aft[i + 1], 3) - Mathf.Pow(aft[i], 3)); //ensonified volume   
                 }
-
+                
                 float SV = sp + 7 * Mathf.Log(frequency, 10f);
                 reverb_strength = SV + 10 * Mathf.Log(V, 10f);
-                RL_V = source_level - transmission_loss + beam_pattern * 2 + reverb_strength;
-                rev_vals.Add(RL_V);
-                RL_V_val_i += Mathf.Pow(10, (RL_V * (aft[i] - (i - 1) * sonar_resolution) / 10));
+                RL_V = source_level - transmission_array[i] + beam_pattern * 2 + reverb_strength;
+                
+                rev_vals.Add(Mathf.Pow(10, (RL_V * (aft[i] - (i - 1) * sonar_resolution) / 10)));
+                print(transmission_array[i]);
+                if (float.IsInfinity(rev_vals[rev_vals.Count - 1]) == false && float.IsNaN(rev_vals[rev_vals.Count - 1]) == false)
+                RL_V_val_i += (rev_vals[rev_vals.Count-1]);
 
                 float diff = aft[i] - bef[i];
                 if (Mathf.Abs(diff) > tolerance)
@@ -255,7 +262,7 @@ public class single_beam : MonoBehaviour
         //target_strength = 
         //IR = source_level - transmission_loss + beam_pattern*2 + target_strength;
 
-        SNR = source_level - transmission_loss + beam_pattern * 2;
+        //SNR = source_level - transmission_loss + beam_pattern * 2+RL_V_val_n;
         // print(vals.Count);
         // vals = new List<float>();
         // print(hits.Length);

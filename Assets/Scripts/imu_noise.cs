@@ -74,9 +74,9 @@ public class imu_noise : MonoBehaviour
         real_accel = accel_gen(true_acceleration,accel_err);
         real_gyro = gyro_gen(true_angular_velocity,gyro_err);
 
-        Debug.Log(timestamp);
-        Debug.Log(real_accel);
-        Debug.Log(real_gyro);
+        //Debug.Log(timestamp);
+        //Debug.Log(real_accel);
+        //Debug.Log(real_gyro);
 
         // Write to CSV
         var w = new StreamWriter("imu.csv",true);
