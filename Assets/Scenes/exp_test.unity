@@ -857,7 +857,7 @@ MonoBehaviour:
   coord: {fileID: 445070466}
   graph: {fileID: 602586544}
   FOV: 30
-  multiplier: 100
+  multiplier: 10
   scale: 10
   offset: 250
   tot: 0

@@ -154,7 +154,7 @@ public class single_beam : MonoBehaviour
                     float alphaT = ((2f * r / scale - 1f) * alphaW) / 1000f;
 
                     float S_L = 40f * Mathf.Log(r / scale, 10f);
-                    print(r / scale);
+                    //print(r / scale);
                     transmission_loss = S_L + alphaT;
                     transmission_array.Add(transmission_loss);
                     // Debug.Log("sl" + S_L);
@@ -229,7 +229,7 @@ public class single_beam : MonoBehaviour
                 RL_V = source_level - transmission_array[i] + beam_pattern * 2 + reverb_strength;
                 
                 rev_vals.Add(Mathf.Pow(10, (RL_V * (aft[i] - (i - 1) * sonar_resolution) / 10)));
-                print(transmission_array[i]);
+              //  print(transmission_array[i]);
                 if (float.IsInfinity(rev_vals[rev_vals.Count - 1]) == false && float.IsNaN(rev_vals[rev_vals.Count - 1]) == false)
                 RL_V_val_i += (rev_vals[rev_vals.Count-1]);
 
