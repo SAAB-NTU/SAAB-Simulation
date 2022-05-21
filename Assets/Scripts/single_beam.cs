@@ -11,13 +11,13 @@ public class single_beam : MonoBehaviour
 {
     List<float>  rev_vals;
     protected float  beam_pattern, transmission_loss;
-    protected float wavelength, sound_velocity, reverb_strength, target_strength, RL_V, IR;
+    protected float wavelength, sound_velocity, reverb_strength, target_strength,RL_V, IR;
     protected float pH_moles, A1, P1, f1, A2, P2, f2, A3, P3; //for transmission loss
     private float sp; //volume reverberation coefficient
     public float frequency = 115; //kHz
     public float source_level = 220; //source level dB
 
-    public float RL_V_val_i, RL_V_val_n; //To display volume backscattering effects
+    public float RL_V_val_i, RL_V_val_n,final; //To display volume backscattering effects
     public float sonar_resolution; // c/(2*Band-Width)
 
     [Range(7.2f, 7.8f)]
@@ -43,15 +43,20 @@ public class single_beam : MonoBehaviour
     public Sp Volume_Reverb;
 
     public GameObject prefab,coord,graph;
-    public float FOV,multiplier,scale,offset,tot,tolerance;
+    float FOV_x, FOV_y,d_FOV_x, d_FOV_y;
+    public float multiplier_x,multiplier_y,scale,offset,tot,tolerance;
     public int k;
-    List<float> vals,bef,aft,SNR_array,beam_array,transmission_array;
+    List<float> vals,bef,aft,transmission_array,TS_array,final_array;
     //float[] aft2;
     List<GameObject> coords;
     //ROSConnection ros; 
     //private string topicName = "sonar_measurements";
     void Start()
     {
+        FOV_x=theta;
+        FOV_y = phi;
+        d_FOV_x = Mathf.Deg2Rad*FOV_x / multiplier_x;
+        d_FOV_y = Mathf.Deg2Rad*FOV_y / multiplier_y;
         if (bandwidth == 0)
         {
             bandwidth = 1 / 0.25f;
@@ -108,18 +113,23 @@ public class single_beam : MonoBehaviour
         vals = new List<float>();
         bef = new List<float>();
         coords = new List<GameObject>();
-        for (int i = 0; i < multiplier; ++i)
+        for (int j = 0; j < multiplier_y; ++j)
         {
-            //Instantiate probe 
-            GameObject ray=Instantiate(prefab);
-            float value = -FOV/2 + i * (FOV /( multiplier-1));
-            ray.transform.SetParent(gameObject.transform);
-            ray.transform.localRotation=(Quaternion.Euler(0,value,0));
-            GameObject coordinate = Instantiate(coord);
-            coordinate.transform.SetParent(graph.transform);
-            vals.Add(value);
-           // Debug.Log(value);         
-            coords.Add(coordinate);
+
+            for (int i = 0; i < multiplier_x; ++i)
+            {
+                float value_i = -FOV_y / 2 + j * (FOV_y / (multiplier_y - 1));
+                //Instantiate probe 
+                GameObject ray = Instantiate(prefab);
+                float value = -FOV_x / 2 + i * (FOV_x / (multiplier_x - 1));
+                ray.transform.SetParent(gameObject.transform);
+                ray.transform.localRotation = (Quaternion.Euler(value_i, value, 0));
+                GameObject coordinate = Instantiate(coord);
+                coordinate.transform.SetParent(graph.transform);
+                vals.Add(value);
+                // Debug.Log(value);         
+                coords.Add(coordinate);
+            }
         }
        
     }
@@ -127,8 +137,9 @@ public class single_beam : MonoBehaviour
     {
         rev_vals = new List<float>();
         aft = new List<float>();
-        SNR_array = new List<float>();
-        beam_array = new List<float>();
+        TS_array = new List<float>();
+        final_array = new List<float>();
+        final = 0;
         transmission_array = new List<float>();
         for (int i=0;i<transform.childCount;++i)
         {
@@ -137,14 +148,16 @@ public class single_beam : MonoBehaviour
                 Vector2 ini=coords[i].GetComponent<RectTransform>().anchoredPosition;
                
                 float r = transform.GetChild(i).GetComponent<raycast_script>().hit_val;
-                if (r != 0)
+                float angle = transform.GetChild(i).GetComponent<raycast_script>().angle_normal;//angle in rads
+                if (r >= 0)
                 {
                     float cos_theta = Mathf.Cos(Mathf.Deg2Rad * vals[i]);
                     float sin_theta = Mathf.Sin(Mathf.Deg2Rad * vals[i]);
 
                     // adding ray properties to respective lists -> distance, SNR, beam pattern, transmission loss 
                     aft.Add(r * cos_theta);
-
+                    
+                    TS_array.Add(10*Mathf.Log10(r * cos_theta * r * cos_theta * d_FOV_x * d_FOV_y * Mathf.Cos(angle)));
 
                     coords[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(scale * r * sin_theta, scale * r * cos_theta);
 
@@ -152,7 +165,7 @@ public class single_beam : MonoBehaviour
                     float alphaW = (A1 * P1 * f1 * frequency * frequency) / (f1 * f1 + frequency * frequency) + (A2 * P2 * f2 * frequency * frequency) / (f2 * f2 + frequency * frequency) + A3 * P3 * frequency * frequency;
 
                     float alphaT = ((2f * r / scale - 1f) * alphaW) / 1000f;
-
+                    
                     float S_L = 40f * Mathf.Log(r / scale, 10f);
                     //print(r / scale);
                     transmission_loss = S_L + alphaT;
@@ -200,10 +213,7 @@ public class single_beam : MonoBehaviour
         // float avg_transmission = tot_transmission/transmission_array.Count; 
 
         //save to csv
-        // var w = new StreamWriter("sonar_115000.csv",true);
-        // var line = string.Format("{0},{1},{2}",avg_SNR,avg_transmission,avg_beam);
-        // w.WriteLine(line);
-        // w.Close();
+        
 
         //aft2 = new float[aft.Count];
         if (bef.Count>0)
@@ -227,7 +237,9 @@ public class single_beam : MonoBehaviour
                 float SV = sp + 7 * Mathf.Log(frequency, 10f);
                 reverb_strength = SV + 10 * Mathf.Log(V, 10f);
                 RL_V = source_level - transmission_array[i] + beam_pattern * 2 + reverb_strength;
-                
+                IR= source_level - transmission_array[i] + beam_pattern * 2 + TS_array[i];
+                final_array.Add(IR + RL_V);
+                final += IR + RL_V;
                 rev_vals.Add(Mathf.Pow(10, (RL_V * (aft[i] - (i - 1) * sonar_resolution) / 10)));
               //  print(transmission_array[i]);
                 if (float.IsInfinity(rev_vals[rev_vals.Count - 1]) == false && float.IsNaN(rev_vals[rev_vals.Count - 1]) == false)
@@ -251,6 +263,13 @@ public class single_beam : MonoBehaviour
             tot /= Time.fixedDeltaTime;
 
         }
+        using (TextWriter writer = new StreamWriter("RLV_val.csv", true))
+        {
+          
+            writer.WriteLine(string.Format("{0},{1}", Time.fixedTime, RL_V_val_n));
+            writer.Close();
+        }
+        
         bef = aft;
         // volume backscatter
         // float V //ensonified volume

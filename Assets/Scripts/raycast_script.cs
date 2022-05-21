@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class raycast_script : MonoBehaviour
 {
-    public float hit_val;
+    public float hit_val,angle_normal;
     float distance;
     void Start()
     {
@@ -18,12 +18,13 @@ public class raycast_script : MonoBehaviour
         // Does the ray intersect any objects excluding the player layer
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, distance))
         {
+            
             Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.green);
-            float angle=Mathf.Deg2Rad*180-Mathf.Acos(Vector3.Dot(hit.normal,Vector3.forward));
-            Quaternion rot = Quaternion.AngleAxis(angle,Vector3.one);
-            print(angle.ToString("n2"));
+             angle_normal=Mathf.Deg2Rad*180-Mathf.Acos(Vector3.Dot(Quaternion.Inverse(transform.rotation) * hit.normal, Vector3.forward));
+            //Quaternion rot = Quaternion.AngleAxis(angle,Vector3.one);
+            //print(angle.ToString("n2"));
             hit_val = hit.distance;
-            Vector3 actual_hit=Quaternion.Inverse(transform.rotation)*hit.point;
+            //Vector3 actual_hit=Quaternion.Inverse(transform.rotation)*hit.point;
             // Debug.Log("Did Hit");
            if(hit.distance<distance)
             {

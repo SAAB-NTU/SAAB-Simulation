@@ -841,6 +841,7 @@ MonoBehaviour:
   source_level: 0
   RL_V_val_i: 0
   RL_V_val_n: 0
+  final: 0
   sonar_resolution: 0
   pH_level: 7.263
   temp: 20.2
@@ -856,8 +857,8 @@ MonoBehaviour:
   prefab: {fileID: 1679950953551588644, guid: e335b16ece4d6dfd1a97784f8efc8419, type: 3}
   coord: {fileID: 445070466}
   graph: {fileID: 602586544}
-  FOV: 30
-  multiplier: 10
+  multiplier_x: 10
+  multiplier_y: 10
   scale: 10
   offset: 250
   tot: 0
