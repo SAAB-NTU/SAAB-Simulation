@@ -359,16 +359,16 @@ MonoBehaviour:
   max_depth: 0
   depth: 0
   bandwidth: 0
-  theta: 30
-  phi: 2
-  horizontal_len: 0.048
-  vertical_len: 0.035
+  theta: 70
+  phi: 3
+  horizontal_len: 0.00023
+  vertical_len: 0.01
   Volume_Reverb: 0
   prefab: {fileID: 1679950953551588644, guid: ae419e7457fa76e4a915a1d22dd0de62, type: 3}
   coord: {fileID: 3285825204449550168, guid: a1596b44a99a9424088efdb0dd52456e, type: 3}
   graph: {fileID: 1889888235619575561, guid: b051f4658e4d2eb46a2e85d06539f49f, type: 3}
-  multiplier_x: 114
-  multiplier_y: 3
+  multiplier_x: 100
+  multiplier_y: 2
   scale: 1
   offset: 0
   tot: 0
@@ -551,7 +551,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!135 &1060436051
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -623,8 +623,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1060436050}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 6.17}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: 0, y: 0, z: 28}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 846476841}

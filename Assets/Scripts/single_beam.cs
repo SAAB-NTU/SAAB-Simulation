@@ -156,10 +156,10 @@ public class single_beam : MonoBehaviour
 
                     // adding ray properties to respective lists -> distance, SNR, beam pattern, transmission loss 
                     aft.Add(r * cos_theta);
-                    
-                    TS_array.Add(10*Mathf.Log10(r * cos_theta * r * cos_theta * d_FOV_x * d_FOV_y * Mathf.Cos(angle)));
+                   print( d_FOV_x * d_FOV_y );
+                    TS_array.Add(10*Mathf.Log10(0.001f*r*r * d_FOV_x * d_FOV_y * Mathf.Cos(angle)));
 
-                    coords[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(scale * r * sin_theta, scale * r * cos_theta);
+                    
 
 
                     float alphaW = (A1 * P1 * f1 * frequency * frequency) / (f1 * f1 + frequency * frequency) + (A2 * P2 * f2 * frequency * frequency) / (f2 * f2 + frequency * frequency) + A3 * P3 * frequency * frequency;
@@ -182,6 +182,8 @@ public class single_beam : MonoBehaviour
 
                     beam_pattern = 20 * Mathf.Log(alpha * beta, 10f);
 
+                    print((Mathf.Sin(Mathf.Deg2Rad * theta)) * (Mathf.Cos(Mathf.Deg2Rad * phi)) * (horizontal_len / wavelength));
+                   
                     //SNR calculation
 
                     //SNR_array.Add(SNR);
@@ -237,10 +239,15 @@ public class single_beam : MonoBehaviour
                 float SV = sp + 7 * Mathf.Log(frequency, 10f);
                 reverb_strength = SV + 10 * Mathf.Log(V, 10f);
                 RL_V = source_level - transmission_array[i] + beam_pattern * 2 + reverb_strength;
-                IR= source_level - transmission_array[i] + beam_pattern * 2 + TS_array[i];
-                final_array.Add(IR + RL_V);
-                final += IR + RL_V;
-                rev_vals.Add(Mathf.Pow(10, (RL_V * (aft[i] - (i - 1) * sonar_resolution) / 10)));
+                IR= source_level - transmission_array[i] + beam_pattern * 2;
+                float RL_V_pow = Mathf.Pow(10, (RL_V * (aft[i] - (i - 1) * sonar_resolution) / 10));
+                final_array.Add(IR + RL_V_pow);
+                print(beam_pattern);
+                final = final_array[final_array.Count - 1];
+                float cos_theta = Mathf.Cos(Mathf.Deg2Rad * vals[i]);
+                float sin_theta = Mathf.Sin(Mathf.Deg2Rad * vals[i]);
+                coords[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(scale * final * sin_theta, scale * final * cos_theta);
+                
               //  print(transmission_array[i]);
                 if (float.IsInfinity(rev_vals[rev_vals.Count - 1]) == false && float.IsNaN(rev_vals[rev_vals.Count - 1]) == false)
                 RL_V_val_i += (rev_vals[rev_vals.Count-1]);
