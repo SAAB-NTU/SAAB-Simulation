@@ -232,6 +232,7 @@ GameObject:
   - component: {fileID: 846476846}
   - component: {fileID: 846476843}
   - component: {fileID: 846476844}
+  - component: {fileID: 846476847}
   - component: {fileID: 846476845}
   m_Layer: 0
   m_Name: Cube
@@ -342,7 +343,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 846476837}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7266cf87280d803129228c3793416efd, type: 3}
   m_Name: 
@@ -360,7 +361,7 @@ MonoBehaviour:
   depth: 0
   bandwidth: 0
   theta: 70
-  phi: 3
+  phi: 1e-17
   horizontal_len: 0.00023
   vertical_len: 0.01
   Volume_Reverb: 0
@@ -368,7 +369,7 @@ MonoBehaviour:
   coord: {fileID: 3285825204449550168, guid: a1596b44a99a9424088efdb0dd52456e, type: 3}
   graph: {fileID: 1889888235619575561, guid: b051f4658e4d2eb46a2e85d06539f49f, type: 3}
   multiplier_x: 100
-  multiplier_y: 2
+  multiplier_y: 1
   scale: 1
   offset: 0
   tot: 0
@@ -395,11 +396,34 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 846476837}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: edad98ce637027b4b80e88744f2209c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &846476847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 846476837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4d0d16a48ddefc4798098d32446f44c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  temp: 20
+  salinity: 20
+  depth: 3
+  frequency: 115
+  pH_level: 6.5
+  max_depth: 10
+  Volume_Reverb: 0
+  hit_val: 0
+  angle_normal: 0
+  distance: 30
+  divide: 100
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -551,7 +575,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!135 &1060436051
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -850,7 +874,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1861918093}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: edad98ce637027b4b80e88744f2209c3, type: 3}
   m_Name: 

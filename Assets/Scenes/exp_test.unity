@@ -849,10 +849,10 @@ MonoBehaviour:
   max_depth: 10
   depth: 3
   bandwidth: 4000
-  theta: 30
-  phi: 2
-  horizontal_len: 0.048
-  vertical_len: 0.035
+  theta: 70
+  phi: 0.001
+  horizontal_len: 0.1
+  vertical_len: 0.03
   Volume_Reverb: 0
   prefab: {fileID: 1679950953551588644, guid: e335b16ece4d6dfd1a97784f8efc8419, type: 3}
   coord: {fileID: 445070466}
