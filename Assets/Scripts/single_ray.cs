@@ -7,6 +7,7 @@ public class single_ray : MonoBehaviour
 {
     public single_ray(Quaternion angle,float divide,float distance,Transform tr,sound_props sound_prop)
     {
+        //print("created_ray");
         this.distance = distance;
         this.divide = divide;
         this.angle = angle;
@@ -28,6 +29,7 @@ public class single_ray : MonoBehaviour
     Transform tr;
     void Start()
     {
+        
        // distance=30;
         //divide = 3;
         colors = new List<Color>();
@@ -58,13 +60,14 @@ public class single_ray : MonoBehaviour
            // print(hit.distance);
             if (d1 <= hit.distance||hit.distance==0)
                 {
+                //print(hit.distance);
                     float alphaT = ((2f * d - 1f) * sound_prop.alphaW) / 1000f;
 
                     float S_L = 40f * Mathf.Log10(d);
                    // print(i);
                     float transmission_loss = S_L + alphaT;
-                    Debug.DrawRay(tr.position + angle * Vector3.forward * d2,
-                        tr.position + angle * Vector3.forward * d1, colors[i - 1]);
+                  Debug.DrawRay(tr.position + angle * Vector3.forward * d2,
+                       tr.position + angle * Vector3.forward * d1, colors[i - 1]);
                     dists.Add(d);
                     T_L.Add(transmission_loss);
                 float SV = sound_prop.sp + 7 * Mathf.Log10(sound_prop.frequency);

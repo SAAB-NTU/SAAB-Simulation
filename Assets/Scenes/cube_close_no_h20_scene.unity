@@ -444,7 +444,7 @@ MonoBehaviour:
   theta_r: 1.4
   phi_r: 0.00002
   theta_t: 70
-  phi_t: 0.001
+  phi_t: 20
   Volume_Reverb: 0
 --- !u!4 &673600886
 Transform:
@@ -473,13 +473,8 @@ GameObject:
   - component: {fileID: 846476840}
   - component: {fileID: 846476839}
   - component: {fileID: 846476838}
-  - component: {fileID: 846476846}
   - component: {fileID: 846476843}
   - component: {fileID: 846476844}
-  - component: {fileID: 846476847}
-  - component: {fileID: 846476845}
-  - component: {fileID: 846476848}
-  - component: {fileID: 846476849}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -589,112 +584,16 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 846476837}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7266cf87280d803129228c3793416efd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  frequency: 115
-  source_level: 0
-  RL_V_val_i: 0
-  RL_V_val_n: 0
-  final: 0
-  sonar_resolution: 0
-  pH_level: 0
-  temp: 0
-  salinity: 0
-  max_depth: 0
-  depth: 0
-  bandwidth: 0
-  theta: 70
-  phi: 1e-17
-  horizontal_len: 0.00023
-  vertical_len: 0.01
-  Volume_Reverb: 0
-  prefab: {fileID: 1679950953551588644, guid: ae419e7457fa76e4a915a1d22dd0de62, type: 3}
-  coord: {fileID: 3285825204449550168, guid: a1596b44a99a9424088efdb0dd52456e, type: 3}
-  graph: {fileID: 1889888235619575561, guid: b051f4658e4d2eb46a2e85d06539f49f, type: 3}
-  multiplier_x: 100
-  multiplier_y: 1
-  scale: 1
-  offset: 0
-  tot: 0
-  tolerance: 0
-  k: 0
---- !u!114 &846476845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 846476837}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 683d59d3734e6b637acf9ed8b7644c96, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hit_val: 0
-  angle_normal: 0
---- !u!114 &846476846
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 846476837}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edad98ce637027b4b80e88744f2209c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &846476847
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 846476837}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4d0d16a48ddefc4798098d32446f44c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dists: []
-  T_L: []
-  RL_V: []
-  final: []
---- !u!114 &846476848
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 846476837}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 683d59d3734e6b637acf9ed8b7644c96, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hit_val: 0
-  angle_normal: 0
---- !u!114 &846476849
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 846476837}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ac86be4f0619b74f9a8925195c02475, type: 3}
+  m_Script: {fileID: 11500000, guid: 79733f3d8c6166a44ac06ab6044dee74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  multiplier_x: 50
-  multiplier_y: 1
+  multiplier: 100
+  FOV: 70
+  divide: 100
   distance: 30
-  divide: 50
-  gain: 1
-  output: {fileID: 1293761959}
+  multiplier_x: 10
   sound_prop: {fileID: 673600885}
 --- !u!1 &963194225
 GameObject:
@@ -911,7 +810,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1060436050}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &1060436054
 Transform:
   m_ObjectHideFlags: 0
@@ -920,7 +819,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1060436050}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10.24}
+  m_LocalPosition: {x: 0, y: 0, z: 32}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 0
   m_Children: []

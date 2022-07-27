@@ -7,7 +7,7 @@ public class read_val : MonoBehaviour
 {
     public GameObject IMU;
     public Rigidbody Real;
-    public single_beam SONAR;
+    public single_beam_old SONAR;
     // Start is called before the first frame update
     public float predicted_velocity, real_velocity, measured_velocity,predicted_error,measured_error,Accepted_rays;
 
