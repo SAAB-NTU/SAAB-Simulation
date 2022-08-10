@@ -42,6 +42,7 @@ public class single_ray : MonoBehaviour
 
     public void ray_hit()
     {
+        
         dists = new List<float>();
         T_L = new List<float>();
         RL_V = new List<float>();
@@ -54,6 +55,8 @@ public class single_ray : MonoBehaviour
         for (int i = 1; i < divide + 1; ++i)
         {
             //float d = (divide / (2 * distance));
+            //float ag=(Mathf.Deg2Rad * angle.eulerAngles[0]);
+           // print(angle.eulerAngles);
             float d = (distance * (i-0.5f))/divide;
             float d1 = distance * i / divide;
             float d2 = distance * (i-1) / divide;
