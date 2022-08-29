@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using System.IO;
 using System;
 using System.Linq;
+using System.Text;
+
 public class single_beam : MonoBehaviour
 {
     float FOV_x;
@@ -51,7 +53,7 @@ public class single_beam : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void beam_hit()
+    public void beam_hit(StreamWriter file)
     {
         
         r = new List<List<float>>();
@@ -74,7 +76,10 @@ public class single_beam : MonoBehaviour
             }
             //rs = ray.final;
         }
-       
+
+            
+            file.WriteLine(string.Join(",", rs));
+
         
 
         // using (System.IO.StreamWriter file = new System.IO.StreamWriter("array.csv"))
@@ -86,12 +91,7 @@ public class single_beam : MonoBehaviour
         //for (int i = 0; i < r.Count; ++i)
         //{
 
-        //    using (System.IO.StreamWriter file = new System.IO.StreamWriter(Path.Join(folder,j.ToString().PadLeft(6,'0')+"_"+".csv"), true))
-        //    {
-                
-        //        file.WriteLine(string.Join(",", r[i]));
-  
-        //    }
+
         //    //for (int j = 0; j < multiplier_x; ++j)
         //    //{
 
@@ -103,6 +103,6 @@ public class single_beam : MonoBehaviour
 
         ////texture.Apply();
         //j++;
-        
+
     }
 }

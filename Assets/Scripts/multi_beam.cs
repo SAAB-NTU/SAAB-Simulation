@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using UnityEngine;
 
 public class multi_beam : MonoBehaviour
@@ -9,6 +11,8 @@ public class multi_beam : MonoBehaviour
     string folder;
     public float multiplier,FOV,divide,distance,multiplier_x;
     List<single_beam> beams;
+    BinaryFormatter converter = new BinaryFormatter();
+    FileStream dataStream;
     List<float> vals;
     int j;
     List<List<float>> final_vals;
@@ -37,21 +41,39 @@ public class multi_beam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        final_vals = new List<List<float>>();
-        foreach(single_beam beam in beams)
+        string file_path = Path.Join(folder, j.ToString().PadLeft(6, '0') + "_" + ".csv");
+        System.IO.StreamWriter file = new System.IO.StreamWriter(file_path, true, Encoding.UTF8, 65536);
+        //final_vals = new List<List<float>>();
+        foreach (single_beam beam in beams)
         {
-            beam.beam_hit();
-            final_vals.Add(beam.rs);
+
+            beam.beam_hit(file);
+            //final_vals.Add(beam.rs);
         }
-        for (int i = 0; i < final_vals.Count; ++i)
-        {
+        file.Close();
+      //  for (int i = 0; i < final_vals.Count; ++i)
+      //  {
+            /*
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(Path.Join(folder, j.ToString().PadLeft(6, '0') + "_" + ".csv"), true))
             {
 
                 file.WriteLine(string.Join(",", final_vals[i]));
 
             }
-        }
+            */
+
+            /*
+            dataStream = new FileStream(Path.Join(folder, j.ToString().PadLeft(6, '0') + "_" + ".dat"), FileMode.Create);
+
+            // Serialize GameData into binary data 
+            //  and add it to an existing input stream.
+            converter.Serialize(dataStream, final_vals);
+
+            // Close stream.
+            dataStream.Close();
+            */
+      //  }
         j++;
+        
     }
 }
