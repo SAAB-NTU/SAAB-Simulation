@@ -69,8 +69,8 @@ public class single_ray : MonoBehaviour
                     float S_L = 40f * Mathf.Log10(d);
                    // print(i);
                     float transmission_loss = S_L + alphaT;
-                  //Debug.DrawRay(tr.position + angle * Vector3.forward * d2,
-                 //      tr.position + angle * Vector3.forward * d1, colors[i - 1]);
+                  Debug.DrawRay(tr.position + angle * Vector3.forward * d2,
+                       tr.position + angle * Vector3.forward * d1, colors[i - 1]);
                     dists.Add(d);
                     T_L.Add(transmission_loss);
                 float SV = sound_prop.sp + 7 * Mathf.Log10(sound_prop.frequency);
