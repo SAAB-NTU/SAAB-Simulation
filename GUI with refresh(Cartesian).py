@@ -62,9 +62,9 @@ class Window(QWidget):
         print("Loading"+"--"+str(self.circle)+".csv")
         arrays = []
         if self.circle < 10:
-            arrays = glob("010922_021443/00000"+str(self.circle)+"_.csv")
+            arrays = glob("010922_030419/00000"+str(self.circle)+"_.csv")
         else:
-            arrays = glob("010922_021443/0000"+str(self.circle)+"_.csv")
+            arrays = glob("010922_030419/0000"+str(self.circle)+"_.csv")
         x = []
         for arr in arrays:
             a = pd.read_csv(arr, header=None)

@@ -45,9 +45,10 @@ public class single_beam : MonoBehaviour
                 
                 float value = -FOV_x / 2 + i * (FOV_x / (multiplier_x - 1));
             print(value_i);
-               
-                rays.Add(new single_ray(Quaternion.Euler(value, value_i, 0), divide, distance,tr,sound_prop));
-                
+                Quaternion direction = Quaternion.AngleAxis(value_i, tr.up);
+                direction = direction* Quaternion.AngleAxis(value, tr.right);
+                //rays.Add(new single_ray(Quaternion.Euler(value, value_i, 0), divide, distance,tr,sound_prop));
+                rays.Add(new single_ray(direction, divide, distance,tr,sound_prop));
             }
     
     }

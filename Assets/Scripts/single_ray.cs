@@ -19,6 +19,7 @@ public class single_ray : MonoBehaviour
             colors.Add(Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f));
         }
         this.tr = tr;
+ 
     }
     float hit_val,angle_normal,distance,divide;
     List<Color> colors;
@@ -50,8 +51,10 @@ public class single_ray : MonoBehaviour
         RaycastHit hit;
         //Does the ray intersect any objects excluding the player layer
         //print(angle * Vector3.forward);
-        Physics.Raycast(tr.position, angle*Vector3.forward, out hit, distance);
+        //Physics.Raycast(tr.position, angle*Vector3.forward, out hit, distance);
+        Physics.Raycast(tr.position, angle * tr.forward, out hit, distance);
         //print(hit.distance);
+        print(tr.forward);
         for (int i = 1; i < divide + 1; ++i)
         {
             //float d = (divide / (2 * distance));
@@ -69,8 +72,10 @@ public class single_ray : MonoBehaviour
                     float S_L = 40f * Mathf.Log10(d);
                    // print(i);
                     float transmission_loss = S_L + alphaT;
-                  Debug.DrawRay(tr.position + angle * Vector3.forward * d2,
-                       tr.position + angle * Vector3.forward * d1, colors[i - 1]);
+                Debug.DrawRay(tr.position +  angle * tr.forward * d2,
+                      angle *  tr.forward * d1, colors[i - 1]);
+                //Debug.DrawRay(tr.position + angle * Vector3.forward * d2,
+                       //tr.position + angle * Vector3.forward * d1, colors[i - 1]);
                     dists.Add(d);
                     T_L.Add(transmission_loss);
                 float SV = sound_prop.sp + 7 * Mathf.Log10(sound_prop.frequency);

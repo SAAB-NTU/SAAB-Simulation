@@ -9,7 +9,7 @@ using UnityEngine;
 public class multi_beam : MonoBehaviour
 {
     string folder;
-    public float multiplier,FOV,divide,distance,multiplier_x;
+    public float multiplier,FOV,divide,distance,multiplier_x,SonarNum;
     List<single_beam> beams;
     BinaryFormatter converter = new BinaryFormatter();
     FileStream dataStream;
@@ -23,14 +23,22 @@ public class multi_beam : MonoBehaviour
         j = 0;
         beams = new List<single_beam>();
         vals = new List<float>();
-        folder = new string(Path.Join(Directory.GetCurrentDirectory(), DateTime.Now.ToString("ddMMyy_hhmmss")));
+        folder = new string(Path.Join(Directory.GetCurrentDirectory(), DateTime.Now.ToString("ddMMyy_hhmmss")+" "+SonarNum.ToString()));
         Directory.CreateDirectory(folder);
         for (int i = 0; i < multiplier; ++i)
         {
-
+            float value;
             //Instantiate probe 
             print(i);
-            float value = -FOV / 2 + i * (FOV / (multiplier - 1));
+
+            if (multiplier == 1) {
+                value = 0;
+            }
+            else
+            {
+                value = -FOV / 2 + i * (FOV / (multiplier - 1));
+            }
+            //float value = -FOV / 2 + i * (FOV / (multiplier - 1));
             vals.Add(value);
             //vals_y.Add(value);
             beams.Add(new single_beam(value,multiplier_x, divide, distance, transform, sound_prop));
@@ -38,19 +46,23 @@ public class multi_beam : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
+    // Update is called once per frame   
     void Update()
     {
-        string file_path = Path.Join(folder, j.ToString().PadLeft(6, '0') + "_" + ".csv");
-        System.IO.StreamWriter file = new System.IO.StreamWriter(file_path, true, Encoding.UTF8, 65536);
-        //final_vals = new List<List<float>>();
-        foreach (single_beam beam in beams)
+        if (j % 1 == 0)
         {
+            string file_path = Path.Join(folder, j.ToString().PadLeft(6, '0') + "_" + ".csv");
+            System.IO.StreamWriter file = new System.IO.StreamWriter(file_path, true, Encoding.UTF8, 65536);
+            //final_vals = new List<List<float>>();
+            foreach (single_beam beam in beams)
+            {
 
-            beam.beam_hit(file);
-            //final_vals.Add(beam.rs);
+                beam.beam_hit(file);
+                //final_vals.Add(beam.rs);
+            }
+            file.Close();
         }
-        file.Close();
+
       //  for (int i = 0; i < final_vals.Count; ++i)
       //  {
             /*
