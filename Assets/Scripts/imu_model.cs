@@ -25,11 +25,13 @@ public class imu_model : MonoBehaviour
     Dictionary<string,Vector3> gyro_mid_accuracy;
     Dictionary<string,Vector3> gyro_high_accuracy;
     Dictionary<string,Vector3> gyro_mti_100;
+    Dictionary<string,Vector3> gyro_witmotion;
 
     Dictionary<string,Vector3> accel_low_accuracy;
     Dictionary<string,Vector3> accel_mid_accuracy;
     Dictionary<string,Vector3> accel_high_accuracy;
     Dictionary<string,Vector3> accel_mti_100;
+    Dictionary<string,Vector3> accel_witmotion;
 
     Dictionary<string,Dictionary<string,Dictionary<string,Vector3>>> IMU_dict;
     void Awake()
@@ -101,12 +103,28 @@ public class imu_model : MonoBehaviour
             {"vrw", new Vector3(6.0e-4f, 6.0e-4f, 6.0e-4f)} 
         };
 
+        gyro_witmotion= new Dictionary<string,Vector3>()
+        {
+            {"b", new Vector3(0f, 0f, 0f)* D2R} ,
+            {"b_drift", new Vector3(0.05f, 0.05f, 0.05f)* D2R/3600.0f} , 
+            {"b_corr",new Vector3(100.0f, 100.0f, 100.0f)},
+            {"arw", new Vector3(0.75f,0.75f,0.75f) * D2R/60.0f}
+        };
+        accel_witmotion = new Dictionary<string,Vector3>()
+        {
+            {"b", new Vector3(0f, 0f, 0f)}, 
+            {"b_drift", new Vector3(0.05f, 0.05f, 0.05f)},
+            {"b_corr", new Vector3(100.0f, 100.0f, 100.0f)},
+            {"vrw", new Vector3(0.05f, 0.05f, 0.05f)} 
+        };
+
         IMU_dict = new Dictionary<string,Dictionary<string,Dictionary<string,Vector3>>>()
         {
             {"low",new Dictionary<string,Dictionary<string,Vector3>>(){{"accel",accel_low_accuracy},{"gyro",gyro_low_accuracy}}},
             {"mid",new Dictionary<string,Dictionary<string,Vector3>>(){{"accel",accel_mid_accuracy},{"gyro",gyro_mid_accuracy}}},
             {"high",new Dictionary<string,Dictionary<string,Vector3>>(){{"accel",accel_high_accuracy},{"gyro",gyro_high_accuracy}}},
-            {"mti-100",new Dictionary<string,Dictionary<string,Vector3>>(){{"accel",accel_mti_100},{"gyro",gyro_mti_100}}}
+            {"mti-100",new Dictionary<string,Dictionary<string,Vector3>>(){{"accel",accel_mti_100},{"gyro",gyro_mti_100}}},
+            {"witmotion",new Dictionary<string,Dictionary<string,Vector3>>(){{"accel",accel_witmotion},{"gyro",gyro_witmotion}}}
         };
 
     }
