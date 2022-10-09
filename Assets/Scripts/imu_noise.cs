@@ -57,10 +57,10 @@ public class imu_noise : MonoBehaviour
         b_gyro = acceleration_param[1];
 
         //writing into csv files
-        var w = new StreamWriter("imu.csv",true); //csv file saved to Asset folder
-        var line = "timestamp,accX,accY,accZ,gyrX,gyrY,gyrZ";
-        w.WriteLine(line);
-        w.Close();
+        // var w = new StreamWriter("imu.csv",true); //csv file saved to Asset folder
+        // var line = "timestamp,accX,accY,accZ,gyrX,gyrY,gyrZ";
+        // w.WriteLine(line);
+        // w.Close();
 
     }
 
@@ -79,10 +79,10 @@ public class imu_noise : MonoBehaviour
         //Debug.Log(real_gyro);
 
         // Write to CSV
-        var w = new StreamWriter("imu.csv",true);
-        var line = string.Format("{0},{1},{2},{3},{4},{5},{6}",timestamp,real_accel[0],real_accel[1],real_accel[2],real_gyro[0],real_gyro[1],real_gyro[2]);
-        w.WriteLine(line);
-        w.Close();
+        // var w = new StreamWriter("imu.csv",true);
+        // var line = string.Format("{0},{1},{2},{3},{4},{5},{6}",timestamp,real_accel[0],real_accel[1],real_accel[2],real_gyro[0],real_gyro[1],real_gyro[2]);
+        // w.WriteLine(line);
+        // w.Close();
 
         // msg.a_x = real_accel[0];
         // msg.a_y = real_accel[1];
