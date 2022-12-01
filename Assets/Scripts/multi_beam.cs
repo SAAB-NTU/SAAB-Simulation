@@ -29,7 +29,7 @@ public class multi_beam : MonoBehaviour
         {
             float value;
             //Instantiate probe 
-            print(i);
+            //print(i);
 
             if (multiplier == 1) {
                 value = 0;
@@ -51,16 +51,16 @@ public class multi_beam : MonoBehaviour
     {
         if (j % 1 == 0)
         {
-            string file_path = Path.Join(folder, j.ToString().PadLeft(6, '0') + "_" + ".csv");
-            System.IO.StreamWriter file = new System.IO.StreamWriter(file_path, true, Encoding.UTF8, 65536);
+            //string file_path = Path.Join(folder, j.ToString().PadLeft(6, '0') + "_" + ".csv");
+            //System.IO.StreamWriter file = new System.IO.StreamWriter(file_path, true, Encoding.UTF8, 65536);
             //final_vals = new List<List<float>>();
-            foreach (single_beam beam in beams)
+            for (int i=0;i<beams.Count; ++i)
             {
-
-                beam.beam_hit(file);
+                
+                beams[i].beam_hit(null);
                 //final_vals.Add(beam.rs);
             }
-            file.Close();
+           // file.Close();
         }
 
       //  for (int i = 0; i < final_vals.Count; ++i)

@@ -44,7 +44,7 @@ public class single_beam : MonoBehaviour
                 //Instantiate probe 
                 
                 float value = -FOV_x / 2 + i * (FOV_x / (multiplier_x - 1));
-            print(value_i);
+           // print(value_i);
                 Quaternion direction = Quaternion.AngleAxis(value_i, tr.up);
                 direction = direction* Quaternion.AngleAxis(value, tr.right);
                 //rays.Add(new single_ray(Quaternion.Euler(value, value_i, 0), divide, distance,tr,sound_prop));
@@ -79,7 +79,7 @@ public class single_beam : MonoBehaviour
         }
 
             
-            file.WriteLine(string.Join(",", rs));
+            //file.WriteLine(string.Join(",", rs));
 
         
 
