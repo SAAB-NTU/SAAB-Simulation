@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
-using RosMessageTypes.UnityRoboticsDemo;
+using RosMessageTypes.Unity;
 
 public class Noise : MonoBehaviour
 {
@@ -19,10 +19,10 @@ public class Noise : MonoBehaviour
     void Start()
     {
         ros = ROSConnection.GetOrCreateInstance();
-        ros.Subscribe<ImuMsg>(topicName, ImuCallback);
+        ros.Subscribe<ImuUnityMsg>(topicName, ImuCallback);
     }
 
-void ImuCallback(ImuMsg imu_msg)
+void ImuCallback(ImuUnityMsg imu_msg)
     {
 
         Rigidbody rb = GetComponent<Rigidbody>();

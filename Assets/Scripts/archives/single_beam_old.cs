@@ -5,7 +5,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using Unity.Robotics.ROSTCPConnector; 
-using RosMessageTypes.UnityRoboticsDemo; 
+using RosMessageTypes.Unity; 
 
 public class single_beam_old : MonoBehaviour
 {

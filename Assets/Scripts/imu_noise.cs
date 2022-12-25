@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
-using RosMessageTypes.UnityRoboticsDemo;
+using RosMessageTypes.Unity;
 
 public class imu_noise : MonoBehaviour
 {
@@ -11,9 +11,8 @@ public class imu_noise : MonoBehaviour
     // ROSConnection ros; 
     // public string topicName = "imu_noise";
 
-    int fs = 1000;
-    int scale = 1;
-    
+    int fs = 100;
+    int scale = 1; 
     Dictionary<string,Vector3> accel_err;
     Dictionary<string,Vector3> gyro_err;
     Vector3 old_accel_bias_drift = Vector3.zero;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Robotics.ROSTCPConnector; 
-using RosMessageTypes.UnityRoboticsDemo; 
+using RosMessageTypes.Unity; 
 
 public class Estimated_Position : MonoBehaviour
 {
