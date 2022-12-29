@@ -2,31 +2,46 @@ using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using System.IO;
+
+
+public class FloatListData
+{
+    public List<float> Values;
+    public List<int> instances;
+}
 
 public class Raycast_Gizmo : MonoBehaviour
 {
+  
+
     Transform tr;
     public float distance,radius,multiplier,multiplier_x,FOV,FOV_x;
     RaycastHit hit;
     int angle;
+    public int no_jobs;
     List<Quaternion> angles;
     List<RaycastHit> hits;
     NativeArray<RaycastHit> results;
     NativeArray<SpherecastCommand> commands;
-
+    [SerializeField]
+    FloatListData distances;
+    string data,folder;
     private void Awake()
     {
-      
+        folder = new string(Path.Join(Directory.GetCurrentDirectory(), DateTime.Now.ToString("ddMMyy_hhmmss") + " " + gameObject.name.ToString()));
+        Directory.CreateDirectory(folder);
         tr = transform;
         angles = new List<Quaternion>();
         hits = new List<RaycastHit>();
-
+        distances = new FloatListData { Values = new List<float>(), instances=new List<int>() };
+        data = new string("");
         for (int i = 0; i < multiplier; ++i)
         {
             float value;
@@ -47,6 +62,8 @@ public class Raycast_Gizmo : MonoBehaviour
                
             }
         }
+        results = new NativeArray<RaycastHit>(Convert.ToInt32(multiplier * multiplier_x), Allocator.Persistent);
+        commands = new NativeArray<SpherecastCommand>(Convert.ToInt32(multiplier * multiplier_x), Allocator.Persistent);
     }
     private void OnDrawGizmosSelected()
     {
@@ -64,38 +81,40 @@ public class Raycast_Gizmo : MonoBehaviour
         if (hits[i].distance == 0)
         {
             Gizmos.color = Color.white;
-            //Gizmos.DrawRay(tr.position, angles[i]*tr.forward * distance);
+            Gizmos.DrawRay(tr.position, angles[i]*tr.forward * distance);
             
         }
         else
         {
             //print("hit");
             Gizmos.color = Color.red;
-            //Gizmos.DrawRay(tr.position, tr.forward * hits[i].distance);
+            Gizmos.DrawRay(tr.position, tr.forward * hits[i].distance);
             Gizmos.DrawWireSphere(tr.position+ angles[i] * tr.forward * hits[i].distance, radius);
         }
 
     }
-
+    [BurstCompile]
     private void Update()
     {
-        results = new NativeArray<RaycastHit>(Convert.ToInt32(multiplier * multiplier_x), Allocator.TempJob);
-        commands = new NativeArray<SpherecastCommand>(Convert.ToInt32(multiplier * multiplier_x), Allocator.TempJob);
-        hits = new List<RaycastHit>();
+
+        hits.Clear();
+        distances.Values.Clear();
+        distances.instances.Clear();
         //print(Convert.ToInt32(multiplier * multiplier_x));
 
-        
+
         for (int i = 0; i < angles.Count; ++i)
 
         {
-            commands[i] = new SpherecastCommand(tr.position, radius, angles[i] * tr.forward);
+            commands[i] = new SpherecastCommand(tr.position, radius, angles[i] * tr.forward,distance);
             
             //Physics.SphereCast(tr.position, radius, angles[i] * tr.forward, out hit, distance);
            // hits.Add(hit);
             
         }
-        var handle = SpherecastCommand.ScheduleBatch(commands, results,300, default(JobHandle));
-
+        
+        var handle = SpherecastCommand.ScheduleBatch(commands, results,no_jobs, default(JobHandle));
+        
         handle.Complete();
        
         for (int i = 0; i < angles.Count; ++i)
@@ -103,14 +122,28 @@ public class Raycast_Gizmo : MonoBehaviour
         {
             //Physics.SphereCast(tr.position, radius, angles[i] * tr.forward, out hit, distance);
             hits.Add(results[i]);
-
+            if (results[i].distance > 0)
+            {
+                distances.Values.Add(results[i].distance);
+                distances.instances.Add(i);
+            }
         }
 
+        
+            data= JsonUtility.ToJson(distances);
 
-        results.Dispose();
-        commands.Dispose();
+        File.WriteAllText(Path.Join(folder, Time.frameCount.ToString().PadLeft(6, '0')+" .json"), data);
+
+        //  results.Dispose();
+        //commands.Dispose();
 
     }
+    private void OnDestroy()
+    {
+        results.Dispose();
+        commands.Dispose();
+    }
+   
     // Start is called before the first frame update
 
 

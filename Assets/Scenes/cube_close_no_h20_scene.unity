@@ -1467,11 +1467,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distance: 120
-  radius: 0.28
-  multiplier: 80
-  multiplier_x: 512
+  radius: 1
+  multiplier: 3
+  multiplier_x: 10
   FOV: 20
   FOV_x: 130
+  no_jobs: 8000
 --- !u!65 &1211651086
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1543,7 +1544,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1211651084}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -115}
+  m_LocalPosition: {x: 0, y: 0, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
