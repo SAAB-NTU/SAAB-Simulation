@@ -161,7 +161,8 @@ while(y!="e"):
     im_out = np.flip(im_fan, axis=0)
     #plt.figure(figsize=(15,15))
     #plt.imshow(im_out, 'afmhot')
-    cv2.imshow('image', np.uint8(im_out))
+    cv2.imshow('cartesian', np.uint8(im_out))
+    cv2.imshow('polar', np.uint8(polar_normal*255))
     cv2.waitKey(1)
     
    # plt.imshow(polar_img)
