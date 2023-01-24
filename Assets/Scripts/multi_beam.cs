@@ -1,90 +1,91 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class multi_beam : MonoBehaviour
 {
-    float FOV_x, FOV_y;
-    public float multiplier_x, multiplier_y,distance,divide,gain;
-    //public GameObject prefab,coord,graph;
-    Texture2D texture;
-    List<float> vals_x,vals_y,rs;
-    List<List<float>> r;
-    List<single_ray> rays;
-    public Image output;
-    // Start is called before the first frame update
+    string folder;
+    public float multiplier,FOV,divide,distance,multiplier_x,SonarNum;
+    List<single_beam> beams;
+    BinaryFormatter converter = new BinaryFormatter();
+    FileStream dataStream;
+    List<float> vals;
+    int j;
+    List<List<float>> final_vals;
     public sound_props sound_prop;
-    //To update, beam pattern of receiver to vary with multiplier_x and divide, now done manually
-
+    // Start is called before the first frame update
     void Start()
     {
-
-        
-        vals_x = new List<float>();
-        vals_y = new List<float>();
-        //texture = new Texture2D(((int)divide),(int)multiplier_x);
-       // texture.SetPixels(output.sprite.texture.GetPixels());
-        //texture.Apply();
-        //output.sprite = Sprite.Create(texture,output.sprite.rect,output.sprite.pivot);
-        FOV_x = sound_prop.theta_t;
-        FOV_y = sound_prop.phi_t;
-
-        rays = new List<single_ray>();
-        for (int j = 0; j < multiplier_y; ++j)
+        j = 0;
+        beams = new List<single_beam>();
+        vals = new List<float>();
+        folder = new string(Path.Join(Directory.GetCurrentDirectory(), DateTime.Now.ToString("ddMMyy_hhmmss")+" "+SonarNum.ToString()));
+        Directory.CreateDirectory(folder);
+        for (int i = 0; i < multiplier; ++i)
         {
+            float value;
+            //Instantiate probe 
+            //print(i);
 
-            for (int i = 0; i < multiplier_x; ++i)
-            {
-                //float value_i = -FOV_y / 2 + j * (FOV_y / (multiplier_y - 1));
-                float value_i = 0;
-                //Instantiate probe 
-                
-                float value = -FOV_x / 2 + i * (FOV_x / (multiplier_x - 1));
-                vals_x.Add(value_i);
-                vals_y.Add(value);
-                rays.Add(new single_ray(Quaternion.Euler(value_i, value, 0), divide, distance,transform,sound_prop));
-                
+            if (multiplier == 1) {
+                value = 0;
             }
+            else
+            {
+                value = -FOV / 2 + i * (FOV / (multiplier - 1));
+            }
+            //float value = -FOV / 2 + i * (FOV / (multiplier - 1));
+            vals.Add(value);
+            //vals_y.Add(value);
+            beams.Add(new single_beam(value,multiplier_x, divide, distance, transform, sound_prop));
+
         }
     }
 
-    // Update is called once per frame
+    // Update is called once per frame   
     void Update()
     {
-        r = new List<List<float>>();
-        foreach(single_ray ray in rays)
+        if (j % 1 == 0)
         {
-            
-          ray.ray_hit();
-            r.Add(ray.final);
-            rs = ray.final;
-        }
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter("array.csv"))
-        {
-
-            //file.Write(string.Join(",", r[i]));
-        }
-        for (int i = 0; i < divide; ++i)
-        {
-
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter("array"+i.ToString()+".csv"))
+            //string file_path = Path.Join(folder, j.ToString().PadLeft(6, '0') + "_" + ".csv");
+            //System.IO.StreamWriter file = new System.IO.StreamWriter(file_path, true, Encoding.UTF8, 65536);
+            //final_vals = new List<List<float>>();
+            for (int i=0;i<beams.Count; ++i)
             {
                 
-                file.Write(string.Join(",", r[i]));
-  
+                beams[i].beam_hit(null);
+                //final_vals.Add(beam.rs);
             }
-            //for (int j = 0; j < multiplier_x; ++j)
-            //{
-
-            //    texture.SetPixel(i, j, Color.white * (-r[i][j] / gain));
-            //    texture.SetPixel(i, j, Color.red);
-            //}
-
+           // file.Close();
         }
 
-        //texture.Apply();
+      //  for (int i = 0; i < final_vals.Count; ++i)
+      //  {
+            /*
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(Path.Join(folder, j.ToString().PadLeft(6, '0') + "_" + ".csv"), true))
+            {
 
+                file.WriteLine(string.Join(",", final_vals[i]));
 
+            }
+            */
+
+            /*
+            dataStream = new FileStream(Path.Join(folder, j.ToString().PadLeft(6, '0') + "_" + ".dat"), FileMode.Create);
+
+            // Serialize GameData into binary data 
+            //  and add it to an existing input stream.
+            converter.Serialize(dataStream, final_vals);
+
+            // Close stream.
+            dataStream.Close();
+            */
+      //  }
+        j++;
+        
     }
 }

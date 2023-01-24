@@ -43,7 +43,7 @@ public class kalman_filter : MonoBehaviour
 
         //update step
         float sonar_std = 0.05f;
-        measured_velocity = Mathf.Abs(sonar.GetComponent<single_beam>().tot);
+        measured_velocity = Mathf.Abs(sonar.GetComponent<single_beam_old>().tot);
         (float mean,float var) likelihood = (measured_velocity,sonar_std * sonar_std);
         float residual = likelihood.mean - prior.mean;
         float kalmanGain = (prior.var / prior.var + likelihood.var);

@@ -1,0 +1,14 @@
+#pragma kernel MatrixVisualization
+
+RWTexture2D<float4> Result;
+int MatrixWidth;
+int MatrixHeight;
+
+RWBuffer<float> MatrixBuffer;
+
+[numthreads(4, 4, 1)]
+void MatrixVisualization(int3 id : SV_DispatchThreadID)
+{
+    int index = id.x*MatrixHeight + id.y;
+    Result[id.xy] = MatrixBuffer[index];
+}

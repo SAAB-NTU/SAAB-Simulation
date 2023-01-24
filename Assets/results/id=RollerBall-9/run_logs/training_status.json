@@ -1,0 +1,29 @@
+{
+    "rollerball": {
+        "checkpoints": [
+            {
+                "steps": 743,
+                "file_path": "results\\id=RollerBall-9\\rollerball\\rollerball-743.onnx",
+                "reward": 0.0,
+                "creation_time": 1664769829.027244,
+                "auxillary_file_paths": [
+                    "results\\id=RollerBall-9\\rollerball\\rollerball-743.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 743,
+            "file_path": "results\\id=RollerBall-9\\rollerball.onnx",
+            "reward": 0.0,
+            "creation_time": 1664769829.027244,
+            "auxillary_file_paths": [
+                "results\\id=RollerBall-9\\rollerball\\rollerball-743.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.29.0",
+        "torch_version": "1.10.1+cu113"
+    }
+}
