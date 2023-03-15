@@ -123,9 +123,11 @@ bins_size=512
 #open(os.path.join(os.getcwd(),sys.argv[1],f"{x:06d}"+".json"))
 while(y!="e"):
     #try:
-    print(sys.argv[1]+f"{x:06d}"+".json")
+    #print(sys.argv[1] + f"{x:06d}" + ".json")
+    print(sys.argv[1] + "{:06d}".format(x) + ".json")
     os.makedirs(os.path.join(os.getcwd(),"SONAR_Outputs",sys.argv[1]+"_imgs"),exist_ok=True)
-    f = open(os.path.join(os.getcwd(),"SONAR_Outputs",sys.argv[1],f"{x:06d}"+" .json"))
+    #f = open(os.path.join(os.getcwd(),"SONAR_Outputs",sys.argv[1],f"{x:06d}"+" .json"))
+    f = open(os.path.join(os.getcwd(),"SONAR_Outputs",sys.argv[1],"{:06d}".format(x)+" .json"))
     x+=1
     l2=[]
     data = json.load(f)
@@ -152,18 +154,19 @@ while(y!="e"):
     polar_raised=np.rot90(polar_raised,2)
     im_fan = np.ones((r, r), dtype=np.uint8)
     idx = np.arange(h) if top else np.arange(h)[::-1]
-    # 坐标转化，将角度转换为弧度，生成扇形角度序列
+    
+
     alpha = np.radians(np.linspace(-angle/2, angle/2, k*w))
-    for i in range(k*w):  # 遍历输入图像的每一列
+    for i in range(k*w):  
         rows = np.int32(np.ceil(np.cos(alpha[i]) * idx)) + r // 2
         cols = np.int32(np.ceil(np.sin(alpha[i]) * idx)) + r // 2
         im_fan[(rows, cols)] = polar_raised[:, i//k]
-    im_fan = im_fan[r//2:, :]  # 裁切输出图像的空白区域
+    im_fan = im_fan[r//2:, :]  
     im_out = np.flip(im_fan, axis=0)
     #plt.figure(figsize=(15,15))
     #plt.imshow(im_out, 'afmhot')
     cv2.imshow('cartesian', np.uint8(im_out))
-    cv2.imwrite(os.path.join(os.getcwd(),"SONAR_Outputs",sys.argv[1]+"_imgs",f"{x:06d}"+" .png"),np.uint8(im_out))
+    cv2.imwrite(os.path.join(os.getcwd(),"SONAR_Outputs",sys.argv[1]+"_imgs","{:06d}".format(x)+" .png"),np.uint8(im_out))
     cv2.imshow('polar', np.uint8(polar_normal*255))
     cv2.waitKey(1)
     
