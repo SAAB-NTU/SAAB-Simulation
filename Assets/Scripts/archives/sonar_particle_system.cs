@@ -29,7 +29,7 @@ public class sonar_particle_system : MonoBehaviour
             float z = -sound_speed * Mathf.Sin(Mathf.Deg2Rad *angle);
             GameObject beam = Instantiate(preFab);
             beam.GetComponent<single_beam_test>().SNR = Vector3.one * SNR;
-            beam.GetComponent<Rigidbody>().velocity = new Vector3(x,y,z);
+            beam.GetComponent<Rigidbody>().linearVelocity = new Vector3(x,y,z);
             angle -= FOV/(multiplier-1);
         }
     }
@@ -48,7 +48,7 @@ public class sonar_particle_system : MonoBehaviour
                 float z = -sound_speed * Mathf.Sin(Mathf.Deg2Rad *angle);
                 GameObject beam = Instantiate(preFab);
                 beam.GetComponent<single_beam_test>().SNR = Vector3.one * SNR;
-                beam.GetComponent<Rigidbody>().velocity = new Vector3(x,y,z);
+                beam.GetComponent<Rigidbody>().linearVelocity = new Vector3(x,y,z);
                 angle -= FOV/(multiplier-1);
             }
             time = 0f;

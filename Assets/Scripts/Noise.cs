@@ -29,7 +29,7 @@ void ImuCallback(ImuMsg imu_msg)
 
         //calculate position from IMU acceleration readings
         acceleration = new Vector3 (imu_msg.a_x,imu_msg.a_y,imu_msg.a_z);
-        rb.velocity += ((acceleration + prev_acceleration)/2) * Time.deltaTime;
+        rb.linearVelocity += ((acceleration + prev_acceleration)/2) * Time.deltaTime;
         
         // //calculate rotation from IMU angular_velocity readings
         angular_velocity = new Vector3 (imu_msg.w_x,imu_msg.w_y,imu_msg.w_z);

@@ -72,7 +72,7 @@ namespace Crest
 
         private const float WATER_DENSITY = 1000;
 
-        public override Vector3 Velocity => _rb.velocity;
+        public override Vector3 Velocity => _rb.linearVelocity;
 
         Rigidbody _rb;
 
@@ -222,7 +222,7 @@ namespace Crest
         void FixedUpdateDrag(Vector3 waterSurfaceVel)
         {
             // Apply drag relative to water
-            var _velocityRelativeToWater = _rb.velocity - waterSurfaceVel;
+            var _velocityRelativeToWater = _rb.linearVelocity - waterSurfaceVel;
 
             var forcePosition = _rb.position + _forceHeightOffset * Vector3.up;
             _rb.AddForceAtPosition(Vector3.up * Vector3.Dot(Vector3.up, -_velocityRelativeToWater) * _dragInWaterUp, forcePosition, ForceMode.Acceleration);

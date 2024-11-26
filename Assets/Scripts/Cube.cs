@@ -39,7 +39,7 @@ public class Cube : MonoBehaviour
         Vector3 current_position = transform.position;
         Vector3 current_angle = transform.rotation.eulerAngles;
 
-        velocity = rb.velocity;
+        velocity = rb.linearVelocity;
         acceleration = (velocity - last_velocity)/Time.fixedDeltaTime;
 
         // msg.a_x = acceleration[0];

@@ -68,7 +68,7 @@ public class BoatAlignNormal : FloatingObjectBase
     bool _inWater;
     public override bool InWater => _inWater;
 
-    public override Vector3 Velocity => _rb.velocity;
+    public override Vector3 Velocity => _rb.linearVelocity;
 
     Rigidbody _rb;
 
@@ -127,7 +127,7 @@ public class BoatAlignNormal : FloatingObjectBase
                 new Color(1, 1, 1, 0.6f));
         }
 
-        var velocityRelativeToWater = _rb.velocity - waterSurfaceVel;
+        var velocityRelativeToWater = _rb.linearVelocity - waterSurfaceVel;
 
         float bottomDepth = height - transform.position.y - _bottomH;
 

@@ -53,8 +53,8 @@ public class single_beam_test : MonoBehaviour
     {
         Rigidbody rb = GetComponent<Rigidbody>();
         normal_sph = collision.contacts[0].normal;
-        Vector3 _velocity = Vector3.Reflect(rb.velocity,normal_sph);
-        rb.velocity = _velocity ;
+        Vector3 _velocity = Vector3.Reflect(rb.linearVelocity,normal_sph);
+        rb.linearVelocity = _velocity ;
 
         
         // // Print how many points are colliding with this transform

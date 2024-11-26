@@ -13,6 +13,6 @@ public class sinusoidal : MonoBehaviour
     void Update()
     {
         
-        GetComponent<Rigidbody>().velocity = new Vector3(amplitude * -Mathf.Sin(frequency * Time.unscaledTime), 0, 0);
+        GetComponent<Rigidbody>().linearVelocity = new Vector3(amplitude * -Mathf.Sin(frequency * Time.unscaledTime), 0, 0);
     }
 }

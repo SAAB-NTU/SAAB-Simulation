@@ -53,7 +53,7 @@ namespace Crest
         bool _inWater;
         public override bool InWater => _inWater;
 
-        public override Vector3 Velocity => _rb.velocity;
+        public override Vector3 Velocity => _rb.linearVelocity;
 
         Rigidbody _rb;
 
@@ -97,7 +97,7 @@ namespace Crest
                     new Color(1, 1, 1, 0.6f));
             }
 
-            var velocityRelativeToWater = _rb.velocity - waterSurfaceVel;
+            var velocityRelativeToWater = _rb.linearVelocity - waterSurfaceVel;
 
             float height = disp.y + OceanRenderer.Instance.SeaLevel;
 

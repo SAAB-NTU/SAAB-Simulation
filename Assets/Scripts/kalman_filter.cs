@@ -28,7 +28,7 @@ public class kalman_filter : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        real_velocity = Mathf.Abs(Real.velocity.x);
+        real_velocity = Mathf.Abs(Real.linearVelocity.x);
         //predict step
         float time = Time.fixedDeltaTime;
         float imu_std = 0.05f;
