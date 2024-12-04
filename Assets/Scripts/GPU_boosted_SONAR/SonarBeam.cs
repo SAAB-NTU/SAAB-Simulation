@@ -3,7 +3,8 @@ using Unity.Collections;
 using Unity.Jobs;
 using Unity.Burst;
 using Unity.Jobs.LowLevel.Unsafe;
-using UnityEngine.Assertions.Must;
+using Unity.Robotics.ROSTCPConnector;
+using RosMessageTypes.Sensor;
 
 [BurstCompile]
 public class SonarBeam : MonoBehaviour
@@ -13,6 +14,15 @@ public class SonarBeam : MonoBehaviour
     public int imageWidth, imageHeight, imageSize; // output image size in pixels
     private Vector3 upperLeftBorder, currentBeam;
     private Matrix4x4 horizontalRotation, verticalRotation;
+    // public bool readyToPublish = false;
+    ROSConnection ros;
+    public string topicName = "/Sonar/Image";
+    public float publishMessageFrequency = 1f;
+    private RosMessageTypes.Std.HeaderMsg header;
+    private uint height, width;
+    private string encoding;
+    private byte is_bigendian;
+    private uint step;
     public byte[] outputRaycast;
 
     public SonarBeam() 
@@ -34,7 +44,8 @@ public class SonarBeam : MonoBehaviour
 
     void Start()
     {
-
+        ros = ROSConnection.GetOrCreateInstance();
+        ros.RegisterPublisher<ImageMsg>(topicName);
     }
 
     void Update()
@@ -68,6 +79,7 @@ public class SonarBeam : MonoBehaviour
         handle.Complete();
 
         ProcessRaycastHit(results);
+        PublishROSMessage();
 
         // Debug.Log("Length: " + results.Length + " first index: " + results[0].distance);
 
@@ -99,12 +111,39 @@ public class SonarBeam : MonoBehaviour
 
     private void ProcessRaycastHit(NativeArray<RaycastHit> results) 
     {
+        // this.readyToPublish = false;
         // Convert RaycastHit into an image grid of Raycast Distance
         // outputRaycast.Dispose(); // Dispose the previous outputRaycast
+        if (outputRaycast == null || outputRaycast.Length != results.Length)
+        {
+            outputRaycast = new byte[results.Length];
+        }
+
         for (int index = 0; index < results.Length; index++)
         {
             outputRaycast[index] = (byte) results[index].distance;
         }
+
+        // this.readyToPublish = true;
+
+        // while (this.readyToPublish == true)
+        // {}
+        // Debug.Log("readyToPublish set to false from the Publisher");
+    }
+
+    private void PublishROSMessage()
+    {
+        ImageMsg msg = PopulateImageMsg();
+        ros.Publish(topicName, msg);
+    }
+
+    private ImageMsg PopulateImageMsg()
+    {
+        ImageMsg message = new();
+        message.width = (uint) this.imageWidth;
+        message.height = (uint) this.imageHeight;
+        message.data = this.outputRaycast;
+        return message;
     }
 
     private Matrix4x4 GetRotationMatrix(float x, float y, float z) {

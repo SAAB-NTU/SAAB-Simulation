@@ -6,7 +6,7 @@ public class SonarROSPublisher : MonoBehaviour
 {
     ROSConnection ros;
     public string topicName = "/Sonar/image"; // To change to desired topic name
-    public float publishMessageFrequency = 10f;
+    public float publishMessageFrequency = 1f;
     private float timeElapsed;
     private SonarBeam sonarBeam;
     private RosMessageTypes.Std.HeaderMsg header;
@@ -21,20 +21,28 @@ public class SonarROSPublisher : MonoBehaviour
         ros.RegisterPublisher<ImageMsg>(topicName);
 
         sonarBeam = GetComponent<SonarBeam>();
+        // Debug.Log("Parameters from sonarBeam: " + sonarBeam.imageWidth + " " + sonarBeam.imageHeight);
     }
 
     private void Update()
     {
         timeElapsed += Time.deltaTime;
 
-        if (timeElapsed > publishMessageFrequency)
-        {
-            ImageMsg msg = PopulateImageMsg();
+        // if (timeElapsed > publishMessageFrequency)
+        // {
+        //     ImageMsg msg = PopulateImageMsg();
             
-            ros.Publish(topicName, msg);
+        //     ros.Publish(topicName, msg);
 
-            timeElapsed = 0;
-        }
+        //     timeElapsed = 0;
+        // }
+
+        // if (sonarBeam.readyToPublish)
+        // {
+        //     ImageMsg msg = PopulateImageMsg();
+        //     ros.Publish(topicName, msg);
+        //     sonarBeam.readyToPublish = false;
+        // }
 
     }
 
