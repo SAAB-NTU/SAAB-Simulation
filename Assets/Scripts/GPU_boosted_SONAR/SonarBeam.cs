@@ -5,6 +5,7 @@ using Unity.Burst;
 using Unity.Jobs.LowLevel.Unsafe;
 using Unity.Robotics.ROSTCPConnector;
 using RosMessageTypes.Sensor;
+using System;
 
 [BurstCompile]
 public class SonarBeam : MonoBehaviour
@@ -19,10 +20,6 @@ public class SonarBeam : MonoBehaviour
     public string topicName = "/Sonar/Image";
     public float publishMessageFrequency = 1f;
     private RosMessageTypes.Std.HeaderMsg header;
-    private uint height, width;
-    private string encoding;
-    private byte is_bigendian;
-    private uint step;
     public byte[] outputRaycast;
 
     public SonarBeam() 
@@ -31,7 +28,7 @@ public class SonarBeam : MonoBehaviour
         this.verticalAperture = 20;
 
         //SONAR output image properties
-        this.imageWidth = 516;
+        this.imageWidth = 20;
         this.imageHeight = 371;
         this.imageSize = this.imageWidth * this.imageHeight;
     }
@@ -55,6 +52,7 @@ public class SonarBeam : MonoBehaviour
         CastBeam();
         Debug.Log("Time taken: " + ((Time.realtimeSinceStartup - start_time)*1000f) + "ms");
         // Profiler.EndSample();
+        // Debug.DrawRay(transform.position,transform.forward, Color.yellow);
     }
 
     private void CastBeam() 
@@ -118,11 +116,28 @@ public class SonarBeam : MonoBehaviour
         {
             outputRaycast = new byte[results.Length];
         }
-
+        // int counter = 0;
+        int max = -10000;
         for (int index = 0; index < results.Length; index++)
         {
             outputRaycast[index] = (byte) results[index].distance;
+            if (outputRaycast[index] > max)
+            {
+                max = outputRaycast[index];
+            }
         }
+
+        if (max != 0)
+        {
+            for (int i = 0; i < outputRaycast.Length; i++)
+            {
+                outputRaycast[i] = (byte)(outputRaycast[i] / (float)max * 255);
+            }
+
+        }
+
+
+        // Debug.Log("Counter: " + counter);
 
         // this.readyToPublish = true;
 
@@ -140,8 +155,23 @@ public class SonarBeam : MonoBehaviour
     private ImageMsg PopulateImageMsg()
     {
         ImageMsg message = new();
+
+        // Get current time from system clock (using DateTime)
+        DateTime now = DateTime.UtcNow;
+
+        // Convert DateTime to timestamp (seconds and nanoseconds)
+        long seconds = new DateTimeOffset(now).ToUnixTimeSeconds();
+        long nanoseconds = (now.Ticks % TimeSpan.TicksPerSecond) * 100; // Convert ticks to nanoseconds
+
+        // Populate the header
+        message.header.stamp.sec = (int) seconds;
+        message.header.stamp.nanosec = (uint) nanoseconds;
+        message.header.frame_id = "camera_link";  // Set frame of reference
+        message.encoding = "mono8";
+        message.step = (uint) this.imageWidth;
         message.width = (uint) this.imageWidth;
         message.height = (uint) this.imageHeight;
+        message.is_bigendian = 0;
         message.data = this.outputRaycast;
         return message;
     }
@@ -186,7 +216,7 @@ public struct PrepareSpherecastCommandJob : IJobFor
     {
         Vector3 direction = this.directions[index];
         this.commands[index] = new SpherecastCommand(
-            position, radius, direction, QueryParameters.Default, 10
+            position, radius, direction, QueryParameters.Default, 30
         );
     }
 }

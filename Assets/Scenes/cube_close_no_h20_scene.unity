@@ -2071,7 +2071,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1211651084}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 375729d24f1c7033d945db5fc0591bc8, type: 3}
   m_Name: 
@@ -2093,6 +2093,8 @@ MonoBehaviour:
   imageWidth: 516
   imageHeight: 371
   imageSize: 191436
+  topicName: /Sonar/Image
+  publishMessageFrequency: 1
   outputRaycast: 
 --- !u!1 &1293761955
 GameObject:
