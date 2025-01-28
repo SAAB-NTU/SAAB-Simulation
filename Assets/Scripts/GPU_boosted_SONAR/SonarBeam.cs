@@ -21,6 +21,7 @@ public class SonarBeam : MonoBehaviour
     public float publishMessageFrequency = 1f;
     private RosMessageTypes.Std.HeaderMsg header;
     public byte[] outputRaycast;
+    Transform tr;
 
     public SonarBeam() 
     {
@@ -58,7 +59,7 @@ public class SonarBeam : MonoBehaviour
     private void CastBeam() 
     {
         Vector3 position = transform.position; // Update SONAR position
-        NativeArray<Vector3> directions = PopulateDirections();
+        NativeArray<Vector3> directions = PopulateDirectionsNew();
 
         NativeArray<RaycastHit> results = new(this.imageSize, Allocator.TempJob);
         NativeArray<SpherecastCommand> commands = new(this.imageSize, Allocator.TempJob);
@@ -198,6 +199,32 @@ public class SonarBeam : MonoBehaviour
             }
         }
 
+        return directions;
+    }
+
+    private NativeArray<Vector3> PopulateDirectionsNew()
+    {
+        NativeArray<Vector3> directions = new (this.imageSize,Allocator.TempJob);
+        for (int height = 0; height < imageHeight; ++height)
+        {
+            float value;
+            if (imageHeight == 1)
+            {
+                value = 0;
+            }
+            else
+            {
+                value = -verticalAperture / 2 + height * (verticalAperture / (imageHeight - 1));
+            }
+            for (int width = 0; width < imageWidth; ++width)
+            {
+                float value_i = -horizontalAperture / 2 + width * (horizontalAperture / (imageWidth - 1));
+                Quaternion direction = Quaternion.AngleAxis(value_i, transform.up);
+                direction = direction * Quaternion.AngleAxis(value, transform.right);
+                directions[height*imageWidth + width] = direction*transform.forward;
+               
+            }
+        }
         return directions;
     }
 }

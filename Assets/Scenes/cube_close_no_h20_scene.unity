@@ -1065,7 +1065,7 @@ Transform:
   m_GameObject: {fileID: 590476204}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.70710677, z: 0, w: 0.70710677}
-  m_LocalPosition: {x: 3.4, y: 0, z: 70}
+  m_LocalPosition: {x: 3.4, y: 0, z: 25.4}
   m_LocalScale: {x: 1, y: 10, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1927,6 +1927,7 @@ GameObject:
   - component: {fileID: 1211651090}
   - component: {fileID: 1211651092}
   - component: {fileID: 1211651091}
+  - component: {fileID: 1211651093}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -2096,6 +2097,18 @@ MonoBehaviour:
   topicName: /Sonar/Image
   publishMessageFrequency: 1
   outputRaycast: 
+--- !u!114 &1211651093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211651084}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eea05d42729fa4289d91086b95a398d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1293761955
 GameObject:
   m_ObjectHideFlags: 0

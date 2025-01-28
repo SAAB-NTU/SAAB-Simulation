@@ -9,6 +9,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.IO;
+using Unity.Robotics.ROSTCPConnector;
+using RosMessageTypes.Sensor;
 
 
 public class FloatListData
@@ -22,7 +24,8 @@ public class Raycast_Gizmo : MonoBehaviour
   
 
     Transform tr;
-    public float distance,radius,multiplier,multiplier_x,FOV,FOV_x;
+    public float distance,radius,FOV,FOV_x;
+    public int multiplier, multiplier_x;
     RaycastHit hit;
     int angle;
     public int no_jobs;
@@ -33,6 +36,10 @@ public class Raycast_Gizmo : MonoBehaviour
     [SerializeField]
     FloatListData distances;
     string data,folder;
+    ROSConnection ros;
+    public string topicName = "/Sonar/Image";
+    private RosMessageTypes.Std.HeaderMsg header;
+    public byte[] outputRaycast;
     private void Awake()
     {
         folder = new string(Path.Join(Directory.GetCurrentDirectory(),"SONAR_Outputs", DateTime.Now.ToString("ddMMyy_hhmmss") + " " + gameObject.name.ToString()));
@@ -100,8 +107,12 @@ public class Raycast_Gizmo : MonoBehaviour
         hits.Clear();
         distances.Values.Clear();
         distances.instances.Clear();
-        //print(Convert.ToInt32(multiplier * multiplier_x));
 
+        Vector3 position = transform.position;
+        NativeArray<Vector3> directions = PopulateDirections();
+
+        NativeArray<RaycastHit> results = new(this.multiplier*this.multiplier_x, Allocator.TempJob);
+        NativeArray<SpherecastCommand> commands = new(this.multiplier*this.multiplier_x, Allocator.TempJob);
 
         for (int i = 0; i < angles.Count; ++i)
 
@@ -112,8 +123,14 @@ public class Raycast_Gizmo : MonoBehaviour
            // hits.Add(hit);
             
         }
+
+        PrepareSpherecastCommandJob prepareCommandsJob = new() {
+            position = transform.position,
+            directions = directions,
+            commands = commands
+        };
         
-        var handle = SpherecastCommand.ScheduleBatch(commands, results,no_jobs, default(JobHandle));
+        JobHandle handle = prepareCommandsJob.ScheduleParallel(commands.Length, 64, default);
         
         handle.Complete();
        
@@ -143,10 +160,87 @@ public class Raycast_Gizmo : MonoBehaviour
         results.Dispose();
         commands.Dispose();
     }
-   
-    // Start is called before the first frame update
 
+    private NativeArray<Vector3> PopulateDirections()
+    {
+        NativeArray<Vector3> directions = new (this.multiplier*this.multiplier_x,Allocator.TempJob);
+        for (int height = 0; height < multiplier; ++height)
+        {
+            float value;
+            if (multiplier == 1)
+            {
+                value = 0;
+            }
+            else
+            {
+                value = -FOV / 2 + height * (FOV / (multiplier - 1));
+            }
+            for (int width = 0; width < multiplier_x; ++width)
+            {
+                float value_i = -FOV_x / 2 + width * (FOV_x / (multiplier_x - 1));
+                Quaternion direction = Quaternion.AngleAxis(value_i, tr.up);
+                direction = direction * Quaternion.AngleAxis(value, tr.right);
+                directions[height*multiplier_x + width] = direction*tr.forward;
+               
+            }
+        }
+        return directions;
+    }
 
-    // Update is called once per frame
+    private void ProcessRaycastHit(NativeArray<RaycastHit> hit)
+    {
+
+    }
+
+/*
+    private void PublishROSMessage()
+    {
+        ImageMsg msg = PopulateImageMsg();
+        ros.Publish(topicName, msg);
+    }
+*/
+/*    private ImageMsg PopulateImageMsg()
+    {
+        ImageMsg message = new();
+
+        // Get current time from system clock (using DateTime)
+        DateTime now = DateTime.UtcNow;
+
+        // Convert DateTime to timestamp (seconds and nanoseconds)
+        long seconds = new DateTimeOffset(now).ToUnixTimeSeconds();
+        long nanoseconds = (now.Ticks % TimeSpan.TicksPerSecond) * 100; // Convert ticks to nanoseconds
+
+        // Populate the header
+        message.header.stamp.sec = (int) seconds;
+        message.header.stamp.nanosec = (uint) nanoseconds;
+        message.header.frame_id = "camera_link";  // Set frame of reference
+        message.encoding = "mono8";
+        message.step = (uint) this.imageWidth;
+        message.width = (uint) this.imageWidth;
+        message.height = (uint) this.imageHeight;
+        message.is_bigendian = 0;
+        message.data = this.outputRaycast;
+        return message;
+    }*/
+
 
 }
+
+// [BurstCompile]
+// public struct PrepareSpherecastCommandJob : IJobFor
+// {
+//     [ReadOnly]
+//     public NativeArray<Vector3> directions;
+//     [ReadOnly]
+//     public Vector3 position;
+//     [NativeDisableParallelForRestriction]
+//     public NativeArray<SpherecastCommand> commands;
+//     public float radius;
+//     public void Execute(int index)
+//     {
+//         Vector3 direction = this.directions[index];
+//         this.commands[index] = new SpherecastCommand(
+//             position, radius, direction, QueryParameters.Default, 30
+//         );
+//     }
+// }
