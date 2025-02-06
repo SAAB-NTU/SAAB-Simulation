@@ -28,7 +28,9 @@ public class MFLS : MonoBehaviour
     private float beamSeparation;
     private int rayNum;
     private int beamNum;
-    private int imageSize;
+    private int imageHeight;
+    private int imageWidth;
+    private double binRange;
     private float c; // Speed of sound in water
     private float lambda; // SONAR wavelength
     private double rmsRoughness; // Surface root mean square roughness
@@ -77,8 +79,11 @@ public class MFLS : MonoBehaviour
                 angularResolution = 0.6f;
                 beamSeparation = 0.25f;
 
-                rayNum = 371;
-                beamNum = 516;
+                beamNum = 513;
+                rayNum = 261;
+                imageWidth = beamNum;
+                imageHeight = rayNum;
+                binRange  = (maxRange - minRange)/imageHeight;
                 break;
             case 2: // 2.1MHz
                 f = 2100f;
@@ -90,7 +95,7 @@ public class MFLS : MonoBehaviour
                 angularResolution = 0.4f;
                 beamSeparation = 0.16f;
 
-                rayNum = 371;
+                rayNum = 20;
                 beamNum = 516;
                 break;
             default:
@@ -104,13 +109,14 @@ public class MFLS : MonoBehaviour
                 angularResolution = 0.6f;
                 beamSeparation = 0.25f;
 
-                rayNum = 371;
+                rayNum = 20;
                 beamNum = 516;
                 break;
         }
 
         c = 1484; // m/s
-        K = 0.52;
+        // K = 0.52;
+        K = 10;
         L = maxRange;
         lambda = c/(f*1000);
         double f_sqr = Math.Pow(f,2);
@@ -143,7 +149,7 @@ public class MFLS : MonoBehaviour
 
         JobHandle handle = prepareCommandsJob.ScheduleParallel(commands.Length, 64, default);
 
-        int commandsPerJob = Mathf.Max(this.imageSize / JobsUtility.JobWorkerCount, 1);
+        int commandsPerJob = Mathf.Max(beamNum*rayNum / JobsUtility.JobWorkerCount, 1);
         handle = RaycastCommand.ScheduleBatch(commands, results, commandsPerJob, handle);
 
         handle.Complete();
@@ -204,6 +210,7 @@ public class MFLS : MonoBehaviour
                 Quaternion direction = Quaternion.AngleAxis(ray_angle, transform.up);
                 direction *= Quaternion.AngleAxis(beam_angle, transform.right);
                 multiBeam[beam*rayNum + ray] = direction * transform.forward;
+                // Debug.DrawRay(transform.position,direction*transform.forward*10, Color.yellow);
             }
         }
 
@@ -216,9 +223,14 @@ public class MFLS : MonoBehaviour
         )
     {   
         // Calculate backscattering intensity
-        NativeArray<double> backscatteringMap = new(beamNum*rayNum, Allocator.TempJob);
+        // NativeArray<double> backscatteringMap = new(beamNum*rayNum, Allocator.TempJob);
+
+        // Each ray holds 2 value: range, intensity
+        NativeArray<double> backscatteringMap = new(beamNum*rayNum*2, Allocator.TempJob);
         NativeArray<double> beamCentralValue = new(beamNum, Allocator.TempJob);
+        // NativeArray<double> intensityMap = new (beamNum*rayNum, Allocator.TempJob);
         byte[] intensityMap = new byte[beamNum*rayNum];
+        // byte[] distanceMap = new byte[beamNum*rayNum];
         
         for (int beam = 0; beam < beamNum; beam++)
         {
@@ -232,58 +244,85 @@ public class MFLS : MonoBehaviour
                     beamSum += raycastHit.distance;
                     nonZeroRayNum++;
                 }
+
+                // Calculations
                 double TL_dB = TL_dB_const*raycastHit.distance;
+                // double TL = Math.Pow(10,Math.Abs(TL_dB)/20);
                 double incidence = Vector3.Angle(
                     raycastHit.normal,
                     raycastCommand[beam*rayNum + ray].direction
                 );
-                double theta = incidence - 90; // GrazingAngle = IncidenceAngle - 90
+                double theta = (90 -incidence)*(Math.PI/180); // GrazingAngle = IncidenceAngle - 90, converted to radians
                 double R_theta_exp_term = Math.Pow(Math.E,
-                                        -1/2 * (R_theta_const_exp_term*Math.Pow(Math.Sin(theta),2))
+                                        -(R_theta_const_exp_term*Math.Pow(Math.Sin(theta),2))
                                         );
                 double R_theta = R_theta_impedance_term * R_theta_exp_term;
                 double I_b = Math.Abs(TL_dB*R_theta);
-                backscatteringMap[beam*rayNum + ray] = I_b;
-            //     if (raycastMap[beam*rayNum + ray].distance != 0)
-            //     {
-            //         Debug.Log("TL_dB: " + TL_dB + " R_theta: " + R_theta + " I_b: " + I_b);
-            //     }
+
+                backscatteringMap[(beam*rayNum + ray)*2]     = raycastHit.distance;
+                backscatteringMap[(beam*rayNum + ray)*2 + 1] = I_b;
+
+                Debug.Log(
+                    "distance: " + raycastHit.distance + " I_b: " + I_b
+                );
+
+                // if (raycastMap[beam*rayNum + ray].distance != 0)
+                // {
+                //     Debug.Log("TL_dB: " + TL_dB + " TL: " + TL + " R_theta: " + R_theta + " I_b: " + I_b);
+                // }
             }
             beamCentralValue[beam] = beamSum/nonZeroRayNum;
         }
 
-        double max = -10000;
-        for (int i =0; i < backscatteringMap.Length; i++)
+        for (int beam = 0; beam < beamNum; beam++)
         {
-            double x_i = beamCentralValue[i%rayNum];
-            double I_b = backscatteringMap[i];
-            double exp = -Math.Pow(raycastMap[i].distance - x_i,2)/sigma;
-
-            // int rayIndex = i%beamNum;
-            // int beamIndex = i/beamNum;
-            // Original shape index before transformation
-            int rayIndex = i%rayNum;
-            int beamIndex = i/rayNum;
-            double value = (byte)(I_b * Math.Pow(Math.E, exp));
-            intensityMap[rayIndex*beamNum + beamIndex] = (byte) value;
-            if (value > max)
+            double x_i = beamCentralValue[beam];
+            for (int ray = 0; ray < rayNum; ray++)
             {
-                max = value;
+                double range = backscatteringMap[(beam*rayNum + ray)*2];
+                double I_b = backscatteringMap[(beam*rayNum + ray)*2 + 1];
+                // Debug.Log(
+                //     "range:" + range + " I_b: " + I_b
+                // );
+                int mapIndex = (int)(range/binRange);
+                double exp = -Math.Pow(range - x_i,2)/sigma;
+
+                double value = I_b*Math.Pow(Math.E, exp);
+                intensityMap[mapIndex] += (byte)(value*127);
             }
-            // Debug.Log("raycastDistance: " + raycastMap[i].distance + " beamCentralValue: " + beamCentralValue[i%rayNum] + " I_b: " + I_b + " exp: " + exp + " intensityMap: " + (I_b * Math.Pow(Math.E, exp)));
         }
+
+        // for (int i=0; i < backscatteringMap.Length; i++)
+        // {
+        //     double x_i = beamCentralValue[i%rayNum];
+        //     double I_b = backscatteringMap[i];
+        //     double exp = -Math.Pow(raycastMap[i].distance - x_i,2)/sigma;
+
+        //     // int rayIndex = i%beamNum;
+        //     // int beamIndex = i/beamNum;
+        //     // Original shape index before transformation
+        //     int rayIndex = i%rayNum;
+        //     int beamIndex = i/rayNum;
+        //     double value = (byte)(I_b * Math.Pow(Math.E, exp));
+        //     intensityMap[rayIndex*beamNum + beamIndex] = (byte) value;
+        //     if (value > max)
+        //     {
+        //         max = value;
+        //     }
+        //     // Debug.Log("raycastDistance: " + raycastMap[i].distance + " beamCentralValue: " + beamCentralValue[i%rayNum] + " I_b: " + I_b + " exp: " + exp + " intensityMap: " + (I_b * Math.Pow(Math.E, exp)));
+        // }
 
         backscatteringMap.Dispose();
         beamCentralValue.Dispose();
 
-        if (max != 0)
-        {
-            for (int i = 0; i < intensityMap.Length; i++)
-            {
-                intensityMap[i] = (byte)(intensityMap[i] / (float)max * 255);
-            }
+        // if (max != 0)
+        // {
+        //     for (int i = 0; i < intensityMap.Length; i++)
+        //     {
+        //         intensityMap[i] = (byte)(intensityMap[i] / (float)max * 255);
+        //     }
 
-        }
+        // }
 
         return intensityMap;
     }
