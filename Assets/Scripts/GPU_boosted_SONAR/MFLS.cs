@@ -6,13 +6,14 @@ using Unity.Jobs.LowLevel.Unsafe;
 using RosMessageTypes.Sensor;
 
 // using Beam = Unity.Collections.NativeArray<UnityEngine.Vector3>; // A beam is a collection of rays (Vector3)
-using MultiBeam = Unity.Collections.NativeArray<
-    Unity.Collections.NativeArray<UnityEngine.Vector3>
->;
+// using MultiBeam = Unity.Collections.NativeArray<
+//     Unity.Collections.NativeArray<UnityEngine.Vector3>
+// >;
 
 using Unity.VisualScripting;
 using System;
 using Unity.Robotics.ROSTCPConnector;
+
 [BurstCompile]
 public class MFLS : MonoBehaviour
 {
@@ -116,7 +117,8 @@ public class MFLS : MonoBehaviour
 
         c = 1484; // m/s
         // K = 0.52;
-        K = 0.1;
+        // K = 0.1;
+        K = 100;
         L = maxRange;
         lambda = c/(f*1000);
         double f_sqr = Math.Pow(f,2);
@@ -252,7 +254,7 @@ public class MFLS : MonoBehaviour
                 );
                 // double theta = incidence *(Math.PI/180); // GrazingAngle = IncidenceAngle - 90, converted to radians
                 double R_theta_exp_term = Math.Pow(Math.E,
-                                        -(R_theta_const_exp_term*Math.Pow(Math.Sin(incidence*DEG_TO_RAD),2))
+                                        -(R_theta_const_exp_term*Math.Pow(Math.Sin((incidence-90)*DEG_TO_RAD),2))
                                         );
                 double R_theta = R_theta_impedance_term * R_theta_exp_term;
                 double I_b = Math.Abs(TL*R_theta);

@@ -616,35 +616,14 @@ GameObject:
   - component: {fileID: 278981301}
   - component: {fileID: 278981300}
   - component: {fileID: 278981299}
-  - component: {fileID: 278981298}
+  - component: {fileID: 278981302}
   m_Layer: 0
   m_Name: Cube (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!65 &278981298
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 278981297}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_IsActive: 0
 --- !u!23 &278981299
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -697,7 +676,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 278981297}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &278981301
 Transform:
   m_ObjectHideFlags: 0
@@ -713,6 +692,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &278981302
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278981297}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &502820071
 GameObject:
   m_ObjectHideFlags: 0
@@ -1065,8 +1065,8 @@ Transform:
   m_GameObject: {fileID: 590476204}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.70710677, z: 0, w: 0.70710677}
-  m_LocalPosition: {x: 3.4, y: 0, z: 25.4}
-  m_LocalScale: {x: 1, y: 10, z: 100}
+  m_LocalPosition: {x: 3.4, y: 0, z: 28.21}
+  m_LocalScale: {x: 1, y: 75.34, z: 461.85004}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1089,7 +1089,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &625793256
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1928,6 +1928,7 @@ GameObject:
   - component: {fileID: 1211651092}
   - component: {fileID: 1211651091}
   - component: {fileID: 1211651093}
+  - component: {fileID: 1211651094}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -1949,11 +1950,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distance: 30
   radius: 0.28
-  multiplier: 1
-  multiplier_x: 512
   FOV: 30
   FOV_x: 30
+  multiplier: 1
+  multiplier_x: 512
   no_jobs: 8000
+  topicName: /Sonar/Image
+  outputRaycast: 
 --- !u!65 &1211651086
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2037,7 +2040,7 @@ Transform:
   m_GameObject: {fileID: 1211651084}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 2.74}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2086,7 +2089,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1211651084}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9f9ea8de70f4bd5c79314fb7675467f3, type: 3}
   m_Name: 
@@ -2109,6 +2112,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eea05d42729fa4289d91086b95a398d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1211651094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211651084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ec70e3abf6bba9d2a5b20351acacd02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mode: 1
+  topicName: /sonar/image
 --- !u!1 &1293761955
 GameObject:
   m_ObjectHideFlags: 0
@@ -2504,7 +2521,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1952818866
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4319,7 +4336,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &4985735405337986992
 GameObject:
   m_ObjectHideFlags: 0
