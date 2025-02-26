@@ -45,10 +45,17 @@ public class MFLS : MonoBehaviour
     private double K; // Arbitrary parameter
     private double L; // Length L of the considered ray
     private double sigma; // Standard Deviation of the Gaussian model of the SONAR signal
-    private NativeArray<Vector3> rayAngles;
-    private NativeArray<Vector3> beams;
-    private NativeArray<RaycastHit> depthMap;
+    private const double DEG_TO_RAD = Math.PI / 180.0;
+
     private byte[] outputMap;
+
+    // Coefficients for Sigmoid function
+    private double Sigmoid_beta;
+    private double Sigmoid_x0;
+
+    // Coefficients for ray Gaussian Model
+    private double EchoGaussian_mean;
+    private double EchoGaussian_std;
     ROSConnection ros;
     [SerializeField] string topicName = "/sonar/image"; 
     
@@ -84,7 +91,6 @@ public class MFLS : MonoBehaviour
                 rayNum = 261;
                 imageWidth = beamNum;
                 imageHeight = rayNum;
-                binRange  = (maxRange - minRange)/imageHeight;
                 break;
             case 2: // 2.1MHz
                 f = 2100f;
@@ -114,10 +120,9 @@ public class MFLS : MonoBehaviour
                 beamNum = 516;
                 break;
         }
-
+        
+        binRange  = (maxRange - minRange)/imageHeight;
         c = 1484; // m/s
-        // K = 0.52;
-        // K = 0.1;
         K = 100;
         L = maxRange;
         lambda = c/(f*1000);
@@ -132,7 +137,7 @@ public class MFLS : MonoBehaviour
         R_theta_impedance_term = (Z_Obj - Z_H20)/(Z_Obj + Z_H20);
         // R_theta_const_exp_term = 8*Math.Pow(Math.PI,2)*Math.Pow(rmsRoughness,2)/Math.Pow(lambda,2);
         R_theta_const_exp_term = 8*Math.Pow(Math.PI*rmsRoughness/lambda,2);
-        sigma = K*L*angularResolution/2;
+        sigma = K*L*angularResolution;
         Debug.Log(sigma);
     }
 
@@ -157,7 +162,7 @@ public class MFLS : MonoBehaviour
 
         handle.Complete();
 
-        byte[] map = SonarCalculations(ref commands,ref results);
+        byte[] map = SonarCalculations(ref commands, ref results);
         PublishROSMessage(ref map);
 
         directions.Dispose();
@@ -169,12 +174,9 @@ public class MFLS : MonoBehaviour
     {
         ImageMsg message = new ImageMsg();
 
-        // Get current time from system clock (using DateTime)
         DateTime now = DateTime.UtcNow;
-
-        // Convert DateTime to timestamp (seconds and nanoseconds)
         long seconds = new DateTimeOffset(now).ToUnixTimeSeconds();
-        long nanoseconds = (now.Ticks % TimeSpan.TicksPerSecond) * 100; // Convert ticks to nanoseconds
+        long nanoseconds = (now.Ticks % TimeSpan.TicksPerSecond) * 100;
 
         // Populate the header
         message.header.stamp.sec = (int) seconds;
@@ -219,13 +221,24 @@ public class MFLS : MonoBehaviour
         return multiBeam; 
     }
 
+    double RayGaussian(double x, double x_j)
+    {
+        // params:
+        //   x   : current range corresponding to the bin
+        //   x_j : central location distance of interest
+        return Math.Pow(Math.E, (-1/2) * Math.Pow((x-x_j)/sigma,2));
+    }
+
+    double Sigmoid(double x)
+    {
+        return 0.5 * Math.Tanh(0.5 * Sigmoid_beta * (x - Sigmoid_x0)) + 0.5;
+    }
+
     byte[] SonarCalculations(
         ref NativeArray<RaycastCommand> raycastCommand,
         ref NativeArray<RaycastHit> raycastMap
         )
     {   
-        const double DEG_TO_RAD = Math.PI / 180.0;
-
         // Each ray holds 2 value: range, intensity
         double[] backscatteringMap = new double[beamNum*rayNum*2];
         double[] beamCentralValue = new double[beamNum];
@@ -234,16 +247,10 @@ public class MFLS : MonoBehaviour
         
         for (int beam = 0; beam < beamNum; beam++)
         {
-            double beamSum = 0;
-            double nonZeroRayNum = 0;
+            double[] beamBin = new double[rayNum];
             for (int ray = 0; ray < rayNum; ray++)
             {
                 RaycastHit raycastHit = raycastMap[beam*rayNum + ray];
-                if (raycastHit.distance != 0)
-                {
-                    beamSum += raycastHit.distance;
-                    nonZeroRayNum++;
-                }
 
                 // Calculations
                 double TL_dB = TL_dB_const*raycastHit.distance;
@@ -252,11 +259,14 @@ public class MFLS : MonoBehaviour
                     raycastHit.normal,
                     raycastCommand[beam*rayNum + ray].direction
                 );
+
                 // double theta = incidence *(Math.PI/180); // GrazingAngle = IncidenceAngle - 90, converted to radians
-                double R_theta_exp_term = Math.Pow(Math.E,
-                                        -(R_theta_const_exp_term*Math.Pow(Math.Sin((incidence-90)*DEG_TO_RAD),2))
-                                        );
-                double R_theta = R_theta_impedance_term * R_theta_exp_term;
+                // double R_theta_exp_term = Math.Pow(Math.E,
+                //                         -(R_theta_const_exp_term*Math.Pow(Math.Sin((incidence-90)*DEG_TO_RAD),2))
+                //                         );
+                // double R_theta = R_theta_impedance_term * R_theta_exp_term;
+
+                double R_theta = Sigmoid((incidence-90)/90); // grazing angle is normalized before passing into Sigmoid
                 double I_b = Math.Abs(TL*R_theta);
 
                 backscatteringMap[beam*rayNum + ray*2]     = raycastHit.distance;
@@ -264,14 +274,6 @@ public class MFLS : MonoBehaviour
                 // backscatteringMap[ray*beamNum + beam*2]     = raycastHit.distance;
                 // backscatteringMap[ray*beamNum + beam*2 + 1] = I_b;
 
-            }
-            
-            if (nonZeroRayNum != 0)
-            {
-                beamCentralValue[beam] = beamSum/nonZeroRayNum;
-            } else
-            {
-                beamCentralValue[beam] = 0;
             }
         }
 
