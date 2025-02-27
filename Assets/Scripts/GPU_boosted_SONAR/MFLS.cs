@@ -56,6 +56,8 @@ public class MFLS : MonoBehaviour
     // Coefficients for ray Gaussian Model
     private double EchoGaussian_mean;
     private double EchoGaussian_std;
+    // private double[] GaussianKernel = {0.011f,0.135f,0.607f,1.0f,0.607f,0.135f,0.011f}; // 1D Gaussian Kernel, corresponding to 1,2,3sigma
+    private double[] GaussianKernel = {1.0f,0.6907f,0.835f,0.011f}; // 1D Gaussian Kernel
     ROSConnection ros;
     [SerializeField] string topicName = "/sonar/image"; 
     
@@ -122,23 +124,34 @@ public class MFLS : MonoBehaviour
         }
         
         binRange  = (maxRange - minRange)/imageHeight;
-        c = 1484; // m/s
         K = 100;
         L = maxRange;
         lambda = c/(f*1000);
         double f_sqr = Math.Pow(f,2);
         alpha = 0.1*f_sqr/(1+f_sqr) + 40*f_sqr/(4100 + f_sqr);
-        Z_H20 = 1.48; // MRayl (megaRayleigh)
-        Z_Obj = 45.7; // Steel
-        rmsRoughness = 0.001;
-        // alpha = 0.1*f_sqr/(1+f_sqr) + 40*f_sqr/(4100 + f_sqr) + 2.75e-4*f_sqr; // Additional term
 
         TL_dB_const = -alpha/1000;
-        R_theta_impedance_term = (Z_Obj - Z_H20)/(Z_Obj + Z_H20);
-        // R_theta_const_exp_term = 8*Math.Pow(Math.PI,2)*Math.Pow(rmsRoughness,2)/Math.Pow(lambda,2);
-        R_theta_const_exp_term = 8*Math.Pow(Math.PI*rmsRoughness/lambda,2);
         sigma = K*L*angularResolution;
-        Debug.Log(sigma);
+
+        // Debug.Log(string.Format(
+        //     "Sonar Parameters:\n" +
+        //     "Bin Range: {0:F4} m\n" +
+        //     "K: {1}\n" +
+        //     "L (Max Range): {2:F2} m\n" +
+        //     "Lambda: {3:F6} m\n" +
+        //     "Frequency: {4:F2} kHz\n" +
+        //     "Alpha: {5} dB/m\n" +
+        //     "TL_dB_const: {6}\n" +
+        //     "Sigma: {9:F6}",
+        //     binRange,
+        //     K,
+        //     L,
+        //     lambda,
+        //     f,
+        //     alpha,
+        //     TL_dB_const,
+        //     sigma
+        // ));
     }
 
     void Cast()
@@ -234,15 +247,27 @@ public class MFLS : MonoBehaviour
         return 0.5 * Math.Tanh(0.5 * Sigmoid_beta * (x - Sigmoid_x0)) + 0.5;
     }
 
+    void ApplySpeckleNoise(ref double[] bins)
+    {
+        double stddev = 0.05;
+        double min_value = 0.03;
+        for (int i = 0; i < bins.Length; i++)
+        {
+            // if (bins[i] < min_value)
+            // {
+            //     bins[i] = min_value;
+            // }
+            var rand = UnityEngine.Random.Range(-5f,5f);
+            bins[i] += 0.25*Math.Exp(-0.5 * Math.Pow((rand) / stddev, 2));
+
+        }
+    }
+
     byte[] SonarCalculations(
         ref NativeArray<RaycastCommand> raycastCommand,
         ref NativeArray<RaycastHit> raycastMap
         )
     {   
-        // Each ray holds 2 value: range, intensity
-        double[] backscatteringMap = new double[beamNum*rayNum*2];
-        double[] beamCentralValue = new double[beamNum];
-        double[] intensityMap = new double[beamNum*rayNum];
         byte[] finalMap = new byte[beamNum*rayNum];
         
         for (int beam = 0; beam < beamNum; beam++)
@@ -254,66 +279,73 @@ public class MFLS : MonoBehaviour
 
                 // Calculations
                 double TL_dB = TL_dB_const*raycastHit.distance;
-                double TL = Math.Pow(10,Math.Abs(TL_dB)/20);
+                double TL = Math.Pow(10,TL_dB/20); // Normalized in [0,1] range
                 double incidence = Vector3.Angle(
                     raycastHit.normal,
                     raycastCommand[beam*rayNum + ray].direction
                 );
 
-                // double theta = incidence *(Math.PI/180); // GrazingAngle = IncidenceAngle - 90, converted to radians
-                // double R_theta_exp_term = Math.Pow(Math.E,
-                //                         -(R_theta_const_exp_term*Math.Pow(Math.Sin((incidence-90)*DEG_TO_RAD),2))
-                //                         );
-                // double R_theta = R_theta_impedance_term * R_theta_exp_term;
-
                 double R_theta = Sigmoid((incidence-90)/90); // grazing angle is normalized before passing into Sigmoid
                 double I_b = Math.Abs(TL*R_theta);
 
-                backscatteringMap[beam*rayNum + ray*2]     = raycastHit.distance;
-                backscatteringMap[beam*rayNum + ray*2 + 1] = I_b;
-                // backscatteringMap[ray*beamNum + beam*2]     = raycastHit.distance;
-                // backscatteringMap[ray*beamNum + beam*2 + 1] = I_b;
+                int binIndex = (int)(Math.Min(raycastHit.distance/binRange, rayNum - 1));
 
-            }
-        }
+                // Debug.Log(string.Format(
+                //     "Beam: {0}, Ray: {1}\n" +
+                //     "Distance: {2:F2}\n" +
+                //     "TL_dB: {3:F2}\n" +
+                //     "TL: {4:F4}\n" +
+                //     "Incidence Angle: {5:F2}\n" +
+                //     "R_theta: {6:F4}\n" +
+                //     "I_b: {7:F4}\n" +
+                //     "binIndex: {8}",
+                //     beam, ray,
+                //     raycastHit.distance,
+                //     TL_dB,
+                //     TL,
+                //     incidence,
+                //     R_theta,
+                //     I_b,
+                //     binIndex
+                // ));
 
-        for (int beam = 0; beam < beamNum; beam++)
-        {
-            double x_i = beamCentralValue[beam];
-            for (int ray = 0; ray < rayNum; ray++)
-            {
-                double range = backscatteringMap[beam*rayNum + ray*2];
 
-                if (range != 0)
+                for (int i = -(GaussianKernel.Length-1)/2 ; i <= (GaussianKernel.Length-1)/2; i++)
                 {
-                    double I_b = backscatteringMap[beam*rayNum + ray*2 + 1];
-                    int mapIndex = (int)(Math.Min(range/binRange, rayNum - 1));
-                    if (mapIndex >= rayNum)
+                    int index = binIndex + i;
+                    if ((index >= beamBin.Length) || (index < 0))
                     {
-                        Debug.Log("MapIndex out of range at " + mapIndex + " range: " + range + " binRange: " + binRange);
+                        continue;
                     }
-                    double exp = -Math.Pow(range - x_i,2)/sigma;
-                    double value = I_b*Math.Pow(Math.E, exp);
-                    // intensityMap[beam*rayNum + mapIndex] += value;
-                    intensityMap[mapIndex*beamNum + beam] += value;
-
-                    // Debug.Log(mapIndex);
-                    // Debug.Log("beam: " + beam + " sigma: " + sigma +" x_i: " + x_i + " range: " + range + " I_b: " + I_b + " distanceBin: " + mapIndex + " exp: " + exp + " value: " + intensityMap[beam*rayNum + mapIndex]);
+                    beamBin[binIndex + i] = I_b*GaussianKernel[Math.Abs(i)];
                 }
+
             }
+
+            ApplySpeckleNoise(ref beamBin);
+                
+            for (int i = 0; i < beamBin.Length; i++)
+            {
+                finalMap[i*beamNum + beam] = (byte) Mathf.Clamp((float)beamBin[i]*255*2, 0, 255);
+                // if (finalMap[i*beamNum + beam] != 0)
+                // {
+                //     Debug.Log("At index: " + i*beamNum + beam + " value: " + finalMap[i*beamNum + beam]);
+                // }
+            }
+
+            // for (int i = 0; i< beamBin.Length; i++)
+            // {
+            //     if (beamBin[i] != 0)
+            //     {
+            //         Debug.Log(beamBin[i]);
+            //     }
+            // }
         }
-
-        // Buffer.BlockCopy(intensityMap, 0, finalMap, 0, intensityMap.Length);  
-
-        for (int i = 0; i < intensityMap.Length; i++)
-        {
-            finalMap[i] = (byte)Math.Min(255, Math.Max(0, intensityMap[i] * 255));
-        }
-
 
         return finalMap;
     }
 }
+
 
 [BurstCompile]
 public struct PrepareRaycastCommandJob : IJobFor
